@@ -6,6 +6,11 @@
          <changefreq>daily</changefreq>
     </url>
     <url>
+         <loc>https://cleanarchitecture-extensions.github.io/CleanArchitecture.Extensions/roadmap/</loc>
+         <lastmod>2025-12-02</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
          <loc>https://cleanarchitecture-extensions.github.io/CleanArchitecture.Extensions/concepts/architecture-fit/</loc>
          <lastmod>2025-12-02</lastmod>
          <changefreq>daily</changefreq>
