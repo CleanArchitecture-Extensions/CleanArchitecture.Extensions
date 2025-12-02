@@ -29,6 +29,7 @@ nav:
   - Extensions Catalog:
       - Overview: extensions/index.md
       - Core: extensions/core.md
+      - Validation: extensions/validation.md
       - Multitenancy Core: extensions/multitenancy-core.md
   - Recipes:
       - Authentication: recipes/authentication.md
