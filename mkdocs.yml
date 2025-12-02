@@ -1,0 +1,61 @@
+site_name: CleanArchitecture.Extensions
+site_description: Extensions ecosystem for Jason Taylor's Clean Architecture template.
+site_url: https://cleanarchitecture-extensions.github.io/CleanArchitecture.Extensions
+repo_url: https://github.com/CleanArchitecture-Extensions/CleanArchitecture.Extensions
+repo_name: CleanArchitecture-Extensions/CleanArchitecture.Extensions
+edit_uri: ""
+
+theme:
+  name: material
+  language: en
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.tracking
+    - content.code.copy
+    - content.tabs.link
+    - search.suggest
+    - search.highlight
+
+nav:
+  - Home: index.md
+  - Getting Started:
+      - Quickstart: getting-started/quickstart.md
+      - Install: getting-started/installation.md
+  - Concepts:
+      - Architecture Fit: concepts/architecture-fit.md
+      - Composition & Invariants: concepts/composition.md
+  - Extensions Catalog:
+      - Overview: extensions/index.md
+      - Multitenancy Core: extensions/multitenancy-core.md
+  - Recipes:
+      - Authentication: recipes/authentication.md
+      - Caching: recipes/caching.md
+  - Samples: samples/index.md
+  - Reference: reference/configuration.md
+  - Troubleshooting: troubleshooting/index.md
+  - Contributing: contributing/index.md
+  - Release Notes: release-notes/index.md
+
+plugins:
+  - search
+  - git-revision-date-localized:
+      fallback_to_build_date: true
+
+markdown_extensions:
+  - admonition
+  - toc:
+      permalink: true
+  - footnotes
+  - def_list
+  - attr_list
+  - md_in_html
+  - pymdownx.highlight:
+      anchor_linenums: true
+      auto_title: false
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.details
+  - pymdownx.snippets:
+      check_paths: true
