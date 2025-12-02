@@ -13,4 +13,5 @@ Keep JasonTaylorCleanArchitecture nearby to mirror his conventions and naming.
 
 - [Getting Started](getting-started/quickstart.md)
 - [Extensions Catalog](extensions/index.md)
+- [Roadmap](roadmap.md)
 - [Contributing](contributing/index.md)
