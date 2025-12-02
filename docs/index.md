@@ -1,8 +1,8 @@
 # CleanArchitecture.Extensions
 
-Extensions ecosystem for Jason Taylor's Clean Architecture template, delivered as opt-in NuGet packages.
+Extensions ecosystem inspired by Jason Taylor's Clean Architecture template, delivered as opt-in NuGet packages without touching the upstream template.
 
-- Why: keep Jason's template clean while shipping opinionated plugins.
+- Why: keep Jason's template pristine while offering opinionated, composable plugins.
 - What you get: quickstarts, concepts, extension catalog, recipes, samples, reference, contributing guidance, release notes.
 - How to use: pick your goal (getting started, add an extension, follow a recipe) and jump in.
 

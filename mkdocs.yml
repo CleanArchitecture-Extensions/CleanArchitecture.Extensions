@@ -27,6 +27,7 @@ nav:
       - Composition & Invariants: concepts/composition.md
   - Extensions Catalog:
       - Overview: extensions/index.md
+      - Core: extensions/core.md
       - Multitenancy Core: extensions/multitenancy-core.md
   - Recipes:
       - Authentication: recipes/authentication.md
