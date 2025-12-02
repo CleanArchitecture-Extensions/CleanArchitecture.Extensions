@@ -41,6 +41,11 @@
          <changefreq>daily</changefreq>
     </url>
     <url>
+         <loc>https://cleanarchitecture-extensions.github.io/CleanArchitecture.Extensions/extensions/validation/</loc>
+         <lastmod>2025-12-02</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
          <loc>https://cleanarchitecture-extensions.github.io/CleanArchitecture.Extensions/getting-started/installation/</loc>
          <lastmod>2025-12-02</lastmod>
          <changefreq>daily</changefreq>
