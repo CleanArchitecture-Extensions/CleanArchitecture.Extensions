@@ -44,6 +44,6 @@ public sealed class CorrelationBehavior<TRequest, TResponse> : IPipelineBehavior
 
         var correlationId = _logContext.CorrelationId;
         using var scope = _logContext.PushProperty("CorrelationId", correlationId);
-        return next();
+        return next(cancellationToken);
     }
 }

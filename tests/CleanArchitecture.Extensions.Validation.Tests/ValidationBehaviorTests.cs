@@ -21,7 +21,7 @@ public class ValidationBehaviorTests
     {
         var behavior = new ValidationBehavior<FakeRequest, Result>(Array.Empty<IValidator<FakeRequest>>(), new ValidationOptions { Strategy = ValidationStrategy.ReturnResult });
         var nextCalled = false;
-        RequestHandlerDelegate<Result> next = () =>
+        RequestHandlerDelegate<Result> next = _ =>
         {
             nextCalled = true;
             return Task.FromResult(Result.Success());
@@ -40,7 +40,7 @@ public class ValidationBehaviorTests
         var behavior = new ValidationBehavior<FakeRequest, Result>(new[] { validator }, ValidationOptions.Default);
 
         await Assert.ThrowsAsync<ValidationException>(() =>
-            behavior.Handle(new FakeRequest(string.Empty, 0, "bad-email"), () => Task.FromResult(Result.Success()), CancellationToken.None));
+            behavior.Handle(new FakeRequest(string.Empty, 0, "bad-email"), _ => Task.FromResult(Result.Success()), CancellationToken.None));
     }
 
     [Fact]
@@ -56,7 +56,7 @@ public class ValidationBehaviorTests
         var behavior = new ValidationBehavior<FakeRequest, Result>(new[] { validator }, options);
         var nextCalled = false;
 
-        RequestHandlerDelegate<Result> next = () =>
+        RequestHandlerDelegate<Result> next = _ =>
         {
             nextCalled = true;
             return Task.FromResult(Result.Success());
@@ -79,7 +79,7 @@ public class ValidationBehaviorTests
         var options = new ValidationOptions { Strategy = ValidationStrategy.ReturnResult, MaxFailures = 1 };
         var behavior = new ValidationBehavior<FakeRequest, Result>(new[] { validator }, options);
 
-        var result = await behavior.Handle(new FakeRequest(string.Empty, 1, null), () => Task.FromResult(Result.Success()), CancellationToken.None);
+        var result = await behavior.Handle(new FakeRequest(string.Empty, 1, null), _ => Task.FromResult(Result.Success()), CancellationToken.None);
 
         Assert.True(result.IsFailure);
         Assert.Single(result.Errors);
@@ -93,7 +93,7 @@ public class ValidationBehaviorTests
         var options = new ValidationOptions { Strategy = ValidationStrategy.Notify, NotifyBehavior = ValidationNotifyBehavior.ReturnResult };
         var behavior = new ValidationBehavior<FakeRequest, Result>(new[] { validator }, options, publisher);
 
-        var result = await behavior.Handle(new FakeRequest(string.Empty, 0, "bad-email"), () => Task.FromResult(Result.Success()), CancellationToken.None);
+        var result = await behavior.Handle(new FakeRequest(string.Empty, 0, "bad-email"), _ => Task.FromResult(Result.Success()), CancellationToken.None);
 
         Assert.True(result.IsFailure);
         Assert.Equal(1, publisher.PublishCount);

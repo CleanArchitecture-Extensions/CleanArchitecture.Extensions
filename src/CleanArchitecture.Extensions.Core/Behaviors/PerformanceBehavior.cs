@@ -42,11 +42,11 @@ public sealed class PerformanceBehavior<TRequest, TResponse> : IPipelineBehavior
     {
         if (!_options.EnablePerformanceLogging)
         {
-            return await next().ConfigureAwait(false);
+            return await next(cancellationToken).ConfigureAwait(false);
         }
 
         var start = _clock.UtcNow;
-        var response = await next().ConfigureAwait(false);
+        var response = await next(cancellationToken).ConfigureAwait(false);
         var elapsed = _clock.UtcNow - start;
 
         var properties = new Dictionary<string, object?>

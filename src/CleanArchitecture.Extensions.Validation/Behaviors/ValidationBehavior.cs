@@ -50,7 +50,7 @@ public sealed class ValidationBehavior<TRequest, TResponse> : IPipelineBehavior<
     {
         if (_validators.Count == 0)
         {
-            return await next().ConfigureAwait(false);
+            return await next(cancellationToken).ConfigureAwait(false);
         }
 
         var context = new ValidationContext<TRequest>(request);
@@ -64,7 +64,7 @@ public sealed class ValidationBehavior<TRequest, TResponse> : IPipelineBehavior<
 
         if (failures.Count == 0)
         {
-            return await next().ConfigureAwait(false);
+            return await next(cancellationToken).ConfigureAwait(false);
         }
 
         var limitedFailures = failures.Take(_options.MaxFailures).ToList();

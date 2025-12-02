@@ -64,7 +64,7 @@ public sealed class LoggingBehavior<TRequest, TResponse> : IPipelineBehavior<TRe
             ["CorrelationId"] = correlationId
         });
 
-        var response = await next().ConfigureAwait(false);
+        var response = await next(cancellationToken).ConfigureAwait(false);
 
         _logger.Info($"Handled {typeof(TRequest).Name}", new Dictionary<string, object?>
         {

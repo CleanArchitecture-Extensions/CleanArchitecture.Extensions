@@ -23,7 +23,7 @@ public class BehaviorTests
         var clock = new FrozenClock();
         var behavior = new CorrelationBehavior<TestRequest, string>(logContext, options, clock);
 
-        var response = await behavior.Handle(new TestRequest(), () => Task.FromResult("ok"), CancellationToken.None);
+        var response = await behavior.Handle(new TestRequest(), _ => Task.FromResult("ok"), CancellationToken.None);
 
         Assert.Equal("ok", response);
         Assert.Equal("cid-test", logContext.CorrelationId);
@@ -40,7 +40,7 @@ public class BehaviorTests
         var logger = new InMemoryAppLogger<TestRequest>(logContext, () => clock.UtcNow);
         var behavior = new LoggingBehavior<TestRequest, string>(logger, logContext, clock);
 
-        var response = await behavior.Handle(new TestRequest(), () => Task.FromResult("ok"), CancellationToken.None);
+        var response = await behavior.Handle(new TestRequest(), _ => Task.FromResult("ok"), CancellationToken.None);
 
         Assert.Equal("ok", response);
         Assert.Equal(2, logger.Entries.Count(entry => entry.Level == LogLevel.Information));
@@ -64,7 +64,7 @@ public class BehaviorTests
 
         var response = await behavior.Handle(
             new TestRequest(),
-            () =>
+            _ =>
             {
                 clock.Advance(TimeSpan.FromMilliseconds(25));
                 return Task.FromResult("ok");
