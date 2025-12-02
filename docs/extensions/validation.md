@@ -10,7 +10,7 @@ Validation pipeline and helpers built on FluentValidation for Clean Architecture
 
 ## Prereqs & Compatibility
 - Target frameworks: `net10.0` (current).
-- Dependencies: FluentValidation `11.9.2`, MediatR `12.2.0`.
+- Dependencies: FluentValidation `12.1.0`, MediatR `13.1.0`.
 - Template fit: register the behavior in Application after Authorization and before Performance, same signature as the template’s `ValidationBehaviour<,>`.
 
 ## Install

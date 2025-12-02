@@ -10,7 +10,7 @@ Foundation helpers inspired by Jason Taylor's Clean Architecture template: guard
 
 ## Prereqs & Compatibility
 - Target frameworks: `net10.0` (current).
-- Dependencies: MediatR `12.2.0`.
+- Dependencies: MediatR `13.1.0`.
 - Template fit: Jason Taylor Clean Architecture (add MediatR pipeline behaviors in the Application layer).
 
 ## Install
