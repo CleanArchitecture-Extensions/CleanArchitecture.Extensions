@@ -1,0 +1,76 @@
+using CleanArchitecture.Extensions.Core.Result.Sample.Application.Projects.Commands.CloseProject;
+using CleanArchitecture.Extensions.Core.Result.Sample.Application.Projects.Commands.CreateProject;
+using CleanArchitecture.Extensions.Core.Result.Sample.Application.Projects.Queries.GetProjectById;
+using CoreResults = CleanArchitecture.Extensions.Core.Results;
+
+namespace CleanArchitecture.Extensions.Core.Result.Sample.Web.Endpoints;
+
+public class Projects : EndpointGroupBase
+{
+    public override void Map(RouteGroupBuilder groupBuilder)
+    {
+        groupBuilder.MapPost(CreateProject);
+        groupBuilder.MapGet(GetProjectById, "{id:int}");
+        groupBuilder.MapPost(CloseProject, "{id:int}/close");
+    }
+
+    public async Task<IResult> CreateProject(ISender sender, CreateProjectCommand command)
+    {
+        var result = await sender.Send(command);
+
+        return result.Match<IResult>(
+            id => TypedResults.Created($"/api/{nameof(Projects)}/{id}", new { id, traceId = result.TraceId }),
+            _ => ToProblemResult("Project validation failed.", result));
+    }
+
+    public async Task<IResult> GetProjectById(ISender sender, int id)
+    {
+        var result = await sender.Send(new GetProjectByIdQuery(id));
+
+        return result.Match<IResult>(
+            project => TypedResults.Ok(new { project, traceId = result.TraceId }),
+            _ => ToProblemResult("Project not found.", result, StatusCodes.Status404NotFound));
+    }
+
+    public async Task<IResult> CloseProject(ISender sender, int id)
+    {
+        var result = await sender.Send(new CloseProjectCommand(id));
+
+        if (result.IsSuccess)
+        {
+            return TypedResults.NoContent();
+        }
+
+        var statusCode = result.Errors.Any(e => e.Code == "guard.null")
+            ? StatusCodes.Status404NotFound
+            : StatusCodes.Status400BadRequest;
+
+        return ToProblemResult("Unable to close project.", result, statusCode);
+    }
+
+    private static IResult ToProblemResult<T>(string title, CoreResults.Result<T> result, int statusCode = StatusCodes.Status400BadRequest)
+    {
+        var errors = result.Errors.Select(e => new { e.Code, e.Message, e.Metadata });
+
+        return TypedResults.Problem(title: title,
+            statusCode: statusCode,
+            extensions: new Dictionary<string, object?>
+            {
+                ["errors"] = errors,
+                ["traceId"] = result.TraceId
+            });
+    }
+
+    private static IResult ToProblemResult(string title, CoreResults.Result result, int statusCode = StatusCodes.Status400BadRequest)
+    {
+        var errors = result.Errors.Select(e => new { e.Code, e.Message, e.Metadata });
+
+        return TypedResults.Problem(title: title,
+            statusCode: statusCode,
+            extensions: new Dictionary<string, object?>
+            {
+                ["errors"] = errors,
+                ["traceId"] = result.TraceId
+            });
+    }
+}
