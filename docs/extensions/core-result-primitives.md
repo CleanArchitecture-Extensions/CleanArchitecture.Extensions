@@ -43,116 +43,116 @@ You can start with the template’s existing patterns and layer Core Results gra
 - **Handlers:** Keep return types as your feature needs (DTOs, primitives). Introduce `Result<T>` where you want richer errors without throwing. You can adopt it per handler; nothing requires a big bang change.
 - **Pipelines:** Core Results do not change pipeline signatures; they work with the template’s behaviors. Validation that throws still bubbles through `UnhandledExceptionBehaviour`; you can prefer guard/result composition to avoid exceptions when appropriate.
 
-## Real-world use cases
+## Real-world use cases (backed by the sample)
 
-### 1) Command input validation with guards and trace IDs
+A runnable solution lives at `samples/CleanArchitecture.Extensions.Core.Result.Sample`. It keeps Jason’s `IApplicationDbContext` style while exercising Core Results in a `Projects` feature.
+
+### 1) Creating a project with guards + `Combine`
+`samples/CleanArchitecture.Extensions.Core.Result.Sample/src/Application/Projects/Commands/CreateProject/CreateProject.cs`:
+
 ```csharp
-public sealed record CreateProjectCommand(string Name, string? Description) : IRequest<Result<Guid>>;
-
-public sealed class CreateProjectCommandHandler : IRequestHandler<CreateProjectCommand, Result<Guid>>
+public async Task<CoreResults.Result<int>> Handle(CreateProjectCommand request, CancellationToken cancellationToken)
 {
-    private readonly IProjectRepository _repository;
-    private readonly CoreExtensionsOptions _options;
+    var traceId = Guid.NewGuid().ToString("N");
+    var guardOptions = new GuardOptions { TraceId = traceId };
 
-    public CreateProjectCommandHandler(IProjectRepository repository, IOptions<CoreExtensionsOptions> options)
+    var name = Guard.AgainstNullOrWhiteSpace(request.Name, nameof(request.Name), guardOptions)
+        .Ensure(n => n.Length <= MaxNameLength, new CoreResults.Error("projects.name.length", $"Project name must be {MaxNameLength} characters or fewer.", traceId));
+
+    var description = Guard.Ensure(request.Description is null || request.Description.Length <= MaxDescriptionLength,
+        "projects.description.length",
+        $"Description must be {MaxDescriptionLength} characters or fewer.",
+        guardOptions);
+
+    var budget = Guard.Ensure(request.Budget >= 0,
+        "projects.budget.range",
+        "Budget cannot be negative.",
+        guardOptions);
+
+    var validation = CoreResults.Result.Combine(name, description, budget);
+    if (validation.IsFailure)
     {
-        _repository = repository;
-        _options = options.Value;
+        return CoreResults.Result.Failure<int>(validation.Errors, traceId);
     }
 
-    public async Task<Result<Guid>> Handle(CreateProjectCommand request, CancellationToken cancellationToken)
+    var project = new Project(name.Value, request.Description, request.Budget);
+
+    var duplicateName = await _context.Projects
+        .AnyAsync(p => p.Name == project.Name, cancellationToken);
+
+    if (duplicateName)
     {
-        var guardOptions = GuardOptions.FromOptions(_options);
-        var name = Guard.AgainstNullOrWhiteSpace(request.Name, nameof(request.Name), guardOptions);
-        if (name.IsFailure) return Result.Failure<Guid>(name.Errors, name.TraceId);
+        var duplicateError = new CoreResults.Error("projects.name.duplicate", "A project with this name already exists.", traceId)
+            .WithMetadata("name", project.Name);
 
-        var project = new Project(name.Value, request.Description);
-        await _repository.AddAsync(project, cancellationToken);
-
-        return Result.Success(project.Id, name.TraceId);
+        return CoreResults.Result.Failure<int>(duplicateError, traceId);
     }
+
+    _context.Projects.Add(project);
+    await _context.SaveChangesAsync(cancellationToken);
+
+    return CoreResults.Result.Success(project.Id, traceId);
 }
 ```
-- The handler stays free of exception-heavy flows. Errors carry `TraceId` from options, and the API can forward that to clients.
+- `GuardOptions.TraceId` seeds correlation on every guard failure and success.
+- `Result.Combine` keeps the handler branch-free until all synchronous validations run.
+- Errors capture metadata (`name`) before returning `Result<int>` to the caller.
 
-### 2) Composing multiple operations with `Bind` and `Ensure`
+### 2) Closing a project with `Bind` and `Tap`
+`samples/CleanArchitecture.Extensions.Core.Result.Sample/src/Application/Projects/Commands/CloseProject/CloseProject.cs`:
+
 ```csharp
-public Result<Invoice> TryBillCustomer(Guid customerId, Money amount)
+var closeResult = Guard.AgainstNull(project, nameof(project), guardOptions)
+    .Bind(p => EnsureNotClosed(p, traceId))
+    .Tap(p => p.Close(DateTimeOffset.UtcNow));
+
+if (closeResult.IsFailure)
 {
-    return Guard.AgainstNull(customerId, nameof(customerId))
-        .Bind(id => _customerService.GetById(id))
-        .Ensure(customer => customer.CreditLimit >= amount, 
-            new Error("billing.credit-limit", "Insufficient credit"))
-        .Bind(_ => _invoiceService.CreateInvoice(customerId, amount))
-        .Tap(invoice => _logger.Info("Issued invoice", new Dictionary<string, object?>
-        {
-            ["InvoiceId"] = invoice.Id,
-            ["CustomerId"] = customerId
-        }));
+    return CoreResults.Result.Failure(closeResult.Errors, traceId);
+}
+
+await _context.SaveChangesAsync(cancellationToken);
+
+return CoreResults.Result.Success(traceId);
+
+static CoreResults.Result<Project> EnsureNotClosed(Project project, string traceId)
+{
+    return project.IsClosed
+        ? CoreResults.Result.Failure<Project>(new CoreResults.Error("projects.closed", "Project is already closed.", traceId), traceId)
+        : CoreResults.Result.Success(project, traceId);
 }
 ```
-- `Bind` avoids nested `if` ladders; `Ensure` introduces a new domain check with a domain-specific error code.
+- `Bind` short-circuits if the entity is missing or already closed.
+- `Tap` performs the side effect (marking the project closed) without losing the trace ID.
 
-### 3) Aggregating results from independent checks
+### 3) Mapping results to HTTP responses
+`samples/CleanArchitecture.Extensions.Core.Result.Sample/src/Application/Projects/Queries/GetProjectById/GetProjectById.cs` and `samples/CleanArchitecture.Extensions.Core.Result.Sample/src/Web/Endpoints/Projects.cs`:
+
 ```csharp
-public Result ValidateCheckout(Cart cart)
-{
-    var errors = new List<Result>
-    {
-        Guard.Ensure(cart.Items.Any(), "cart.empty", "Cart has no items"),
-        Guard.Ensure(cart.Total <= cart.Customer.CreditLimit, "cart.limit", "Cart exceeds credit limit"),
-        Guard.Ensure(cart.Items.Count <= 100, "cart.too-many-items", "Cart item count too high")
-    };
+// Query handler
+var projectResult = Guard.AgainstNull(project, nameof(project), guardOptions);
 
-    return Result.Combine(errors);
-}
-```
-- `Result.Combine` aggregates all errors instead of stopping at the first failure, enabling UX that shows all blocking issues at once.
-
-### 4) Adapting to HTTP responses
-```csharp
-[HttpPost("projects")]
-public async Task<IResult> Create([FromServices] IMediator mediator, [FromBody] CreateProjectCommand command)
+return projectResult.Map(p => new ProjectSummaryDto
 {
-    var result = await mediator.Send(command);
+    Id = p.Id,
+    Name = p.Name,
+    Budget = p.Budget,
+    IsClosed = p.IsClosed,
+    ClosedOn = p.ClosedOn
+}, traceId);
+
+// Minimal API endpoint
+public async Task<IResult> GetProjectById(ISender sender, int id)
+{
+    var result = await sender.Send(new GetProjectByIdQuery(id));
 
     return result.Match<IResult>(
-        onSuccess: id => Results.Created($"/projects/{id}", new { id, traceId = result.TraceId }),
-        onFailure: errors =>
-        {
-            var problem = errors.Select(e => new { e.Code, e.Message, e.TraceId, e.Metadata });
-            return Results.Problem(statusCode: StatusCodes.Status400BadRequest,
-                detail: "Validation failed",
-                extensions: new Dictionary<string, object?>
-                {
-                    ["errors"] = problem,
-                    ["traceId"] = result.TraceId
-                });
-        });
+        project => TypedResults.Ok(new { project, traceId = result.TraceId }),
+        _ => ToProblemResult("Project not found.", result, StatusCodes.Status404NotFound));
 }
 ```
-- The API keeps the error shape consistent and forwards `TraceId` for client/server troubleshooting.
-
-### 5) Bridging to the template’s Identity Result
-```csharp
-public static class IdentityResultAdapters
-{
-    public static Result ToCoreResult(this CleanArchitecture.Application.Common.Models.Result source, string? traceId = null)
-    {
-        return source.Succeeded
-            ? Result.Success(traceId)
-            : Result.Failure(source.Errors.Select(e => new Error("identity", e, traceId)));
-    }
-
-    public static CleanArchitecture.Application.Common.Models.Result ToTemplateResult(this Result source)
-    {
-        return source.IsSuccess
-            ? CleanArchitecture.Application.Common.Models.Result.Success()
-            : CleanArchitecture.Application.Common.Models.Result.Failure(source.Errors.Select(e => $"{e.Code}: {e.Message}"));
-    }
-}
-```
-- Use adapters in Identity or integration layers so you can return richer errors to APIs while maintaining existing service contracts elsewhere.
+- `Map` preserves the guard trace ID when projecting to a DTO.
+- `Match` produces consistent HTTP payloads with structured errors + `traceId`.
 
 ## Detailed behavior notes
 - **Trace IDs:** If you pass a trace ID into `Result.Success` or `Result.Failure`, it will be copied into contained errors (or derived from the first error when not provided). Combine also prefers the first non-empty trace ID it finds.

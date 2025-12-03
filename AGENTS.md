@@ -5,3 +5,4 @@ Living log for AI/automation contributions. Add a dated note whenever an agent e
 - 2025-12-02 — Added a roadmap page (docs/roadmap.md), linked it in navigation/landing pages, and tightened the docs GitHub workflow to run `mkdocs build --strict`.
 - 2025-12-02 — Added Validation extension docs page, linked it into extensions catalog and mkdocs nav.
 - 2025-12-02 — Added CodeQL workflow for security scanning and README badges for docs/code quality.
+- 2025-12-03 — Added Core Result sample solution under `samples/` and updated `docs/extensions/core-result-primitives.md` to pull real snippets from it.
