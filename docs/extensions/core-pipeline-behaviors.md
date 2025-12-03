@@ -50,19 +50,67 @@ To stay compatible with the template’s semantics while adding correlation:
 This preserves the template’s order while guaranteeing that correlation and logging scopes exist for subsequent behaviors and for performance logs.
 
 ## Wiring in DI (Application layer)
-```csharp
-services.AddScoped(typeof(IPipelineBehavior<,>), typeof(CorrelationBehavior<,>));
-services.AddScoped(typeof(IRequestPreProcessor<>), typeof(LoggingBehavior<>)); // optional pre-processor hook
-services.AddScoped(typeof(IPipelineBehavior<,>), typeof(LoggingBehavior<,>));
-services.AddScoped(typeof(IPipelineBehavior<,>), typeof(PerformanceBehavior<,>));
+A runnable example lives at `samples/CleanArchitecture.Extensions.Core.Pipeline.Sample/src/Application/DependencyInjection.cs`. It wires Core behaviors plus adapters that bridge to `ILogger<T>`:
 
-services.AddScoped<ILogContext, InMemoryLogContext>();           // swap with provider-specific context
-services.AddScoped(typeof(IAppLogger<>), typeof(NoOpAppLogger<>)); // swap with Serilog/MEL adapter
-services.AddSingleton<IClock, SystemClock>();
-services.Configure<CoreExtensionsOptions>(configuration.GetSection("Extensions:Core"));
+```csharp
+builder.Services.Configure<CoreExtensionsOptions>(builder.Configuration.GetSection("Extensions:Core"));
+builder.Services.AddSingleton<IClock, SystemClock>();
+builder.Services.AddScoped<ILogContext, MelLogContext>(); // MEL-backed scope
+builder.Services.AddScoped(typeof(IAppLogger<>), typeof(MelAppLogger<>)); // MEL adapter
+
+builder.Services.AddMediatR(cfg => {
+    cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());
+    cfg.AddOpenRequestPreProcessor(typeof(LoggingBehavior<,>));
+    cfg.AddOpenBehavior(typeof(CorrelationBehavior<,>));
+    cfg.AddOpenBehavior(typeof(LoggingBehavior<,>));
+    cfg.AddOpenBehavior(typeof(UnhandledExceptionBehaviour<,>));
+    cfg.AddOpenBehavior(typeof(AuthorizationBehaviour<,>));
+    cfg.AddOpenBehavior(typeof(ValidationBehaviour<,>));
+    cfg.AddOpenBehavior(typeof(PerformanceBehavior<,>));
+});
 ```
-- If you keep the template behaviors, register them alongside Core behaviors in the order above.
-- If you replace the template `LoggingBehaviour`, remove the old registration and keep Core `LoggingBehavior` as both pre-processor and pipeline behavior.
+- The adapter types (`MelLogContext`, `MelAppLogger<T>`) show how to reuse existing `ILogger` pipelines while satisfying Core abstractions.
+- `LoggingBehavior` is registered twice: once as a pre-processor (start log) and once as a pipeline behavior (end log).
+
+## Sample-backed walkthrough (pipeline sample)
+The runnable sample at `samples/CleanArchitecture.Extensions.Core.Pipeline.Sample` exercises the behaviors with real endpoints.
+
+### Correlation flowing into handlers
+`src/Application/Diagnostics/Queries/GetPipelineDiagnostics/GetPipelineDiagnostics.cs`:
+```csharp
+var correlationId = _logContext.CorrelationId ?? _clock.NewGuid().ToString("N");
+
+_logger.Log(LogLevel.Information, $"Diagnostics requested with correlation {correlationId}");
+
+return Task.FromResult(new PipelineDiagnosticsDto(correlationId, _clock.UtcNow));
+```
+- `CorrelationBehavior` seeds `_logContext.CorrelationId`; the handler reuses it and returns it to the caller.
+
+### Performance warnings on slow commands
+`src/Application/Diagnostics/Commands/SimulateWork/SimulateWork.cs`:
+```csharp
+var delay = Math.Max(0, request.Milliseconds);
+_logger.Log(LogLevel.Information, $"Simulating {delay} ms of work");
+
+await _clock.Delay(TimeSpan.FromMilliseconds(delay), cancellationToken);
+
+_logger.Log(LogLevel.Debug, $"Completed simulated work after {delay} ms");
+```
+- With `PerformanceWarningThreshold` set to 400 ms in `src/Web/appsettings.json`, `POST /api/Diagnostics/simulate?milliseconds=650` emits a performance warning from `PerformanceBehavior` while returning 202 Accepted.
+
+### Minimal API endpoints exposing the behaviors
+`src/Web/Endpoints/Diagnostics.cs`:
+```csharp
+public async Task<IResult> GetPipelineDiagnostics(ISender sender) =>
+    TypedResults.Ok(await sender.Send(new GetPipelineDiagnosticsQuery()));
+
+public async Task<IResult> SimulateWork(ISender sender, int milliseconds = 600)
+{
+    await sender.Send(new SimulateWorkCommand(milliseconds));
+    return TypedResults.Accepted($"/api/{nameof(Diagnostics)}/simulate?milliseconds={milliseconds}");
+}
+```
+- `LoggingBehavior` logs start/end, `CorrelationBehavior` scopes correlation, and `PerformanceBehavior` times the simulated work.
 
 ## Behavior-by-behavior deep dive
 
