@@ -29,6 +29,13 @@ nav:
   - Extensions Catalog:
       - Overview: extensions/index.md
       - Core: extensions/core.md
+      - Core Options: extensions/core-options.md
+      - Core Time: extensions/core-time.md
+      - Core Domain Events: extensions/core-domain-events.md
+      - Core Logging Abstractions: extensions/core-logging-abstractions.md
+      - Core Pipeline Behaviors: extensions/core-pipeline-behaviors.md
+      - Core Guard Clauses: extensions/core-guard-clauses.md
+      - Core Result Primitives: extensions/core-result-primitives.md
       - Validation: extensions/validation.md
       - Multitenancy Core: extensions/multitenancy-core.md
   - Recipes:
