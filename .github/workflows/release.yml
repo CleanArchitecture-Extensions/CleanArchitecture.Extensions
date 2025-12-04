@@ -1,0 +1,61 @@
+name: release
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+
+env:
+  DOTNET_NOLOGO: true
+  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
+  DOTNET_CLI_TELEMETRY_OPTOUT: 1
+
+jobs:
+  publish-nuget:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Restore
+        run: dotnet restore CleanArchitecture.Extensions.sln
+
+      - name: Build
+        run: dotnet build CleanArchitecture.Extensions.sln -c Release /p:ContinuousIntegrationBuild=true
+
+      - name: Test
+        run: dotnet test CleanArchitecture.Extensions.sln -c Release --no-build /p:ContinuousIntegrationBuild=true
+
+      - name: Pack Core
+        run: dotnet pack src/CleanArchitecture.Extensions.Core/CleanArchitecture.Extensions.Core.csproj -c Release -o artifacts/packages /p:ContinuousIntegrationBuild=true
+
+      - name: Pack Validation
+        run: dotnet pack src/CleanArchitecture.Extensions.Validation/CleanArchitecture.Extensions.Validation.csproj -c Release -o artifacts/packages /p:ContinuousIntegrationBuild=true
+
+      - name: Install SourceLink CLI
+        run: |
+          dotnet tool install --global sourcelink
+          echo "$HOME/.dotnet/tools" >> $GITHUB_PATH
+
+      - name: Verify SourceLink
+        run: |
+          sourcelink test src/CleanArchitecture.Extensions.Core/bin/Release/net8.0/CleanArchitecture.Extensions.Core.pdb
+          sourcelink test src/CleanArchitecture.Extensions.Core/bin/Release/net10.0/CleanArchitecture.Extensions.Core.pdb
+          sourcelink test src/CleanArchitecture.Extensions.Validation/bin/Release/net8.0/CleanArchitecture.Extensions.Validation.pdb
+          sourcelink test src/CleanArchitecture.Extensions.Validation/bin/Release/net10.0/CleanArchitecture.Extensions.Validation.pdb
+
+      - name: Publish packages to NuGet
+        env:
+          NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
+        run: |
+          dotnet nuget push artifacts/packages/*.nupkg --api-key "$NUGET_API_KEY" --source https://api.nuget.org/v3/index.json --skip-duplicate
+          dotnet nuget push artifacts/packages/*.snupkg --api-key "$NUGET_API_KEY" --source https://api.nuget.org/v3/index.json --skip-duplicate
