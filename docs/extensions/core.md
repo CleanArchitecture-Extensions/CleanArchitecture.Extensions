@@ -42,7 +42,7 @@ If you want a deep dive into Results specifically, see [Result primitives](./cor
 ### Pipeline behaviors
 
 - **CorrelationBehavior:** Ensures a correlation ID exists (uses `CoreExtensionsOptions.CorrelationIdFactory` or clock-based GUID), pushes it to `ILogContext`, and preserves scope for downstream logs.
-- **LoggingBehavior:** Works as both `IPipelineBehavior` and `IRequestPreProcessor` (matching the template’s pre-processor). Logs start/finish with correlation and request type.
+- **Logging:** `LoggingPreProcessor<TRequest>` logs start-of-request; `LoggingBehavior<TRequest, TResponse>` logs handling/handled with correlation and request type.
 - **PerformanceBehavior:** Measures elapsed time via `IClock`, emits warnings when `PerformanceWarningThreshold` is exceeded, can be toggled with `EnablePerformanceLogging`.
 - Ordering guidance (matching the template’s intent): `Correlation` → `Logging (pre)` → `UnhandledException` → `Authorization` → `Validation` → `Performance` → Handler. Insert Core behaviors accordingly to maintain compatibility.
 - Deep dive: [Core Pipeline Behaviors](./core-pipeline-behaviors.md).
@@ -93,7 +93,7 @@ services.AddScoped(typeof(IAppLogger<>), typeof(NoOpAppLogger<>)); // swap with 
 
 ```csharp
 services.AddScoped(typeof(IPipelineBehavior<,>), typeof(CorrelationBehavior<,>));
-services.AddScoped(typeof(IRequestPreProcessor<>), typeof(LoggingBehavior<>)); // optional pre-processor registration
+services.AddScoped(typeof(IRequestPreProcessor<>), typeof(LoggingPreProcessor<>)); // pre-processor registration
 services.AddScoped(typeof(IPipelineBehavior<,>), typeof(LoggingBehavior<,>));
 services.AddScoped(typeof(IPipelineBehavior<,>), typeof(PerformanceBehavior<,>));
 ```
@@ -117,7 +117,7 @@ return Result.Success(created.Id, nameResult.TraceId);
 
 ## Compatibility notes
 
-- **Drop-in for template behaviors:** Signatures are compatible with `cfg.AddOpenBehavior` and `AddOpenRequestPreProcessor` in the template DI. Swap registrations without changing handlers.
+- **Drop-in for template behaviors:** Signatures are compatible with `cfg.AddOpenBehavior` and `AddOpenRequestPreProcessor` in the template DI (`LoggingPreProcessor` for pre-processing, `LoggingBehavior` for pipeline). Swap registrations without changing handlers.
 - **Interop with existing Result:** You can map template `Result` to/from Core’s `Result` by projecting errors into `Error` codes/messages and vice versa (e.g., `Result.Success().Errors` → `Result.Success(traceId)`).
 - **EF interceptors:** `DomainEventTracker` can complement `DispatchDomainEventsInterceptor`; use the tracker when you need to buffer events outside DbContext lifetime or forward to a bus/outbox.
 - **Time/Auditing:** Replace `TimeProvider` injections with `IClock` adapters that internally call `TimeProvider.System` if you need 1:1 behavior.

@@ -1,14 +1,13 @@
 using CleanArchitecture.Extensions.Core.Logging;
 using CleanArchitecture.Extensions.Core.Time;
 using MediatR;
-using MediatR.Pipeline;
 
 namespace CleanArchitecture.Extensions.Core.Behaviors;
 
 /// <summary>
 /// MediatR behavior that records request lifecycle events and ensures correlation scope.
 /// </summary>
-public sealed class LoggingBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>, IRequestPreProcessor<TRequest>
+public sealed class LoggingBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
     where TRequest : notnull
 {
     private readonly IAppLogger<TRequest> _logger;
@@ -29,24 +28,6 @@ public sealed class LoggingBehavior<TRequest, TResponse> : IPipelineBehavior<TRe
     }
 
     /// <summary>
-    /// Pre-processor hook to log the start of request handling.
-    /// </summary>
-    /// <param name="request">Incoming request.</param>
-    /// <param name="cancellationToken">Cancellation token.</param>
-    /// <returns>A completed task.</returns>
-    public Task Process(TRequest request, CancellationToken cancellationToken)
-    {
-        var correlationId = EnsureCorrelationId();
-        _logger.Debug($"Starting {typeof(TRequest).Name}", new Dictionary<string, object?>
-        {
-            ["CorrelationId"] = correlationId,
-            ["Timestamp"] = _clock.UtcNow
-        });
-
-        return Task.CompletedTask;
-    }
-
-    /// <summary>
     /// Handles the request by logging before and after execution.
     /// </summary>
     /// <param name="request">Incoming request.</param>
@@ -57,6 +38,12 @@ public sealed class LoggingBehavior<TRequest, TResponse> : IPipelineBehavior<TRe
     {
         var correlationId = EnsureCorrelationId();
         using var scope = _logContext.PushProperty("CorrelationId", correlationId);
+
+        _logger.Debug($"Starting {typeof(TRequest).Name}", new Dictionary<string, object?>
+        {
+            ["CorrelationId"] = correlationId,
+            ["Timestamp"] = _clock.UtcNow
+        });
 
         _logger.Info($"Handling {typeof(TRequest).Name}", new Dictionary<string, object?>
         {

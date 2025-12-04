@@ -48,6 +48,23 @@ public class BehaviorTests
     }
 
     /// <summary>
+    /// Verifies logging pre-processor writes the start entry and seeds correlation.
+    /// </summary>
+    [Fact]
+    public async Task LoggingPreProcessor_EmitsStartLog()
+    {
+        var logContext = new InMemoryLogContext();
+        var clock = new FrozenClock(new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero));
+        var logger = new InMemoryAppLogger<TestRequest>(logContext, () => clock.UtcNow);
+        var preProcessor = new LoggingPreProcessor<TestRequest>(logger, logContext, clock);
+
+        await preProcessor.Process(new TestRequest(), CancellationToken.None);
+
+        Assert.Contains(logger.Entries, e => e.Level == LogLevel.Debug && e.Message.Contains("Starting"));
+        Assert.False(string.IsNullOrWhiteSpace(logContext.CorrelationId));
+    }
+
+    /// <summary>
     /// Verifies performance behavior emits warnings when the threshold is exceeded.
     /// </summary>
     [Fact]

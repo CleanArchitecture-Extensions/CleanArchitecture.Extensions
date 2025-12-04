@@ -21,14 +21,15 @@ Gaps the template intentionally leaves open:
 ## What the Core behaviors add
 The Core behaviors preserve template compatibility while adding cross-cutting concerns you need in production:
 - **Correlation-aware:** `CorrelationBehavior` ensures `ILogContext.CorrelationId` is set (configurable factory) and pushes it into a logging scope.
-- **Structured logging:** `LoggingBehavior` emits start/finish events and also implements `IRequestPreProcessor<TRequest>` so you can register it exactly like the template. It uses `IAppLogger<T>` and `ILogContext` for provider-agnostic structured logs and correlation.
+- **Structured logging:** `LoggingPreProcessor<TRequest>` emits start events as a pre-processor; `LoggingBehavior<TRequest, TResponse>` emits handling/handled events in the pipeline. Both use `IAppLogger<T>` and `ILogContext` for provider-agnostic structured logs and correlation.
 - **Configurable performance telemetry:** `PerformanceBehavior` measures elapsed time with `IClock` and warns when `CoreExtensionsOptions.PerformanceWarningThreshold` is exceeded; it can be globally disabled via `EnablePerformanceLogging`.
 - **Option-driven defaults:** Correlation header/name, ID factory, and performance thresholds live in `CoreExtensionsOptions`.
 - **Provider-agnostic logging:** Behaviors depend on `IAppLogger<T>` and `ILogContext`, making it easy to plug in Serilog, MEL, or in-memory loggers for tests.
 
 ## Behavior APIs (Core)
 - `CorrelationBehavior<TRequest, TResponse>` (`IPipelineBehavior`): Ensures correlation ID, pushes scope via `ILogContext.PushProperty`.
-- `LoggingBehavior<TRequest, TResponse>` (`IPipelineBehavior` + `IRequestPreProcessor<TRequest>`): Logs start/end with correlation + request type; sets correlation if missing.
+- `LoggingPreProcessor<TRequest>` (`IRequestPreProcessor<TRequest>`): Logs request start with correlation + timestamp; sets correlation if missing.
+- `LoggingBehavior<TRequest, TResponse>` (`IPipelineBehavior`): Logs handling/end with correlation + request type; sets correlation if missing.
 - `PerformanceBehavior<TRequest, TResponse>` (`IPipelineBehavior`): Times handler execution; warns vs. debug logs; respects `EnablePerformanceLogging` and `PerformanceWarningThreshold`.
 
 Dependencies:
@@ -40,7 +41,7 @@ Dependencies:
 ## Recommended pipeline order
 To stay compatible with the template’s semantics while adding correlation:
 1) `CorrelationBehavior` (ensures correlation ID).
-2) `LoggingBehavior` registered as `IRequestPreProcessor` (logs start) and as `IPipelineBehavior` (logs end).
+2) `LoggingPreProcessor` registered as `IRequestPreProcessor` (logs start) and `LoggingBehavior` registered as `IPipelineBehavior` (logs handling/end).
 3) `UnhandledExceptionBehaviour` (template).
 4) `AuthorizationBehaviour` (template).
 5) `ValidationBehaviour` (template).
@@ -60,7 +61,7 @@ builder.Services.AddScoped(typeof(IAppLogger<>), typeof(MelAppLogger<>)); // MEL
 
 builder.Services.AddMediatR(cfg => {
     cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());
-    cfg.AddOpenRequestPreProcessor(typeof(LoggingBehavior<,>));
+    cfg.AddOpenRequestPreProcessor(typeof(LoggingPreProcessor<>));
     cfg.AddOpenBehavior(typeof(CorrelationBehavior<,>));
     cfg.AddOpenBehavior(typeof(LoggingBehavior<,>));
     cfg.AddOpenBehavior(typeof(UnhandledExceptionBehaviour<,>));
@@ -70,7 +71,7 @@ builder.Services.AddMediatR(cfg => {
 });
 ```
 - The adapter types (`MelLogContext`, `MelAppLogger<T>`) show how to reuse existing `ILogger` pipelines while satisfying Core abstractions.
-- `LoggingBehavior` is registered twice: once as a pre-processor (start log) and once as a pipeline behavior (end log).
+- `LoggingPreProcessor` is registered as a pre-processor (start log) and `LoggingBehavior` as a pipeline behavior (handling/end log).
 
 ## Sample-backed walkthrough (pipeline sample)
 The runnable sample at `samples/CleanArchitecture.Extensions.Core.Pipeline.Sample` exercises the behaviors with real endpoints.
@@ -110,7 +111,7 @@ public async Task<IResult> SimulateWork(ISender sender, int milliseconds = 600)
     return TypedResults.Accepted($"/api/{nameof(Diagnostics)}/simulate?milliseconds={milliseconds}");
 }
 ```
-- `LoggingBehavior` logs start/end, `CorrelationBehavior` scopes correlation, and `PerformanceBehavior` times the simulated work.
+- `LoggingPreProcessor` logs start, `LoggingBehavior` logs handling/end, `CorrelationBehavior` scopes correlation, and `PerformanceBehavior` times the simulated work.
 
 ## Behavior-by-behavior deep dive
 
@@ -122,7 +123,7 @@ public async Task<IResult> SimulateWork(ISender sender, int milliseconds = 600)
 
 ### LoggingBehavior
 - **Purpose:** Emit structured logs at start and end of request handling, carrying correlation ID and request type.
-- **Dual interface:** Implements `IPipelineBehavior` and `IRequestPreProcessor<TRequest>` so it can plug into both the template’s pre-processor registration (`cfg.AddOpenRequestPreProcessor`) and standard pipeline registration.
+- **Split start/end logging:** `LoggingPreProcessor<TRequest>` runs as the pre-processor for start logs; `LoggingBehavior<TRequest, TResponse>` runs in the pipeline for handling/finished logs.
 - **Scope handling:** Uses `ILogContext.PushProperty` to keep `CorrelationId` in scope for downstream logging and for the paired end log.
 - **Data logged:** Request type (full name), correlation ID, start timestamp (from `IClock`), and lifecycle messages (“Starting”, “Handling”, “Handled”).
 - **Compatibility:** Replaces the template `LoggingBehaviour<TRequest>`; you can still enrich logs with user info by adapting `IAppLogger<T>` to include user claims.
@@ -281,25 +282,25 @@ Example appsettings:
 ```
 
 ## Ordering and coexistence tips
-- **Pre-processor vs. pipeline:** Keep `LoggingBehavior` registered as a pre-processor if you need “request started” logs before other behaviors. Its pipeline registration still logs “Handled” after downstream behaviors.
+- **Pre-processor vs. pipeline:** Keep `LoggingPreProcessor` registered if you need “request started” logs before other behaviors. `LoggingBehavior` still logs “Handled” after downstream behaviors.
 - **Validation exceptions:** If FluentValidation throws, `LoggingBehavior` will have already logged “Handling”; `UnhandledExceptionBehaviour` will log the exception. Consider adding error logs in exception middleware if you need both start/finish markers on failure.
 - **Multiple correlation sources:** If API middleware sets `ILogContext.CorrelationId`, `CorrelationBehavior` will respect it. Avoid regenerating IDs in handlers; rely on the behavior + middleware.
 - **Performance scope:** If you run background jobs with MediatR, performance logs will still flow; set `EnablePerformanceLogging = false` for noise-sensitive jobs or adjust thresholds.
 
 ## Migration from template behaviors
-- Replace `LoggingBehaviour<TRequest>` with Core `LoggingBehavior` registrations.
+- Replace `LoggingBehaviour<TRequest>` with Core `LoggingPreProcessor` + `LoggingBehavior` registrations.
 - Keep `UnhandledExceptionBehaviour`, `AuthorizationBehaviour`, and `ValidationBehaviour` as-is; Core behaviors are additive.
 - Remove `Stopwatch`-based performance behavior from the template if you want correlation-aware performance logging; Core `PerformanceBehavior` is a drop-in replacement with options.
 - Keep handler code unchanged; behaviors are registered in DI and require no handler modifications.
 
 ## FAQ
-- **Do I need both pre-processor and pipeline registrations for LoggingBehavior?** Optional but recommended for parity with the template: pre-processor captures the “starting” log before other behaviors run; pipeline behavior captures “handled” after all behaviors and the handler.
+- **Do I need both pre-processor and pipeline registrations?** Optional but recommended for parity with the template: `LoggingPreProcessor` captures the “starting” log before other behaviors run; `LoggingBehavior` captures “handled” after all behaviors and the handler.
 - **Can I add request payload sampling?** Wrap `IAppLogger<T>` to include sanitized payload summaries; keep PII concerns in mind. The behavior provides request type and correlation ID; payload logging is left to your adapter to avoid allocations and sensitivity issues.
 - **What about OpenTelemetry?** Adapt `IAppLogger<T>` or `ILogContext` to bridge correlation IDs to trace/span IDs. The behaviors themselves do not depend on OTEL packages.
 - **Does correlation flow to domain events?** If you propagate `ILogContext.CorrelationId` into `DomainEvent.CorrelationId` or `Result.TraceId` inside handlers, you can correlate across pipelines. Core behaviors set the context; you attach it to your domain events manually.
 
 ## Adoption checklist
-1) Register `CorrelationBehavior`, `LoggingBehavior` (pre-processor + pipeline), and `PerformanceBehavior` in the Application DI layer.
+1) Register `CorrelationBehavior`, `LoggingPreProcessor` (pre-processor), `LoggingBehavior` (pipeline), and `PerformanceBehavior` in the Application DI layer.
 2) Configure `CoreExtensionsOptions` (header name, correlation ID factory, performance threshold).
 3) Provide `ILogContext` and `IAppLogger<T>` adapters that forward correlation scopes to your logging provider.
 4) Add middleware (optional) to set `ILogContext.CorrelationId` from incoming headers and echo it back.
