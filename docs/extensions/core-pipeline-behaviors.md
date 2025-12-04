@@ -248,7 +248,7 @@ public async Task PerformanceBehavior_Warns_When_Over_Threshold()
     var clock = new FrozenClock(DateTimeOffset.Parse("2025-01-01T00:00:00Z"));
     var logger = new InMemoryAppLogger<TestRequest>();
     var context = new InMemoryLogContext { CorrelationId = "corr-1" };
-    var options = new CoreExtensionsOptions { EnablePerformanceLogging = true, PerformanceWarningThreshold = TimeSpan.FromMilliseconds(10) };
+    var options = Microsoft.Extensions.Options.Options.Create(new CoreExtensionsOptions { EnablePerformanceLogging = true, PerformanceWarningThreshold = TimeSpan.FromMilliseconds(10) });
     var behavior = new PerformanceBehavior<TestRequest, Unit>(logger, context, options, clock);
 
     var response = await behavior.Handle(new TestRequest(), _ => Task.FromResult(Unit.Value), CancellationToken.None);

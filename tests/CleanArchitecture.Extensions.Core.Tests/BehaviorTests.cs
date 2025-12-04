@@ -3,6 +3,7 @@ using CleanArchitecture.Extensions.Core.Behaviors;
 using CleanArchitecture.Extensions.Core.Logging;
 using CleanArchitecture.Extensions.Core.Options;
 using CleanArchitecture.Extensions.Core.Time;
+using Microsoft.Extensions.Options;
 using MediatR;
 
 namespace CleanArchitecture.Extensions.Core.Tests;
@@ -19,7 +20,7 @@ public class BehaviorTests
     public async Task CorrelationBehavior_SetsCorrelationId_WhenMissing()
     {
         var logContext = new InMemoryLogContext();
-        var options = new CoreExtensionsOptions { CorrelationIdFactory = () => "cid-test" };
+        var options = Microsoft.Extensions.Options.Options.Create(new CoreExtensionsOptions { CorrelationIdFactory = () => "cid-test" });
         var clock = new FrozenClock();
         var behavior = new CorrelationBehavior<TestRequest, string>(logContext, options, clock);
 
@@ -53,11 +54,11 @@ public class BehaviorTests
     public async Task PerformanceBehavior_Warns_WhenThresholdExceeded()
     {
         var logContext = new InMemoryLogContext { CorrelationId = "cid-perf" };
-        var options = new CoreExtensionsOptions
+        var options = Microsoft.Extensions.Options.Options.Create(new CoreExtensionsOptions
         {
             PerformanceWarningThreshold = TimeSpan.FromMilliseconds(10),
             EnablePerformanceLogging = true
-        };
+        });
         var clock = new FrozenClock();
         var logger = new InMemoryAppLogger<TestRequest>(logContext, () => clock.UtcNow);
         var behavior = new PerformanceBehavior<TestRequest, string>(logger, logContext, options, clock);

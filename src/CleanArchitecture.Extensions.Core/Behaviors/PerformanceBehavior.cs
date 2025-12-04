@@ -1,6 +1,7 @@
 using CleanArchitecture.Extensions.Core.Logging;
 using CleanArchitecture.Extensions.Core.Options;
 using CleanArchitecture.Extensions.Core.Time;
+using Microsoft.Extensions.Options;
 using MediatR;
 
 namespace CleanArchitecture.Extensions.Core.Behaviors;
@@ -23,11 +24,11 @@ public sealed class PerformanceBehavior<TRequest, TResponse> : IPipelineBehavior
     /// <param name="logContext">Log context containing correlation metadata.</param>
     /// <param name="options">Performance logging options.</param>
     /// <param name="clock">Clock used for timing operations.</param>
-    public PerformanceBehavior(IAppLogger<TRequest> logger, ILogContext logContext, CoreExtensionsOptions options, IClock clock)
+    public PerformanceBehavior(IAppLogger<TRequest> logger, ILogContext logContext, IOptions<CoreExtensionsOptions> options, IClock clock)
     {
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _logContext = logContext ?? throw new ArgumentNullException(nameof(logContext));
-        _options = options ?? throw new ArgumentNullException(nameof(options));
+        _options = options?.Value ?? throw new ArgumentNullException(nameof(options));
         _clock = clock ?? throw new ArgumentNullException(nameof(clock));
     }
 

@@ -1,6 +1,7 @@
 using CleanArchitecture.Extensions.Core.Logging;
 using CleanArchitecture.Extensions.Core.Options;
 using CleanArchitecture.Extensions.Core.Time;
+using Microsoft.Extensions.Options;
 using MediatR;
 
 namespace CleanArchitecture.Extensions.Core.Behaviors;
@@ -21,10 +22,10 @@ public sealed class CorrelationBehavior<TRequest, TResponse> : IPipelineBehavior
     /// <param name="logContext">Log context for correlation management.</param>
     /// <param name="options">Core extension options.</param>
     /// <param name="clock">Clock used for correlation ID generation fallback.</param>
-    public CorrelationBehavior(ILogContext logContext, CoreExtensionsOptions options, IClock clock)
+    public CorrelationBehavior(ILogContext logContext, IOptions<CoreExtensionsOptions> options, IClock clock)
     {
         _logContext = logContext ?? throw new ArgumentNullException(nameof(logContext));
-        _options = options ?? throw new ArgumentNullException(nameof(options));
+        _options = options?.Value ?? throw new ArgumentNullException(nameof(options));
         _clock = clock ?? throw new ArgumentNullException(nameof(clock));
     }
 
