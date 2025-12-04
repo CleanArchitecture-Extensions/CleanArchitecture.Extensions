@@ -1,0 +1,24 @@
+<Project>
+  <PropertyGroup>
+    <Authors>CleanArchitecture-Extensions</Authors>
+    <Company>CleanArchitecture-Extensions</Company>
+    <RepositoryUrl>https://github.com/CleanArchitecture-Extensions/CleanArchitecture.Extensions</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageProjectUrl>https://cleanarchitecture-extensions.github.io/CleanArchitecture.Extensions</PackageProjectUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageIcon>icon.png</PackageIcon>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NeutralLanguage>en-US</NeutralLanguage>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="README.md" Pack="true" PackagePath="" Condition="Exists('README.md')" />
+    <None Include="..\\icon.png" Pack="true" PackagePath="" Condition="Exists('..\\icon.png')" />
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All" />
+  </ItemGroup>
+</Project>

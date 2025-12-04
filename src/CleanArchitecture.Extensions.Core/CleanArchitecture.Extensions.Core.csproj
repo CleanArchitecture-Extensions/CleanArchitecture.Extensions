@@ -6,6 +6,13 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <PackageId>CleanArchitecture.Extensions.Core</PackageId>
+    <Version>0.1.0-preview.1</Version>
+    <Description>Core primitives for Clean Architecture: Results, guards, pipeline behaviors, logging abstractions, domain events, and clocks.</Description>
+    <PackageTags>clean-architecture;mediatr;pipeline;result;guards;logging;domain-events;clock</PackageTags>
+  </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="MediatR" Version="13.1.0" />
     <PackageReference Include="Microsoft.Extensions.Options" Version="8.0.2" />

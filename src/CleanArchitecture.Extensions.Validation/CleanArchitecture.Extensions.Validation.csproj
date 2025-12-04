@@ -1,9 +1,16 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net10.0</TargetFramework>
+    <TargetFrameworks>net8.0;net10.0</TargetFrameworks>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <PackageId>CleanArchitecture.Extensions.Validation</PackageId>
+    <Version>0.1.0-preview.1</Version>
+    <Description>MediatR validation pipeline with FluentValidation integration, notifications, and options aligned to CleanArchitecture.Extensions.Core results.</Description>
+    <PackageTags>clean-architecture;mediatr;fluentvalidation;pipeline;validation;notifications;result</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>

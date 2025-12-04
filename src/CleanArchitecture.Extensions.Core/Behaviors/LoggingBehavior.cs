@@ -23,6 +23,7 @@ public sealed class LoggingBehavior<TRequest, TResponse> : IPipelineBehavior<TRe
     /// <param name="logger">Application logger.</param>
     /// <param name="logContext">Log context for correlation.</param>
     /// <param name="clock">Clock used for timestamps.</param>
+    /// <param name="options">Options controlling correlation ID generation and logging behavior.</param>
     public LoggingBehavior(IAppLogger<TRequest> logger, ILogContext logContext, IClock clock, IOptions<CoreExtensionsOptions> options)
     {
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));

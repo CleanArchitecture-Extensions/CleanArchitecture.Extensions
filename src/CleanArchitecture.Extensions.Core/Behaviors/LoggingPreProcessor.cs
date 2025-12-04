@@ -23,6 +23,7 @@ public sealed class LoggingPreProcessor<TRequest> : IRequestPreProcessor<TReques
     /// <param name="logger">Application logger.</param>
     /// <param name="logContext">Log context for correlation.</param>
     /// <param name="clock">Clock used for timestamps.</param>
+    /// <param name="options">Options controlling correlation ID generation and logging behavior.</param>
     public LoggingPreProcessor(IAppLogger<TRequest> logger, ILogContext logContext, IClock clock, IOptions<CoreExtensionsOptions> options)
     {
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
