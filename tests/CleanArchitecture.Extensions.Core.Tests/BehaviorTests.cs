@@ -39,7 +39,8 @@ public class BehaviorTests
         var logContext = new InMemoryLogContext { CorrelationId = "cid-logging" };
         var clock = new FrozenClock(new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero));
         var logger = new InMemoryAppLogger<TestRequest>(logContext, () => clock.UtcNow);
-        var behavior = new LoggingBehavior<TestRequest, string>(logger, logContext, clock);
+        var options = Microsoft.Extensions.Options.Options.Create(new CoreExtensionsOptions { CorrelationIdFactory = () => "cid-logging" });
+        var behavior = new LoggingBehavior<TestRequest, string>(logger, logContext, clock, options);
 
         var response = await behavior.Handle(new TestRequest(), _ => Task.FromResult("ok"), CancellationToken.None);
 
@@ -56,7 +57,8 @@ public class BehaviorTests
         var logContext = new InMemoryLogContext();
         var clock = new FrozenClock(new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero));
         var logger = new InMemoryAppLogger<TestRequest>(logContext, () => clock.UtcNow);
-        var preProcessor = new LoggingPreProcessor<TestRequest>(logger, logContext, clock);
+        var options = Microsoft.Extensions.Options.Options.Create(new CoreExtensionsOptions { CorrelationIdFactory = () => "cid-pre" });
+        var preProcessor = new LoggingPreProcessor<TestRequest>(logger, logContext, clock, options);
 
         await preProcessor.Process(new TestRequest(), CancellationToken.None);
 

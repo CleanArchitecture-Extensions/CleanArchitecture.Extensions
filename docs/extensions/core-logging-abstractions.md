@@ -174,7 +174,8 @@ public async Task LoggingBehavior_WritesStartAndEnd_WithCorrelation()
     var clock = new FrozenClock(DateTimeOffset.Parse("2025-01-01T00:00:00Z"));
     var context = new InMemoryLogContext { CorrelationId = "corr-123" };
     var logger = new InMemoryAppLogger<TestRequest>(context);
-    var behavior = new LoggingBehavior<TestRequest, Unit>(logger, context, clock);
+    var options = Microsoft.Extensions.Options.Options.Create(new CoreExtensionsOptions());
+    var behavior = new LoggingBehavior<TestRequest, Unit>(logger, context, clock, options);
 
     await behavior.Handle(new TestRequest(), _ => Task.FromResult(Unit.Value), CancellationToken.None);
 

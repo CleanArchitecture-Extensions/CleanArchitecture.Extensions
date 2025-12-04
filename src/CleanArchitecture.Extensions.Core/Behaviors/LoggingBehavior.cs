@@ -1,5 +1,7 @@
 using CleanArchitecture.Extensions.Core.Logging;
+using CleanArchitecture.Extensions.Core.Options;
 using CleanArchitecture.Extensions.Core.Time;
+using Microsoft.Extensions.Options;
 using MediatR;
 
 namespace CleanArchitecture.Extensions.Core.Behaviors;
@@ -13,6 +15,7 @@ public sealed class LoggingBehavior<TRequest, TResponse> : IPipelineBehavior<TRe
     private readonly IAppLogger<TRequest> _logger;
     private readonly ILogContext _logContext;
     private readonly IClock _clock;
+    private readonly CoreExtensionsOptions _options;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="LoggingBehavior{TRequest, TResponse}"/> class.
@@ -20,11 +23,12 @@ public sealed class LoggingBehavior<TRequest, TResponse> : IPipelineBehavior<TRe
     /// <param name="logger">Application logger.</param>
     /// <param name="logContext">Log context for correlation.</param>
     /// <param name="clock">Clock used for timestamps.</param>
-    public LoggingBehavior(IAppLogger<TRequest> logger, ILogContext logContext, IClock clock)
+    public LoggingBehavior(IAppLogger<TRequest> logger, ILogContext logContext, IClock clock, IOptions<CoreExtensionsOptions> options)
     {
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _logContext = logContext ?? throw new ArgumentNullException(nameof(logContext));
         _clock = clock ?? throw new ArgumentNullException(nameof(clock));
+        _options = options?.Value ?? throw new ArgumentNullException(nameof(options));
     }
 
     /// <summary>
@@ -70,7 +74,8 @@ public sealed class LoggingBehavior<TRequest, TResponse> : IPipelineBehavior<TRe
     {
         if (string.IsNullOrWhiteSpace(_logContext.CorrelationId))
         {
-            _logContext.CorrelationId = _clock.NewGuid().ToString();
+            var factory = _options.CorrelationIdFactory ?? (() => _clock.NewGuid().ToString());
+            _logContext.CorrelationId = factory();
         }
 
         return _logContext.CorrelationId!;
