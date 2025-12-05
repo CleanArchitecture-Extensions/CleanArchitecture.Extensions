@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using CleanArchitecture.Extensions.Core.Options;
 using CleanArchitecture.Extensions.Core.Result.Sample.Application.Common.Behaviours;
 using Microsoft.Extensions.Hosting;
 
@@ -12,6 +13,8 @@ public static class DependencyInjection
             cfg.AddMaps(Assembly.GetExecutingAssembly()));
 
         builder.Services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
+
+        builder.Services.Configure<CoreExtensionsOptions>(builder.Configuration.GetSection("Extensions:Core"));
 
         builder.Services.AddMediatR(cfg => {
             cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());

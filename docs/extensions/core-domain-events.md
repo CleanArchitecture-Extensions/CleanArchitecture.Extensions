@@ -101,6 +101,47 @@ public sealed class TrackingDispatchInterceptor : SaveChangesInterceptor
 ```
 (Example assumes `HasDomainEvents` is a common interface/base similar to `BaseEntity`.)
 
+## Sample-backed walkthrough (domain events sample)
+A runnable solution lives at `samples/CleanArchitecture.Extensions.Core.DomainEvents.Sample`.
+
+### Tracker + dispatcher with correlation
+`samples/CleanArchitecture.Extensions.Core.DomainEvents.Sample/src/Infrastructure/Data/Interceptors/DispatchDomainEventsInterceptor.cs`:
+```csharp
+var correlationId = EnsureCorrelationId();
+var correlatedEvents = _tracker
+    .Drain()
+    .Select(domainEvent => EnsureCorrelation(domainEvent, correlationId))
+    .ToArray();
+
+await _dispatcher.DispatchAsync(correlatedEvents, cancellationToken);
+```
+- Domain events raised in aggregates are captured by `DomainEventTracker`, correlated (using `ILogContext` or the options factory), and dispatched through the `IDomainEventDispatcher`.
+- Events without a correlation ID are cloned via record `with` expressions so handlers/logs see the request-scoped identifier.
+
+### Recording dispatched events for diagnostics
+`samples/CleanArchitecture.Extensions.Core.DomainEvents.Sample/src/Application/Diagnostics/Queries/GetRecentDomainEvents/GetRecentDomainEventsQuery.cs`:
+```csharp
+public sealed record GetRecentDomainEventsQuery(int Count = 20) : IRequest<IReadOnlyCollection<DomainEventLogEntry>>;
+
+public Task<IReadOnlyCollection<DomainEventLogEntry>> Handle(GetRecentDomainEventsQuery request, CancellationToken cancellationToken)
+{
+    var take = Math.Clamp(request.Count, 1, 50);
+    var entries = _domainEventLog.ReadRecent(take);
+    return Task.FromResult(entries);
+}
+```
+- The sample decorates the dispatcher with an in-memory `IDomainEventLog` and exposes recent events at `/api/DomainEvents/recent`.
+
+### Creating events with request correlation
+`samples/CleanArchitecture.Extensions.Core.DomainEvents.Sample/src/Application/TodoItems/Commands/CreateTodoItem/CreateTodoItem.cs`:
+```csharp
+var correlationId = _logContext.CorrelationId ?? Guid.NewGuid().ToString("N");
+_logContext.CorrelationId = correlationId;
+
+entity.AddDomainEvent(new TodoItemCreatedEvent(entity, correlationId));
+```
+- Correlation is set by middleware (or generated in the handler) and flows into domain events, making it easy to trace end-to-end alongside the recorded event log entries.
+
 ## Real-world scenarios
 
 ### 1) Correlation-aware events from handlers

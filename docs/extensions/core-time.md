@@ -45,6 +45,42 @@ For tests, override with `FrozenClock` or `OffsetClock` via DI configuration:
 services.AddSingleton<IClock>(_ => new FrozenClock(DateTimeOffset.Parse("2025-01-01T00:00:00Z")));
 ```
 
+## Sample-backed walkthrough (time sample)
+A runnable solution lives at `samples/CleanArchitecture.Extensions.Core.Time.Sample`.
+
+### Snapshot current time with `IClock`
+`samples/CleanArchitecture.Extensions.Core.Time.Sample/src/Application/Diagnostics/Queries/GetTimeSnapshot/GetTimeSnapshotQuery.cs`:
+```csharp
+var guid = _clock.NewGuid();
+var now = _clock.UtcNow;
+var today = _clock.Today;
+
+var snapshot = new TimeSnapshotDto(now, today, _clock.Timestamp, guid, null);
+```
+- Exposed via `GET /api/Diagnostics/time` to show `UtcNow`, `Today`, a timestamp, and a GUID sourced from the clock.
+
+### Delay without sleeping in tests
+`samples/CleanArchitecture.Extensions.Core.Time.Sample/src/Application/Diagnostics/Commands/SimulateDelay/SimulateDelayCommand.cs`:
+```csharp
+var started = _clock.UtcNow;
+await _clock.Delay(delay, cancellationToken);
+var ended = _clock.UtcNow;
+var observed = ended - started;
+```
+- `POST /api/Diagnostics/delay` echoes requested/observed delays; with `SystemClock` it really waits, while tests swap in `FrozenClock` so time advances instantly.
+
+### Deterministic tests with `FrozenClock`
+`samples/CleanArchitecture.Extensions.Core.Time.Sample/tests/Application.UnitTests/Diagnostics/TimeDiagnosticsTests.cs`:
+```csharp
+var clock = new FrozenClock(fixedTime);
+var handler = new GetTimeSnapshotQueryHandler(clock);
+var result = await handler.Handle(new GetTimeSnapshotQuery(), CancellationToken.None);
+
+result.UtcNow.ShouldBe(fixedTime);
+result.EndedAtUtc.ShouldBe(fixedTime.AddMilliseconds(250)); // after simulated delay
+```
+- Demonstrates advancing `FrozenClock` via `Delay` without real waits, keeping handler assertions deterministic.
+
 ## Adapting the template’s auditing interceptor
 You can keep the existing `AuditableEntityInterceptor` but inject `IClock` to stay consistent:
 ```csharp

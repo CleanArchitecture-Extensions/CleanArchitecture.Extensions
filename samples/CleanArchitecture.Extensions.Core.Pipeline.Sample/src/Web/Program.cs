@@ -31,6 +31,7 @@ app.UseSwaggerUi(settings =>
     settings.DocumentPath = "/api/specification.json";
 });
 
+app.UseMiddleware<CleanArchitecture.Extensions.Core.Pipeline.Sample.Web.Infrastructure.CorrelationMiddleware>();
 
 app.UseExceptionHandler(options => { });
 

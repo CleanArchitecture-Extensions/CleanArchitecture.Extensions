@@ -1,0 +1,13 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <RootNamespace>CleanArchitecture.Extensions.Core.DomainEvents.Sample.Domain</RootNamespace>
+    <AssemblyName>CleanArchitecture.Extensions.Core.DomainEvents.Sample.Domain</AssemblyName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MediatR.Contracts" />
+    <ProjectReference Include="..\..\..\..\src\CleanArchitecture.Extensions.Core\CleanArchitecture.Extensions.Core.csproj" />
+  </ItemGroup>
+
+</Project>

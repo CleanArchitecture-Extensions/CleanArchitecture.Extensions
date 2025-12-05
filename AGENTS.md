@@ -8,3 +8,7 @@ Living log for AI/automation contributions. Add a dated note whenever an agent e
 - 2025-12-03 — Added Core Guard sample solution under `samples/` and refreshed `docs/extensions/core-guard-clauses.md` with snippets pulled from it.
 - 2025-12-03 — Added Core Pipeline sample solution under `samples/` and updated `docs/extensions/core-pipeline-behaviors.md` with real snippets.
 - 2025-12-03 — Added Core Result sample solution under `samples/` and updated `docs/extensions/core-result-primitives.md` to pull real snippets from it.
+- 2025-12-05 — Added Core Domain Events sample solution and wired docs (`docs/extensions/core-domain-events.md`) to reference real snippets and diagnostics.
+- 2025-12-05 — Added Core Logging sample solution and wired `docs/extensions/core-logging-abstractions.md` with snippets and diagnostics endpoints.
+- 2025-12-05 — Added Core Time sample solution and updated `docs/extensions/core-time.md` with real snippets for snapshots, delay simulation, and deterministic tests.
+- 2025-12-05 — Added Core Options sample solution and updated `docs/extensions/core-options.md` with snippets showing guard strategy, correlation header, and performance threshold toggles.
