@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace CleanArchitecture.Extensions.Core.Logging.Sample.Web.Endpoints;
 
-public sealed class Diagnostics : EndpointGroupBase
+public class Diagnostics : EndpointGroupBase
 {
     public override void Map(RouteGroupBuilder groupBuilder)
     {

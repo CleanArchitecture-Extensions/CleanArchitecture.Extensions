@@ -14,25 +14,25 @@ public class Projects : EndpointGroupBase
         groupBuilder.MapPost(CloseProject, "{id:int}/close");
     }
 
-    public async Task<IResult> CreateProject(ISender sender, CreateProjectCommand command)
+    public async Task<Results<Created<object>, ProblemHttpResult>> CreateProject(ISender sender, CreateProjectCommand command)
     {
         var result = await sender.Send(command);
 
-        return result.Match<IResult>(
+        return result.Match(
             id => TypedResults.Created($"/api/{nameof(Projects)}/{id}", new { id, traceId = result.TraceId }),
             _ => ToProblemResult("Project validation failed.", result));
     }
 
-    public async Task<IResult> GetProjectById(ISender sender, int id)
+    public async Task<Results<Ok<object>, ProblemHttpResult>> GetProjectById(ISender sender, int id)
     {
         var result = await sender.Send(new GetProjectByIdQuery(id));
 
-        return result.Match<IResult>(
+        return result.Match(
             project => TypedResults.Ok(new { project, traceId = result.TraceId }),
             _ => ToProblemResult("Project not found.", result, StatusCodes.Status404NotFound));
     }
 
-    public async Task<IResult> CloseProject(ISender sender, int id)
+    public async Task<Results<NoContent, ProblemHttpResult>> CloseProject(ISender sender, int id)
     {
         var result = await sender.Send(new CloseProjectCommand(id));
 
@@ -48,7 +48,7 @@ public class Projects : EndpointGroupBase
         return ToProblemResult("Unable to close project.", result, statusCode);
     }
 
-    private static IResult ToProblemResult<T>(string title, CoreResults.Result<T> result, int statusCode = StatusCodes.Status400BadRequest)
+    private static ProblemHttpResult ToProblemResult<T>(string title, CoreResults.Result<T> result, int statusCode = StatusCodes.Status400BadRequest)
     {
         var errors = result.Errors.Select(e => new { e.Code, e.Message, e.Metadata });
 
@@ -61,7 +61,7 @@ public class Projects : EndpointGroupBase
             });
     }
 
-    private static IResult ToProblemResult(string title, CoreResults.Result result, int statusCode = StatusCodes.Status400BadRequest)
+    private static ProblemHttpResult ToProblemResult(string title, CoreResults.Result result, int statusCode = StatusCodes.Status400BadRequest)
     {
         var errors = result.Errors.Select(e => new { e.Code, e.Message, e.Metadata });
 

@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace CleanArchitecture.Extensions.Core.DomainEvents.Sample.Web.Endpoints;
 
-public sealed class DomainEvents : EndpointGroupBase
+public class DomainEvents : EndpointGroupBase
 {
     public override void Map(RouteGroupBuilder groupBuilder)
     {

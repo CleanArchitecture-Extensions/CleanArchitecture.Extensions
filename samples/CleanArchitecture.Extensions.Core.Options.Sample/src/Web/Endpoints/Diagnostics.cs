@@ -5,7 +5,7 @@ using CoreResults = CleanArchitecture.Extensions.Core.Results;
 
 namespace CleanArchitecture.Extensions.Core.Options.Sample.Web.Endpoints;
 
-public sealed class Diagnostics : EndpointGroupBase
+public class Diagnostics : EndpointGroupBase
 {
     public override void Map(RouteGroupBuilder groupBuilder)
     {

@@ -36,7 +36,6 @@ app.UseMiddleware<CleanArchitecture.Extensions.Core.Logging.Sample.Web.Infrastru
 app.UseExceptionHandler(options => { });
 
 app.Map("/", () => Results.Redirect("/api"));
-
 app.MapEndpoints();
 
 app.Run();
