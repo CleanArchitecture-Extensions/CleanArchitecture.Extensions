@@ -54,6 +54,32 @@ services.PostConfigure<CoreExtensionsOptions>(options =>
 });
 ```
 
+## Sample-backed walkthrough (options sample)
+A runnable solution lives at `samples/CleanArchitecture.Extensions.Core.Options.Sample`.
+
+### Inspect current options at runtime
+`samples/CleanArchitecture.Extensions.Core.Options.Sample/src/Application/Diagnostics/Queries/GetCoreOptions/GetCoreOptionsQuery.cs`:
+```csharp
+var value = _options.Value;
+var dto = new CoreOptionsDto(
+    value.CorrelationHeaderName,
+    value.GuardStrategy,
+    value.EnablePerformanceLogging,
+    value.PerformanceWarningThreshold);
+```
+- Exposed via `GET /api/Diagnostics/options` to see the live values bound from `appsettings.json` (correlation header, guard strategy, performance threshold).
+
+### Drive guard behavior from options
+`samples/CleanArchitecture.Extensions.Core.Options.Sample/src/Application/Diagnostics/Commands/EvaluateName/EvaluateNameCommand.cs`:
+```csharp
+var guardOptions = GuardOptions.FromOptions(_options.Value);
+
+var result = CoreGuard.AgainstNullOrWhiteSpace(request.Name, nameof(request.Name), guardOptions)
+    .Ensure(n => n.Length <= 50, new Error("diagnostics.name.length", "Name must be 50 characters or fewer.", guardOptions.TraceId));
+```
+- `POST /api/Diagnostics/guard` returns a Core `Result<string>`; switch `GuardStrategy` in config between `ReturnFailure` and `Throw` to see the behavior change without code changes.
+- Appsettings in the sample set `PerformanceWarningThreshold` to 750 ms and `CorrelationHeaderName` to `"X-Correlation-ID"` to show how pipeline behaviors and middleware pick them up.
+
 ## Environment-specific guidance
 - **Development:** Keep `EnablePerformanceLogging = true` and threshold at 500 ms for visibility. Consider human-readable correlation IDs (`dev-{Guid}`) for quick searches.
 - **Production:** Standardize `CorrelationHeaderName` with your API gateway. Keep thresholds aligned with SLOs; raise if noise is high. Ensure correlation IDs are opaque (GUIDs) to avoid leaking info.
