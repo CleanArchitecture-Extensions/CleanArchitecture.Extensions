@@ -132,6 +132,53 @@ public sealed class SerilogAppLogger<T> : IAppLogger<T>
 ```
 Register with a Serilog-backed `ILogContext` (could wrap `LogContext.PushProperty` if desired).
 
+## Sample-backed walkthrough (logging sample)
+A runnable solution lives at `samples/CleanArchitecture.Extensions.Core.Logging.Sample`.
+
+### Composite logger that records + forwards to MEL
+`samples/CleanArchitecture.Extensions.Core.Logging.Sample/src/Application/Common/Logging/CompositeAppLogger.cs`:
+```csharp
+public sealed class CompositeAppLogger<T> : IAppLogger<T>
+{
+    public void Log(LogLevel level, string message, Exception? exception = null, IReadOnlyDictionary<string, object?>? properties = null)
+    {
+        var correlationId = _logContext.CorrelationId;
+        using var correlationScope = _logger.BeginScope(new Dictionary<string, object?> { ["CorrelationId"] = correlationId });
+
+        IDisposable? propsScope = null;
+        if (properties is { Count: > 0 })
+        {
+            propsScope = _logger.BeginScope(properties);
+        }
+
+        _logger.Log(MapLevel(level), exception, message);
+        propsScope?.Dispose();
+
+        _recorder.Record(new LogEntry(
+            DateTimeOffset.UtcNow,
+            level,
+            message,
+            correlationId,
+            exception,
+            properties));
+    }
+}
+```
+- Logs flow to `ILogger<T>` scopes with correlation and are also stored in-memory via `ILogRecorder` for diagnostics.
+
+### Correlation middleware + diagnostics endpoints
+`samples/CleanArchitecture.Extensions.Core.Logging.Sample/src/Web/Infrastructure/CorrelationMiddleware.cs` ensures every request has a correlation ID and pushes it into `ILogContext`.
+
+`samples/CleanArchitecture.Extensions.Core.Logging.Sample/src/Application/Diagnostics/Commands/EmitLogPulse/EmitLogPulseCommand.cs` shows emitting structured logs with correlation and optional warning/error entries:
+```csharp
+var correlationId = _logContext.CorrelationId ?? Guid.NewGuid().ToString("N");
+_logContext.CorrelationId = correlationId;
+using var featureScope = _logContext.PushProperty("Feature", "LoggingSample");
+
+_logger.Log(LogLevel.Information, $"Received log pulse: {request.Message ?? "(no message)"}", properties: properties);
+```
+`GET /api/Diagnostics/logs` (see `.../Endpoints/Diagnostics.cs`) returns recent `LogEntry` items recorded by the in-memory recorder so you can see correlation + structured properties end-to-end.
+
 ## Correlation flows
 - `CorrelationBehavior` sets `ILogContext.CorrelationId` early in the pipeline.
 - `LoggingBehavior` uses `ILogContext` to push `CorrelationId` into scopes.
