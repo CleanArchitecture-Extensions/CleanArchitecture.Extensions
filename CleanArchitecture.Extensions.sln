@@ -7,10 +7,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{02EA681E-C7D
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{F62B4342-26E9-4045-A3CE-E5F1407D7B7C}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{E77BA743-31B4-46C3-AC02-28453502DD72}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{D0372149-26EA-4C79-A1E8-ECDE0C3073CE}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CleanArchitecture.Extensions.Core", "src\CleanArchitecture.Extensions.Core\CleanArchitecture.Extensions.Core.csproj", "{031B2E43-CBE9-A3A4-0A16-F95331B567A4}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CleanArchitecture.Extensions.Core.Tests", "tests\CleanArchitecture.Extensions.Core.Tests\CleanArchitecture.Extensions.Core.Tests.csproj", "{84D477C9-501B-A9BB-FFC5-635B90230777}"
