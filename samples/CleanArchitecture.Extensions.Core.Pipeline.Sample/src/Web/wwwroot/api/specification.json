@@ -6,6 +6,44 @@
     "version": "1.0.0"
   },
   "paths": {
+    "/api/Diagnostics": {
+      "get": {
+        "tags": [
+          "Diagnostics"
+        ],
+        "operationId": "GetPipelineDiagnostics",
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/Diagnostics/simulate": {
+      "post": {
+        "tags": [
+          "Diagnostics"
+        ],
+        "operationId": "SimulateWork",
+        "parameters": [
+          {
+            "name": "milliseconds",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 600
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
     "/api/TodoItems": {
       "get": {
         "tags": [

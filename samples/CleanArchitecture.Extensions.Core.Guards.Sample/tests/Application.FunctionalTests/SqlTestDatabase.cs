@@ -22,9 +22,7 @@ public class SqlTestDatabase : ITestDatabase
 
         var connectionString = configuration.GetConnectionString("CleanArchitecture.Extensions.Core.Guards.SampleDb");
 
-        Guard.Against.Null(connectionString);
-
-        _connectionString = connectionString;
+        _connectionString = Ardalis.GuardClauses.Guard.Against.NullOrWhiteSpace(connectionString, nameof(connectionString));
     }
 
     public async Task InitialiseAsync()

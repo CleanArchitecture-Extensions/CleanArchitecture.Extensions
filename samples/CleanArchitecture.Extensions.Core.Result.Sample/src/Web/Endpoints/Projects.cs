@@ -1,6 +1,7 @@
 using CleanArchitecture.Extensions.Core.Result.Sample.Application.Projects.Commands.CloseProject;
 using CleanArchitecture.Extensions.Core.Result.Sample.Application.Projects.Commands.CreateProject;
 using CleanArchitecture.Extensions.Core.Result.Sample.Application.Projects.Queries.GetProjectById;
+using Microsoft.AspNetCore.Http.HttpResults;
 using CoreResults = CleanArchitecture.Extensions.Core.Results;
 
 namespace CleanArchitecture.Extensions.Core.Result.Sample.Web.Endpoints;
@@ -18,8 +19,8 @@ public class Projects : EndpointGroupBase
     {
         var result = await sender.Send(command);
 
-        return result.Match(
-            id => TypedResults.Created($"/api/{nameof(Projects)}/{id}", new { id, traceId = result.TraceId }),
+        return result.Match<Results<Created<object>, ProblemHttpResult>>(
+            id => TypedResults.Created<object>($"/api/{nameof(Projects)}/{id}", new { id, traceId = result.TraceId }),
             _ => ToProblemResult("Project validation failed.", result));
     }
 
@@ -27,8 +28,8 @@ public class Projects : EndpointGroupBase
     {
         var result = await sender.Send(new GetProjectByIdQuery(id));
 
-        return result.Match(
-            project => TypedResults.Ok(new { project, traceId = result.TraceId }),
+        return result.Match<Results<Ok<object>, ProblemHttpResult>>(
+            project => TypedResults.Ok<object>(new { project, traceId = result.TraceId }),
             _ => ToProblemResult("Project not found.", result, StatusCodes.Status404NotFound));
     }
 
