@@ -11,7 +11,7 @@ FluentValidation-powered MediatR pipeline aligned with CleanArchitecture.Extensi
 ## Install
 
 ```powershell
-dotnet add package CleanArchitecture.Extensions.Validation --version 0.1.0-preview.1
+dotnet add package CleanArchitecture.Extensions.Validation --version 0.1.1-preview.1
 ```
 
 ## Usage
