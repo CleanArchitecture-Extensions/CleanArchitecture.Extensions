@@ -1,4 +1,6 @@
 using System.Reflection;
+using CleanArchitecture.Extensions.Core.Logging;
+using CleanArchitecture.Extensions.Core.Options;
 using CleanArchitecture.Extensions.Core.Results;
 using CleanArchitecture.Extensions.Validation.Exceptions;
 using CleanArchitecture.Extensions.Validation.Models;
@@ -7,6 +9,7 @@ using CleanArchitecture.Extensions.Validation.Options;
 using FluentValidation;
 using FluentValidation.Results;
 using MediatR;
+using Microsoft.Extensions.Options;
 using ValidationException = CleanArchitecture.Extensions.Validation.Exceptions.ValidationException;
 
 namespace CleanArchitecture.Extensions.Validation.Behaviors;
@@ -22,6 +25,9 @@ public sealed class ValidationBehavior<TRequest, TResponse> : IPipelineBehavior<
     private readonly IReadOnlyCollection<IValidator<TRequest>> _validators;
     private readonly ValidationOptions _options;
     private readonly IValidationNotificationPublisher? _notificationPublisher;
+    private readonly ILogContext? _logContext;
+    private readonly CoreExtensionsOptions? _coreOptions;
+    private readonly IAppLogger<TRequest>? _logger;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="ValidationBehavior{TRequest, TResponse}"/> class.
@@ -29,14 +35,23 @@ public sealed class ValidationBehavior<TRequest, TResponse> : IPipelineBehavior<
     /// <param name="validators">Validators to execute.</param>
     /// <param name="options">Validation behavior options.</param>
     /// <param name="notificationPublisher">Optional publisher for validation notifications.</param>
+    /// <param name="logContext">Optional log context providing correlation identifiers.</param>
+    /// <param name="coreOptions">Optional shared core options for default trace identifiers.</param>
+    /// <param name="logger">Optional logger for emitting validation summaries.</param>
     public ValidationBehavior(
         IEnumerable<IValidator<TRequest>> validators,
-        ValidationOptions? options = null,
-        IValidationNotificationPublisher? notificationPublisher = null)
+        IOptions<ValidationOptions>? options = null,
+        IValidationNotificationPublisher? notificationPublisher = null,
+        ILogContext? logContext = null,
+        IOptions<CoreExtensionsOptions>? coreOptions = null,
+        IAppLogger<TRequest>? logger = null)
     {
         _validators = (validators ?? throw new ArgumentNullException(nameof(validators))).ToArray();
-        _options = options ?? ValidationOptions.Default;
+        _options = options?.Value ?? ValidationOptions.Default;
         _notificationPublisher = notificationPublisher;
+        _logContext = logContext;
+        _coreOptions = coreOptions?.Value;
+        _logger = logger;
     }
 
     /// <summary>
@@ -67,10 +82,13 @@ public sealed class ValidationBehavior<TRequest, TResponse> : IPipelineBehavior<
             return await next(cancellationToken).ConfigureAwait(false);
         }
 
+        var traceId = ResolveTraceId();
         var limitedFailures = failures.Take(_options.MaxFailures).ToList();
         var validationErrors = limitedFailures
             .Select(failure => ValidationError.FromFailure(failure, _options))
             .ToList();
+
+        LogValidationFailures(limitedFailures, failures.Count, traceId);
 
         if (_options.Strategy == ValidationStrategy.Notify)
         {
@@ -84,21 +102,20 @@ public sealed class ValidationBehavior<TRequest, TResponse> : IPipelineBehavior<
                 throw new ValidationException(limitedFailures);
             }
 
-            return CreateResultOrThrow(validationErrors, limitedFailures);
+            return CreateResultOrThrow(validationErrors, traceId);
         }
 
         if (_options.Strategy == ValidationStrategy.ReturnResult)
         {
-            return CreateResultOrThrow(validationErrors, limitedFailures);
+            return CreateResultOrThrow(validationErrors, traceId);
         }
 
         throw new ValidationException(limitedFailures);
     }
 
-    private TResponse CreateResultOrThrow(IReadOnlyCollection<ValidationError> errors, List<ValidationFailure> failures)
+    private TResponse CreateResultOrThrow(IReadOnlyCollection<ValidationError> errors, string? traceId)
     {
         var responseType = typeof(TResponse);
-        var traceId = _options.TraceId;
         var mappedErrors = errors.Select(error => error.ToCoreError(traceId)).ToList();
 
         if (responseType == typeof(Result))
@@ -116,6 +133,77 @@ public sealed class ValidationBehavior<TRequest, TResponse> : IPipelineBehavior<
         throw new InvalidOperationException(
             "ValidationBehavior is configured to return a Result, but TResponse is not a Result or Result<T>. " +
             "Use ValidationStrategy.Throw for non-Result handlers or update handlers to return Result.");
+    }
+
+    private string? ResolveTraceId()
+    {
+        if (!string.IsNullOrWhiteSpace(_options.TraceId))
+        {
+            return _options.TraceId;
+        }
+
+        if (!string.IsNullOrWhiteSpace(_logContext?.CorrelationId))
+        {
+            return _logContext!.CorrelationId;
+        }
+
+        return _coreOptions?.TraceId;
+    }
+
+    private void LogValidationFailures(IReadOnlyCollection<ValidationFailure> failures, int totalFailureCount, string? traceId)
+    {
+        if (_logger is null || !_options.LogValidationFailures)
+        {
+            return;
+        }
+
+        var logLevel = ResolveLogLevel(failures);
+        if (logLevel == LogLevel.None)
+        {
+            return;
+        }
+
+        var properties = new Dictionary<string, object?>
+        {
+            ["RequestType"] = typeof(TRequest).FullName ?? typeof(TRequest).Name,
+            ["CorrelationId"] = _logContext?.CorrelationId,
+            ["TraceId"] = traceId,
+            ["FailureCount"] = failures.Count,
+            ["TotalFailureCount"] = totalFailureCount,
+            ["Truncated"] = totalFailureCount > failures.Count,
+            ["Errors"] = failures.Select(f => new
+            {
+                f.PropertyName,
+                f.ErrorCode,
+                f.ErrorMessage,
+                Severity = f.Severity.ToString()
+            }).ToList()
+        };
+
+        _logger.Log(logLevel, $"Validation failed for {typeof(TRequest).Name}", null, properties);
+    }
+
+    private LogLevel ResolveLogLevel(IEnumerable<ValidationFailure> failures)
+    {
+        LogLevel? highestLevel = null;
+        var severityMap = _options.SeverityLogLevels ?? ValidationOptions.Default.SeverityLogLevels;
+
+        foreach (var failure in failures)
+        {
+            var level = _options.DefaultLogLevel;
+
+            if (severityMap.TryGetValue(failure.Severity, out var mappedLevel))
+            {
+                level = mappedLevel;
+            }
+
+            if (highestLevel is null || level > highestLevel)
+            {
+                highestLevel = level;
+            }
+        }
+
+        return highestLevel ?? _options.DefaultLogLevel;
     }
 
     private static object CreateGenericFailure(Type valueType, IReadOnlyCollection<Error> errors, string? traceId)

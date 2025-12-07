@@ -1,3 +1,5 @@
+using CleanArchitecture.Extensions.Core.Logging;
+using FluentValidation;
 using FluentValidation.Results;
 
 namespace CleanArchitecture.Extensions.Validation.Options;
@@ -46,6 +48,26 @@ public sealed class ValidationOptions
     /// Gets or sets the optional trace identifier to apply to errors/results.
     /// </summary>
     public string? TraceId { get; set; }
+
+    /// <summary>
+    /// Gets or sets a value indicating whether validation failures should be logged.
+    /// </summary>
+    public bool LogValidationFailures { get; set; } = true;
+
+    /// <summary>
+    /// Gets or sets the default log level used when a severity mapping is not provided.
+    /// </summary>
+    public LogLevel DefaultLogLevel { get; set; } = LogLevel.Warning;
+
+    /// <summary>
+    /// Gets or sets the mapping from FluentValidation severity to the log level used for summaries.
+    /// </summary>
+    public Dictionary<Severity, LogLevel> SeverityLogLevels { get; set; } = new()
+    {
+        [Severity.Error] = LogLevel.Warning,
+        [Severity.Warning] = LogLevel.Warning,
+        [Severity.Info] = LogLevel.Information
+    };
 
     /// <summary>
     /// Gets or sets a delegate used to derive the error code from a validation failure.
