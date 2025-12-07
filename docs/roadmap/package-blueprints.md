@@ -54,31 +54,32 @@ CleanArchitecture.Extensions.Validation will be deliberate about compatibility w
 Monitoring and reliability:
 Behaviors and adapters will emit correlation-aware logs and, when relevant, metrics that feed Observability once it ships. Failure modes will be documented with mitigations and configuration toggles. Expect guidance on defaults vs production hardening, plus testing tips using fakes or in-memory providers.
 
-## CleanArchitecture.Extensions.Exceptions (work in progress — Core Architecture) {#cleanarchitectureextensionsexceptions}
+## CleanArchitecture.Extensions.Exceptions (shipped — Core Architecture) {#cleanarchitectureextensionsexceptions}
 
-What we are building:
-CleanArchitecture.Extensions.Exceptions is focused on Exception translation and wrapping behaviors that convert domain/application exceptions to structured errors or Results while preserving correlation IDs. This extension exists to keep the Clean Architecture layers honest while reducing the friction that teams feel when wiring cross-cutting concerns by hand. The goal is to let you add capability without bending the original template or leaking infrastructure details into Application and Domain code.
+What we shipped:
+CleanArchitecture.Extensions.Exceptions delivers an exception catalog with stable codes/statuses, base exception types, redaction helpers, retry classification, and a MediatR pipeline behavior that wraps unhandled exceptions into `Result`/`Result<T>` (including the template `Result` shape) while flowing correlation/trace IDs into logs and metadata. The goal is to keep handlers and domain logic free of transport concerns while giving API/background jobs consistent problem mappings.
 
 Why it matters for Clean Architecture teams:
-Apps that need consistent problem details without leaking infrastructure exceptions, plus the ability to log failures with trace IDs and error codes that map to clients. The package narrative lives in the roadmap because we want contributors to see the intended surface area before a single line of code is written. When this lands, expect to see configuration defaults that match the template, clear points to hook into MediatR or middleware, and a way to back out gracefully if you choose not to adopt it.
+Teams get consistent problem details without leaking infrastructure exceptions, plus deterministic error codes for clients, retries, and observability. Handlers stay unchanged, yet callers can opt into Result-based flows or continue throwing when desired. Catalog defaults align with the template’s missing `NotFoundException` and security exceptions so adopters regain parity without forking.
 
-How it will integrate:
-Will sit after correlation/logging behaviors and before validation/performance in the pipeline; adapters will integrate with ASP.NET Core middleware. We will reuse correlation IDs, logging scopes, and Result metadata from Core wherever possible so diagnostics stay consistent. Each adapter or behavior will be optional; you choose how deep you want to go based on your deployment and compliance needs.
+How it integrates:
+Sits after correlation/logging behaviors and before validation/performance in the pipeline; adapters can plug into ASP.NET Core middleware for HTTP mapping. Correlation IDs, logging scopes, and Result metadata from Core are reused so diagnostics stay consistent. Optional `RethrowExceptionTypes` keeps validation/cancellation flowing through existing middleware when needed.
 
 Documentation and design trail:
 
 - Design notes: HighLevelDocs/Domain1-CoreArchitectureExtensions/CleanArchitecture.Extensions.Exceptions.md
-- Planned docs entry: docs/extensions/exceptions.md (planned)
-- Sample plan: Planned samples will demonstrate exception translation for HTTP endpoints and background jobs.
+- Docs entry: docs/extensions/exceptions.md
+- Tests: tests/CleanArchitecture.Extensions.Exceptions.Tests
+- Sample plan: Samples will demonstrate HTTP/background exception translation and Result mapping.
 
 Adoption guidance:
-Expect a phased rollout: design doc review, doc stubs under `docs/extensions/`, sample scaffolding under `samples/`, then code with tests. Early adopters can start by reading the HighLevelDocs entry and sketching how CleanArchitecture.Extensions.Exceptions would plug into their pipelines. We will ship SourceLink, XML docs, symbols, and a README with concrete install/usage guidance just like Core and Validation.
+Register `ExceptionWrappingBehavior<,>` near the top of the pipeline, configure `ExceptionHandlingOptions` (result conversion, redaction, trace IDs, rethrow list), and override catalog descriptors when you need domain-specific codes/statuses. SourceLink, XML docs, and symbols ship with the package.
 
 Interoperability patterns:
-CleanArchitecture.Extensions.Exceptions will be deliberate about compatibility with other extensions. We will highlight safe ordering in the MediatR pipeline, how to mix with multitenancy (when applicable), and what to do when pairing with Observability or Caching. For teams migrating from the baseline template, we will document shims or adapters so you do not have to rewrite working code to adopt this module.
+Compatibility notes will call out pipeline ordering, multitenancy interplay (tenant-aware metadata), and observability hooks once those modules land. For teams migrating from the baseline template, the behavior already understands the template `Result` static `Failure(IEnumerable<string>)` method to avoid controller rewrites.
 
 Monitoring and reliability:
-Behaviors and adapters will emit correlation-aware logs and, when relevant, metrics that feed Observability once it ships. Failure modes will be documented with mitigations and configuration toggles. Expect guidance on defaults vs production hardening, plus testing tips using fakes or in-memory providers.
+Redaction is on by default to keep secrets out of logs, and transient/concurrency descriptors are marked for retry policies. Guidance will continue to cover defaults vs production hardening, including how to combine with HTTP adapters and OTEL once Observability ships.
 
 ## CleanArchitecture.Extensions.Caching (work in progress — Core Architecture) {#cleanarchitectureextensionscaching}
 

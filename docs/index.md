@@ -5,7 +5,7 @@ Built for developers who start from [Jason Taylor's Clean Architecture template]
 ## What this page gives you
 
 - Understand how CleanArchitecture.Extensions stays aligned with Jason Taylor's template while adding opt-in capabilities.
-- See the current catalog (Core, Validation) plus the roadmap across multitenancy, enterprise, SaaS, infrastructure, and developer experience.
+- See the current catalog (Core, Validation, Exceptions) plus the roadmap across multitenancy, enterprise, SaaS, infrastructure, and developer experience.
 - Install the preview packages in under ten minutes with copy-ready commands and pipeline wiring.
 - Navigate docs, samples, recipes, and tests without guessing where things live.
 - Pick an adoption path that matches your project (greenfield, migration, observability-first, SaaS, compliance-ready).
@@ -68,9 +68,9 @@ dotnet run --project samples/CleanArchitecture.Extensions.Core.Pipeline.Sample/C
 
 ## Status at a glance
 
-- **Implemented (preview)**: `CleanArchitecture.Extensions.Core`, `CleanArchitecture.Extensions.Validation`
-- **In design/build-out**: Exceptions, Caching, Multitenancy family, Enterprise extensions, SaaS extensions, Infrastructure adapters, Developer Experience toolchain (CLI, templates, testing, packaging).
-- **Target frameworks**: `net8.0`, `net10.0`
+- **Implemented (preview)**: `CleanArchitecture.Extensions.Core`, `CleanArchitecture.Extensions.Validation`, `CleanArchitecture.Extensions.Exceptions`
+- **In design/build-out**: Caching, Multitenancy family, Enterprise extensions, SaaS extensions, Infrastructure adapters, Developer Experience toolchain (CLI, templates, testing, packaging).
+- **Target frameworks**: `net10.0`
 - **Packaging discipline**: SourceLink, XML docs, snupkg symbols for debugger-friendly consumption.
 - **Docs**: MkDocs + Material; everything lives under `docs/` and is published to GitHub Pages.
 - **Samples**: runnable under `samples/`; each mirrors a doc scenario.
@@ -202,7 +202,7 @@ This repo is a monorepo for a plug-in ecosystem. Only Core and Validation ship t
 ### Domain 1 — Core Architecture
 - CleanArchitecture.Extensions.Core (shipped, preview)
 - CleanArchitecture.Extensions.Validation (shipped, preview)
-- CleanArchitecture.Extensions.Exceptions (planned)
+- CleanArchitecture.Extensions.Exceptions (shipped, preview)
 - CleanArchitecture.Extensions.Caching (planned)
 
 ### Domain 2 — Multitenancy ecosystem
@@ -296,7 +296,7 @@ dotnet run --project samples/CleanArchitecture.Extensions.Core.Result.Sample/Cle
 ## Quality, packaging, and compatibility promises
 
 - **SourceLink and symbols**: every package ships with SourceLink and snupkg symbols for debugger-friendly consumption.
-- **Target frameworks**: `net8.0` and `net10.0` for shipped packages; future modules will follow the same strategy unless noted.
+- **Target frameworks**: `net10.0` for shipped packages; future modules will follow the same strategy unless noted.
 - **MediatR pipeline discipline**: behaviors are ordered to avoid surprises and to align with the template.
 - **Logging and correlation**: consistent scopes and trace identifiers across behaviors, validation, and future adapters.
 - **Docs and samples parity**: docs reference code that exists; samples are runnable; release notes call out breaking changes.
@@ -315,7 +315,7 @@ dotnet run --project samples/CleanArchitecture.Extensions.Core.Result.Sample/Cle
 - **Do I have to fork Jason's template?** No. Install packages and register behaviors; the template stays pristine.
 - **Can I migrate gradually?** Yes. Use Legacy result shims, enable behaviors incrementally, and configure strategies per environment.
 - **How do I know pipeline ordering?** See Core pipeline docs; we mirror the template order and call it out explicitly.
-- **What frameworks are supported?** `net8.0` and `net10.0` for shipped packages; others will state compatibility on their pages.
+- **What frameworks are supported?** `net10.0` for shipped packages; others will state compatibility on their pages.
 - **Where are tests and samples?** `tests/` and `samples/` in the solution; each doc page links to the relevant ones.
 - **How do I track progress?** Watch [roadmap.md](roadmap.md) and [release-notes/index.md](release-notes/index.md); design intent lives in `HighLevelDocs/`.
 

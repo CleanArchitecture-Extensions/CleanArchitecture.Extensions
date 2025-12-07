@@ -12,7 +12,7 @@ An honest, Jason-Taylor-aligned look at where CleanArchitecture.Extensions is he
 
 ## Current release snapshot
 
-- Shipped (preview): CleanArchitecture.Extensions.Core, CleanArchitecture.Extensions.Validation (net8.0/net10.0, SourceLink, snupkg). Docs and samples are live.
+- Shipped (preview): CleanArchitecture.Extensions.Core, CleanArchitecture.Extensions.Validation, CleanArchitecture.Extensions.Exceptions (net10.0, SourceLink, snupkg). Docs are live; Core/Validation samples are available; Exceptions sample is queued.
 - Now: Core polish (API/compat tests), Validation polish (samples, rule catalog hardening), documentation sync.
 - Next: Multitenancy Core design → first implementation spike + sample; roadmap-backed doc updates for Multitenancy and Caching.
 
@@ -29,7 +29,7 @@ An honest, Jason-Taylor-aligned look at where CleanArchitecture.Extensions is he
 
 - **CleanArchitecture.Extensions.Core** — guards, rich Result/Error, logging/correlation/performance behaviors, domain events, time, options. _Status: Shipped (preview)_. Focus: API polish, compatibility tests, and adapter guidance.
 - **CleanArchitecture.Extensions.Validation** — FluentValidation behavior, strategies (throw/result/notify), rule catalog, correlation-aware logging. _Status: Shipped (preview)_. Focus: samples + rule coverage.
-- **CleanArchitecture.Extensions.Exceptions** — exception translation/wrapping, problem-details alignment, pipeline behavior. _Status: Exploring_. Depends on Core logging/result contracts.
+- **CleanArchitecture.Extensions.Exceptions** — exception translation/wrapping, problem-details alignment, pipeline behavior. _Status: Shipped (preview)_. Focus: docs polish, HTTP adapter/sample wiring, and catalog hardening.
 - **CleanArchitecture.Extensions.Caching** — cache abstractions, behaviors, invalidation hooks, tenant-safe keying. _Status: Planning_. Will align with Multitenancy and Redis adapters.
 
 ### Domain 2 — Multitenancy Ecosystem
