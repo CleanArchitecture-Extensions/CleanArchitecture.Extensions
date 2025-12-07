@@ -29,77 +29,23 @@ Namespace: `CleanArchitecture.Extensions.Core.DomainEvents`
 - **Consistency:** Aligns with Core logging and Result primitives—errors and events can share the same correlation token for observability.
 
 ## Wiring in DI (typical setups)
-MediatR in-process dispatch:
+MediatR in-process dispatch + EF interceptor:
 ```csharp
-public sealed class MediatorDomainEventDispatcher : IDomainEventDispatcher
+builder.Services.AddCleanArchitectureCore(); // registers DomainEventTracker + MediatRDomainEventDispatcher
+
+builder.Services.AddDbContext<ApplicationDbContext>((sp, options) =>
 {
-    private readonly IMediator _mediator;
+    options.AddInterceptors(sp.GetRequiredService<DispatchDomainEventsInterceptor>());
+});
 
-    public MediatorDomainEventDispatcher(IMediator mediator) => _mediator = mediator;
-
-    public Task DispatchAsync(DomainEvent domainEvent, CancellationToken ct = default) =>
-        _mediator.Publish(domainEvent, ct);
-
-    public async Task DispatchAsync(IEnumerable<DomainEvent> domainEvents, CancellationToken ct = default)
-    {
-        foreach (var e in domainEvents)
-        {
-            await _mediator.Publish(e, ct);
-        }
-    }
-}
-```
-Register:
-```csharp
-services.AddScoped<IDomainEventDispatcher, MediatorDomainEventDispatcher>();
-services.AddScoped<DomainEventTracker>(); // per request/unit-of-work
-```
-
-EF Core dispatch using tracker:
-```csharp
-public sealed class TrackingDispatchInterceptor : SaveChangesInterceptor
+builder.Services.AddMediatR(cfg =>
 {
-    private readonly DomainEventTracker _tracker;
-    private readonly IDomainEventDispatcher _dispatcher;
-
-    public TrackingDispatchInterceptor(DomainEventTracker tracker, IDomainEventDispatcher dispatcher)
-    {
-        _tracker = tracker;
-        _dispatcher = dispatcher;
-    }
-
-    public override InterceptionResult<int> SavingChanges(DbContextEventData eventData, InterceptionResult<int> result)
-    {
-        CaptureEvents(eventData.Context);
-        return base.SavingChanges(eventData, result);
-    }
-
-    public override async ValueTask<InterceptionResult<int>> SavingChangesAsync(DbContextEventData eventData, InterceptionResult<int> result, CancellationToken ct = default)
-    {
-        CaptureEvents(eventData.Context);
-        await _dispatcher.DispatchAsync(_tracker.Drain(), ct);
-        return await base.SavingChangesAsync(eventData, result, ct);
-    }
-
-    private void CaptureEvents(DbContext? context)
-    {
-        if (context == null) return;
-        var entities = context.ChangeTracker.Entries<HasDomainEvents>()
-            .Where(e => e.Entity.DomainEvents.Any())
-            .Select(e => e.Entity);
-
-        foreach (var entity in entities)
-        {
-            foreach (var e in entity.DomainEvents)
-            {
-                _tracker.Add(e);
-            }
-            entity.ClearDomainEvents();
-        }
-    }
-}
+    cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());
+    // pipeline behaviors go here
+});
 ```
-(Example assumes `HasDomainEvents` is a common interface/base similar to `BaseEntity`.)
+- `DispatchDomainEventsInterceptor` (shipped in Core) drains `IHasDomainEvents` aggregates from the EF change tracker, correlates events via `ILogContext`/`CoreExtensionsOptions`, and publishes through `IDomainEventDispatcher`.
+- If you use an outbox or bus, replace `IDomainEventDispatcher` with your implementation; the interceptor still gathers and correlates events before dispatch.
 
 ## Sample-backed walkthrough (domain events sample)
 A runnable solution lives at `samples/CleanArchitecture.Extensions.Core.DomainEvents.Sample`.

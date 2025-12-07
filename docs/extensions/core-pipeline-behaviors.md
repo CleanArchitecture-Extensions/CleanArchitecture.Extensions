@@ -32,8 +32,8 @@ The Core behaviors preserve template compatibility while adding cross-cutting co
 - `LoggingBehavior<TRequest, TResponse>` (`IPipelineBehavior`): Logs handling/end with correlation + request type; sets correlation if missing.
 - `PerformanceBehavior<TRequest, TResponse>` (`IPipelineBehavior`): Times handler execution; warns vs. debug logs; respects `EnablePerformanceLogging` and `PerformanceWarningThreshold`.
 
-Dependencies:
-- `IAppLogger<T>` (logging abstraction).
+Dependencies (registered by `services.AddCleanArchitectureCore()`):
+- `IAppLogger<T>` (logging abstraction, now backed by the built-in `MelAppLoggerAdapter<T>` that bridges to `ILogger<T>`).
 - `ILogContext` (correlation scope).
 - `IClock` (time source).
 - `CoreExtensionsOptions` (correlation + performance settings).
@@ -51,26 +51,22 @@ To stay compatible with the template’s semantics while adding correlation:
 This preserves the template’s order while guaranteeing that correlation and logging scopes exist for subsequent behaviors and for performance logs.
 
 ## Wiring in DI (Application layer)
-A runnable example lives at `samples/CleanArchitecture.Extensions.Core.Pipeline.Sample/src/Application/DependencyInjection.cs`. It wires Core behaviors plus adapters that bridge to `ILogger<T>`:
+Use the built-in helpers to mirror template order while turning on correlation, logging, and performance metrics:
 
 ```csharp
+builder.Services.AddCleanArchitectureCore(); // IClock, ILogContext, IAppLogger adapter, DomainEvent dispatcher/tracker
 builder.Services.Configure<CoreExtensionsOptions>(builder.Configuration.GetSection("Extensions:Core"));
-builder.Services.AddSingleton<IClock, SystemClock>();
-builder.Services.AddScoped<ILogContext, MelLogContext>(); // MEL-backed scope
-builder.Services.AddScoped(typeof(IAppLogger<>), typeof(MelAppLogger<>)); // MEL adapter
 
-builder.Services.AddMediatR(cfg => {
+builder.Services.AddMediatR(cfg =>
+{
     cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());
-    cfg.AddOpenRequestPreProcessor(typeof(LoggingPreProcessor<>));
-    cfg.AddOpenBehavior(typeof(CorrelationBehavior<,>));
-    cfg.AddOpenBehavior(typeof(LoggingBehavior<,>));
+    cfg.AddCleanArchitectureCorePipeline(); // Correlation -> Logging pre/post -> Performance
     cfg.AddOpenBehavior(typeof(UnhandledExceptionBehaviour<,>));
     cfg.AddOpenBehavior(typeof(AuthorizationBehaviour<,>));
     cfg.AddOpenBehavior(typeof(ValidationBehaviour<,>));
-    cfg.AddOpenBehavior(typeof(PerformanceBehavior<,>));
 });
 ```
-- The adapter types (`MelLogContext`, `MelAppLogger<T>`) show how to reuse existing `ILogger` pipelines while satisfying Core abstractions.
+- `MelAppLoggerAdapter<T>` bridges Core logging to `ILogger<T>` so you can use your existing MEL/Serilog pipeline.
 - `LoggingPreProcessor` is registered as a pre-processor (start log) and `LoggingBehavior` as a pipeline behavior (handling/end log).
 
 ## Sample-backed walkthrough (pipeline sample)
