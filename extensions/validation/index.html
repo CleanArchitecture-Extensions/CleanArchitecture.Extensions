@@ -1517,7 +1517,7 @@
 </ul>
 <h2 id="prereqs-compatibility">Prereqs &amp; Compatibility<a class="headerlink" href="#prereqs-compatibility" title="Permanent link">&para;</a></h2>
 <ul>
-<li>Target frameworks: <code>net10.0</code> (current).</li>
+<li>Target frameworks: <code>net8.0</code>.</li>
 <li>Dependencies: FluentValidation <code>12.1.0</code>, MediatR <code>13.1.0</code>.</li>
 <li>Template fit: register the behavior in Application after Authorization and before Performance, same signature as the template’s <code>ValidationBehaviour&lt;,&gt;</code>.</li>
 </ul>
@@ -1540,7 +1540,7 @@
 <h3 id="strategies">Strategies<a class="headerlink" href="#strategies" title="Permanent link">&para;</a></h3>
 <ul>
 <li><code>Throw</code> (default): matches template; throws <code>ValidationException</code> with <code>Dictionary&lt;string,string[]&gt;</code>.</li>
-<li><code>ReturnResult</code>: short-circuits with <code>Result.Failure</code>/<code>Result&lt;T&gt;.Failure</code> when handlers return <code>Result</code>.</li>
+<li><code>ReturnResult</code>: short-circuits with <code>Result.Failure</code>/<code>Result&lt;T&gt;.Failure</code> when handlers return <code>Result</code>. Also understands the template’s <code>Result</code> shape (Succeeded + Errors) by invoking its static <code>Failure(IEnumerable&lt;string&gt;)</code> method.</li>
 <li><code>Notify</code>: publishes via <code>IValidationNotificationPublisher</code> then either throws or returns <code>Result</code> based on <code>NotifyBehavior</code>.</li>
 </ul>
 <p>Key options: <code>MaxFailures</code>, <code>IncludePropertyName</code>, <code>IncludeAttemptedValue</code>, <code>IncludePlaceholderValues</code>, <code>DefaultErrorCode</code>, <code>TraceId</code>, <code>ErrorCodeSelector</code>, <code>MessageFormatter</code>.</p>
