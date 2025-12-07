@@ -54,6 +54,11 @@ Key options: `MaxFailures`, `IncludePropertyName`, `IncludeAttemptedValue`, `Inc
   - `PositiveId`
   - `PageNumber`
   - `PageSize`
+  - `PhoneE164`
+  - `UrlAbsoluteHttpHttps`
+  - `CultureCode`
+  - `SortExpression` (whitelist allowed fields)
+  - Tenant-aware rules (planned with the Multitenancy module)
 
 ### Result short-circuit example
 ```csharp

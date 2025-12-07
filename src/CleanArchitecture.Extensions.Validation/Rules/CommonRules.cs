@@ -1,3 +1,5 @@
+using System.Globalization;
+using System.Text.RegularExpressions;
 using FluentValidation;
 
 namespace CleanArchitecture.Extensions.Validation.Rules;
@@ -63,5 +65,137 @@ public static class CommonRules
         ruleBuilder
             .InclusiveBetween(minimum, maximum)
             .WithMessage(message ?? $"Page size must be between {minimum} and {maximum}.")
+            .WithErrorCode(errorCode);
+
+    /// <summary>
+    /// Ensures a phone number uses a simple E.164 format (+[country][number]).
+    /// </summary>
+    public static IRuleBuilderOptions<T, string?> PhoneE164<T>(
+        this IRuleBuilder<T, string?> ruleBuilder,
+        string errorCode = "VAL.PHONE",
+        string? message = null,
+        bool allowEmpty = true) =>
+        ruleBuilder
+            .Must(value =>
+            {
+                if (string.IsNullOrWhiteSpace(value))
+                {
+                    return allowEmpty;
+                }
+
+                return Regex.IsMatch(value, @"^\+[1-9]\d{7,14}$");
+            })
+            .WithMessage(message ?? "Phone number must be in E.164 format.")
+            .WithErrorCode(errorCode);
+
+    /// <summary>
+    /// Ensures a URL is absolute and uses HTTP or HTTPS.
+    /// </summary>
+    public static IRuleBuilderOptions<T, string?> UrlAbsoluteHttpHttps<T>(
+        this IRuleBuilder<T, string?> ruleBuilder,
+        string errorCode = "VAL.URL",
+        string? message = null,
+        bool allowEmpty = true) =>
+        ruleBuilder
+            .Must(value =>
+            {
+                if (string.IsNullOrWhiteSpace(value))
+                {
+                    return allowEmpty;
+                }
+
+                return Uri.TryCreate(value, UriKind.Absolute, out var uri) &&
+                       (uri.Scheme == Uri.UriSchemeHttp || uri.Scheme == Uri.UriSchemeHttps);
+            })
+            .WithMessage(message ?? "URL must be absolute and use http or https.")
+            .WithErrorCode(errorCode);
+
+    /// <summary>
+    /// Ensures a culture code exists. Defaults to allowing both specific (en-US) and neutral (en) cultures.
+    /// </summary>
+    public static IRuleBuilderOptions<T, string?> CultureCode<T>(
+        this IRuleBuilder<T, string?> ruleBuilder,
+        string errorCode = "VAL.CULTURE",
+        string? message = null,
+        bool allowEmpty = true,
+        bool allowNeutral = true) =>
+        ruleBuilder
+            .Must(value =>
+            {
+                if (string.IsNullOrWhiteSpace(value))
+                {
+                    return allowEmpty;
+                }
+
+                try
+                {
+                    var culture = CultureInfo.GetCultureInfo(value);
+                    return allowNeutral || culture.Name.Contains('-');
+                }
+                catch (CultureNotFoundException)
+                {
+                    return false;
+                }
+            })
+            .WithMessage(message ?? "Culture code is not valid.")
+            .WithErrorCode(errorCode);
+
+    /// <summary>
+    /// Ensures a sort expression contains only allowed fields and directions (asc/desc).
+    /// </summary>
+    public static IRuleBuilderOptions<T, string?> SortExpression<T>(
+        this IRuleBuilder<T, string?> ruleBuilder,
+        IEnumerable<string> allowedFields,
+        string errorCode = "VAL.SORT",
+        string? message = null,
+        bool allowEmpty = true) =>
+        ruleBuilder
+            .Must(value =>
+            {
+                if (allowedFields is null)
+                {
+                    return false;
+                }
+
+                var allowed = allowedFields.ToHashSet(StringComparer.OrdinalIgnoreCase);
+                if (allowed.Count == 0)
+                {
+                    return false;
+                }
+
+                if (string.IsNullOrWhiteSpace(value))
+                {
+                    return allowEmpty;
+                }
+
+                var terms = value.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+                foreach (var term in terms)
+                {
+                    var parts = term.Split(' ', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+                    if (parts.Length == 0 || parts.Length > 2)
+                    {
+                        return false;
+                    }
+
+                    var field = parts[0];
+                    if (!allowed.Contains(field))
+                    {
+                        return false;
+                    }
+
+                    if (parts.Length == 2)
+                    {
+                        var dir = parts[1];
+                        if (!dir.Equals("asc", StringComparison.OrdinalIgnoreCase) &&
+                            !dir.Equals("desc", StringComparison.OrdinalIgnoreCase))
+                        {
+                            return false;
+                        }
+                    }
+                }
+
+                return true;
+            })
+            .WithMessage(message ?? "Sort expression is invalid or contains unsupported fields.")
             .WithErrorCode(errorCode);
 }
