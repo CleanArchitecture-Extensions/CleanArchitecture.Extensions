@@ -1,0 +1,2561 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Extensions ecosystem for Jason Taylor's Clean Architecture template.">
+      
+      
+      
+        <link rel="canonical" href="https://cleanarchitecture-extensions.github.io/CleanArchitecture.Extensions/roadmap/package-blueprints/">
+      
+      
+        <link rel="prev" href="../">
+      
+      
+        <link rel="next" href="../../getting-started/quickstart/">
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.5.13">
+    
+    
+      
+        <title>Package Blueprints - CleanArchitecture.Extensions</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.7e359304.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#package-blueprints-from-readme-appendix-a" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="CleanArchitecture.Extensions" class="md-header__button md-logo" aria-label="CleanArchitecture.Extensions" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            CleanArchitecture.Extensions
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Package Blueprints
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+      <script>var media,input,key,value,palette=__md_get("__palette");if(palette&&palette.color){"(prefers-color-scheme)"===palette.color.media&&(media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']"),palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent"));for([key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/CleanArchitecture-Extensions/CleanArchitecture.Extensions" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    CleanArchitecture-Extensions/CleanArchitecture.Extensions
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../" class="md-tabs__link">
+          
+  
+  Roadmap
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../getting-started/quickstart/" class="md-tabs__link">
+          
+  
+  Getting Started
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../concepts/architecture-fit/" class="md-tabs__link">
+          
+  
+  Concepts
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../extensions/" class="md-tabs__link">
+          
+  
+  Extensions Catalog
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../recipes/authentication/" class="md-tabs__link">
+          
+  
+  Recipes
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../samples/" class="md-tabs__link">
+        
+  
+    
+  
+  Samples
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../reference/configuration/" class="md-tabs__link">
+        
+  
+    
+  
+  Reference
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../troubleshooting/" class="md-tabs__link">
+        
+  
+    
+  
+  Troubleshooting
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../contributing/" class="md-tabs__link">
+        
+  
+    
+  
+  Contributing
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../release-notes/" class="md-tabs__link">
+        
+  
+    
+  
+  Release Notes
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="CleanArchitecture.Extensions" class="md-nav__button md-logo" aria-label="CleanArchitecture.Extensions" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
+
+    </a>
+    CleanArchitecture.Extensions
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/CleanArchitecture-Extensions/CleanArchitecture.Extensions" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    CleanArchitecture-Extensions/CleanArchitecture.Extensions
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Home
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Roadmap
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            Roadmap
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Roadmap
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Package Blueprints
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    Package Blueprints
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#appendix-a-package-by-package-blueprint-long-form" class="md-nav__link">
+    <span class="md-ellipsis">
+      Appendix A — package-by-package blueprint (long form)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cleanarchitectureextensionscore" class="md-nav__link">
+    <span class="md-ellipsis">
+      CleanArchitecture.Extensions.Core (shipped — Core Architecture)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cleanarchitectureextensionsvalidation" class="md-nav__link">
+    <span class="md-ellipsis">
+      CleanArchitecture.Extensions.Validation (shipped — Core Architecture)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cleanarchitectureextensionsexceptions" class="md-nav__link">
+    <span class="md-ellipsis">
+      CleanArchitecture.Extensions.Exceptions (work in progress — Core Architecture)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cleanarchitectureextensionscaching" class="md-nav__link">
+    <span class="md-ellipsis">
+      CleanArchitecture.Extensions.Caching (work in progress — Core Architecture)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cleanarchitectureextensionsmultitenancy" class="md-nav__link">
+    <span class="md-ellipsis">
+      CleanArchitecture.Extensions.Multitenancy (work in progress — Multitenancy)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cleanarchitectureextensionsmultitenancyefcore" class="md-nav__link">
+    <span class="md-ellipsis">
+      CleanArchitecture.Extensions.Multitenancy.EFCore (work in progress — Multitenancy)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cleanarchitectureextensionsmultitenancyaspnetcore" class="md-nav__link">
+    <span class="md-ellipsis">
+      CleanArchitecture.Extensions.Multitenancy.AspNetCore (work in progress — Multitenancy)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cleanarchitectureextensionsmultitenancyidentity" class="md-nav__link">
+    <span class="md-ellipsis">
+      CleanArchitecture.Extensions.Multitenancy.Identity (work in progress — Multitenancy)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cleanarchitectureextensionsmultitenancysharding" class="md-nav__link">
+    <span class="md-ellipsis">
+      CleanArchitecture.Extensions.Multitenancy.Sharding (work in progress — Multitenancy)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cleanarchitectureextensionsmultitenancyprovisioning" class="md-nav__link">
+    <span class="md-ellipsis">
+      CleanArchitecture.Extensions.Multitenancy.Provisioning (work in progress — Multitenancy)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cleanarchitectureextensionsmultitenancystorage" class="md-nav__link">
+    <span class="md-ellipsis">
+      CleanArchitecture.Extensions.Multitenancy.Storage (work in progress — Multitenancy)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cleanarchitectureextensionsmultitenancyredis" class="md-nav__link">
+    <span class="md-ellipsis">
+      CleanArchitecture.Extensions.Multitenancy.Redis (work in progress — Multitenancy)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cleanarchitectureextensionsaudit" class="md-nav__link">
+    <span class="md-ellipsis">
+      CleanArchitecture.Extensions.Audit (work in progress — Enterprise)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cleanarchitectureextensionssettings" class="md-nav__link">
+    <span class="md-ellipsis">
+      CleanArchitecture.Extensions.Settings (work in progress — Enterprise)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cleanarchitectureextensionsfeatureflags" class="md-nav__link">
+    <span class="md-ellipsis">
+      CleanArchitecture.Extensions.FeatureFlags (work in progress — Enterprise)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cleanarchitectureextensionsnotifications" class="md-nav__link">
+    <span class="md-ellipsis">
+      CleanArchitecture.Extensions.Notifications (work in progress — Enterprise)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cleanarchitectureextensionsratelimiting" class="md-nav__link">
+    <span class="md-ellipsis">
+      CleanArchitecture.Extensions.RateLimiting (work in progress — Enterprise)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cleanarchitectureextensionslocalization" class="md-nav__link">
+    <span class="md-ellipsis">
+      CleanArchitecture.Extensions.Localization (work in progress — Enterprise)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cleanarchitectureextensionsauthorization" class="md-nav__link">
+    <span class="md-ellipsis">
+      CleanArchitecture.Extensions.Authorization (work in progress — Enterprise)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cleanarchitectureextensionspayments" class="md-nav__link">
+    <span class="md-ellipsis">
+      CleanArchitecture.Extensions.Payments (work in progress — SaaS)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cleanarchitectureextensionsdocuments" class="md-nav__link">
+    <span class="md-ellipsis">
+      CleanArchitecture.Extensions.Documents (work in progress — SaaS)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cleanarchitectureextensionsusermanagement" class="md-nav__link">
+    <span class="md-ellipsis">
+      CleanArchitecture.Extensions.UserManagement (work in progress — SaaS)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cleanarchitectureextensionsredis" class="md-nav__link">
+    <span class="md-ellipsis">
+      CleanArchitecture.Extensions.Redis (work in progress — Infrastructure)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cleanarchitectureextensionsmessagebus" class="md-nav__link">
+    <span class="md-ellipsis">
+      CleanArchitecture.Extensions.MessageBus (work in progress — Infrastructure)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cleanarchitectureextensionsobservability" class="md-nav__link">
+    <span class="md-ellipsis">
+      CleanArchitecture.Extensions.Observability (work in progress — Infrastructure)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cleanarchitectureextensionsstorage" class="md-nav__link">
+    <span class="md-ellipsis">
+      CleanArchitecture.Extensions.Storage (work in progress — Infrastructure)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cleanarchitectureextensionssearch" class="md-nav__link">
+    <span class="md-ellipsis">
+      CleanArchitecture.Extensions.Search (work in progress — Infrastructure)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cleanarchitectureextensionscli" class="md-nav__link">
+    <span class="md-ellipsis">
+      CleanArchitecture.Extensions.CLI (work in progress — Developer Experience)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cleanarchitectureextensionstemplates" class="md-nav__link">
+    <span class="md-ellipsis">
+      CleanArchitecture.Extensions.Templates (work in progress — Developer Experience)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cleanarchitectureextensionstesting" class="md-nav__link">
+    <span class="md-ellipsis">
+      CleanArchitecture.Extensions.Testing (work in progress — Developer Experience)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cleanarchitectureextensionssourcelinkandsymbols" class="md-nav__link">
+    <span class="md-ellipsis">
+      CleanArchitecture.Extensions.SourceLinkAndSymbols (work in progress — Developer Experience)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cleanarchitectureextensionsnugetpackaging" class="md-nav__link">
+    <span class="md-ellipsis">
+      CleanArchitecture.Extensions.NuGetPackaging (work in progress — Developer Experience)
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Getting Started
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            Getting Started
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/quickstart/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Quickstart
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/installation/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Install
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/adoption-playbooks/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Adoption Playbooks
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Concepts
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            Concepts
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../concepts/architecture-fit/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Architecture Fit
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../concepts/composition/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Composition & Invariants
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Extensions Catalog
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            Extensions Catalog
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../extensions/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Overview
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../extensions/core/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Core
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../extensions/core-options/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Core Options
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../extensions/core-time/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Core Time
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../extensions/core-domain-events/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Core Domain Events
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../extensions/core-logging-abstractions/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Core Logging Abstractions
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../extensions/core-pipeline-behaviors/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Core Pipeline Behaviors
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../extensions/core-guard-clauses/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Core Guard Clauses
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../extensions/core-result-primitives/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Core Result Primitives
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../extensions/validation/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Validation
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../extensions/multitenancy-core/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Multitenancy Core
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Recipes
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            Recipes
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../recipes/authentication/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Authentication
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../recipes/caching/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Caching
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../samples/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Samples
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/configuration/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Reference
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../troubleshooting/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Troubleshooting
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../contributing/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Contributing
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../release-notes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Release Notes
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#appendix-a-package-by-package-blueprint-long-form" class="md-nav__link">
+    <span class="md-ellipsis">
+      Appendix A — package-by-package blueprint (long form)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cleanarchitectureextensionscore" class="md-nav__link">
+    <span class="md-ellipsis">
+      CleanArchitecture.Extensions.Core (shipped — Core Architecture)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cleanarchitectureextensionsvalidation" class="md-nav__link">
+    <span class="md-ellipsis">
+      CleanArchitecture.Extensions.Validation (shipped — Core Architecture)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cleanarchitectureextensionsexceptions" class="md-nav__link">
+    <span class="md-ellipsis">
+      CleanArchitecture.Extensions.Exceptions (work in progress — Core Architecture)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cleanarchitectureextensionscaching" class="md-nav__link">
+    <span class="md-ellipsis">
+      CleanArchitecture.Extensions.Caching (work in progress — Core Architecture)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cleanarchitectureextensionsmultitenancy" class="md-nav__link">
+    <span class="md-ellipsis">
+      CleanArchitecture.Extensions.Multitenancy (work in progress — Multitenancy)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cleanarchitectureextensionsmultitenancyefcore" class="md-nav__link">
+    <span class="md-ellipsis">
+      CleanArchitecture.Extensions.Multitenancy.EFCore (work in progress — Multitenancy)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cleanarchitectureextensionsmultitenancyaspnetcore" class="md-nav__link">
+    <span class="md-ellipsis">
+      CleanArchitecture.Extensions.Multitenancy.AspNetCore (work in progress — Multitenancy)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cleanarchitectureextensionsmultitenancyidentity" class="md-nav__link">
+    <span class="md-ellipsis">
+      CleanArchitecture.Extensions.Multitenancy.Identity (work in progress — Multitenancy)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cleanarchitectureextensionsmultitenancysharding" class="md-nav__link">
+    <span class="md-ellipsis">
+      CleanArchitecture.Extensions.Multitenancy.Sharding (work in progress — Multitenancy)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cleanarchitectureextensionsmultitenancyprovisioning" class="md-nav__link">
+    <span class="md-ellipsis">
+      CleanArchitecture.Extensions.Multitenancy.Provisioning (work in progress — Multitenancy)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cleanarchitectureextensionsmultitenancystorage" class="md-nav__link">
+    <span class="md-ellipsis">
+      CleanArchitecture.Extensions.Multitenancy.Storage (work in progress — Multitenancy)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cleanarchitectureextensionsmultitenancyredis" class="md-nav__link">
+    <span class="md-ellipsis">
+      CleanArchitecture.Extensions.Multitenancy.Redis (work in progress — Multitenancy)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cleanarchitectureextensionsaudit" class="md-nav__link">
+    <span class="md-ellipsis">
+      CleanArchitecture.Extensions.Audit (work in progress — Enterprise)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cleanarchitectureextensionssettings" class="md-nav__link">
+    <span class="md-ellipsis">
+      CleanArchitecture.Extensions.Settings (work in progress — Enterprise)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cleanarchitectureextensionsfeatureflags" class="md-nav__link">
+    <span class="md-ellipsis">
+      CleanArchitecture.Extensions.FeatureFlags (work in progress — Enterprise)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cleanarchitectureextensionsnotifications" class="md-nav__link">
+    <span class="md-ellipsis">
+      CleanArchitecture.Extensions.Notifications (work in progress — Enterprise)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cleanarchitectureextensionsratelimiting" class="md-nav__link">
+    <span class="md-ellipsis">
+      CleanArchitecture.Extensions.RateLimiting (work in progress — Enterprise)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cleanarchitectureextensionslocalization" class="md-nav__link">
+    <span class="md-ellipsis">
+      CleanArchitecture.Extensions.Localization (work in progress — Enterprise)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cleanarchitectureextensionsauthorization" class="md-nav__link">
+    <span class="md-ellipsis">
+      CleanArchitecture.Extensions.Authorization (work in progress — Enterprise)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cleanarchitectureextensionspayments" class="md-nav__link">
+    <span class="md-ellipsis">
+      CleanArchitecture.Extensions.Payments (work in progress — SaaS)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cleanarchitectureextensionsdocuments" class="md-nav__link">
+    <span class="md-ellipsis">
+      CleanArchitecture.Extensions.Documents (work in progress — SaaS)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cleanarchitectureextensionsusermanagement" class="md-nav__link">
+    <span class="md-ellipsis">
+      CleanArchitecture.Extensions.UserManagement (work in progress — SaaS)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cleanarchitectureextensionsredis" class="md-nav__link">
+    <span class="md-ellipsis">
+      CleanArchitecture.Extensions.Redis (work in progress — Infrastructure)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cleanarchitectureextensionsmessagebus" class="md-nav__link">
+    <span class="md-ellipsis">
+      CleanArchitecture.Extensions.MessageBus (work in progress — Infrastructure)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cleanarchitectureextensionsobservability" class="md-nav__link">
+    <span class="md-ellipsis">
+      CleanArchitecture.Extensions.Observability (work in progress — Infrastructure)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cleanarchitectureextensionsstorage" class="md-nav__link">
+    <span class="md-ellipsis">
+      CleanArchitecture.Extensions.Storage (work in progress — Infrastructure)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cleanarchitectureextensionssearch" class="md-nav__link">
+    <span class="md-ellipsis">
+      CleanArchitecture.Extensions.Search (work in progress — Infrastructure)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cleanarchitectureextensionscli" class="md-nav__link">
+    <span class="md-ellipsis">
+      CleanArchitecture.Extensions.CLI (work in progress — Developer Experience)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cleanarchitectureextensionstemplates" class="md-nav__link">
+    <span class="md-ellipsis">
+      CleanArchitecture.Extensions.Templates (work in progress — Developer Experience)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cleanarchitectureextensionstesting" class="md-nav__link">
+    <span class="md-ellipsis">
+      CleanArchitecture.Extensions.Testing (work in progress — Developer Experience)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cleanarchitectureextensionssourcelinkandsymbols" class="md-nav__link">
+    <span class="md-ellipsis">
+      CleanArchitecture.Extensions.SourceLinkAndSymbols (work in progress — Developer Experience)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cleanarchitectureextensionsnugetpackaging" class="md-nav__link">
+    <span class="md-ellipsis">
+      CleanArchitecture.Extensions.NuGetPackaging (work in progress — Developer Experience)
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+<h1 id="package-blueprints-from-readme-appendix-a">Package blueprints (from README Appendix A)<a class="headerlink" href="#package-blueprints-from-readme-appendix-a" title="Permanent link">&para;</a></h1>
+<h2 id="appendix-a-package-by-package-blueprint-long-form">Appendix A — package-by-package blueprint (long form)<a class="headerlink" href="#appendix-a-package-by-package-blueprint-long-form" title="Permanent link">&para;</a></h2>
+<h2 id="cleanarchitectureextensionscore">CleanArchitecture.Extensions.Core (shipped — Core Architecture)<a class="headerlink" href="#cleanarchitectureextensionscore" title="Permanent link">&para;</a></h2>
+<p>What we are building:
+CleanArchitecture.Extensions.Core is focused on Rich Result types, guard clauses, correlation-aware pipeline behaviors, logging abstractions, domain events, and deterministic time abstractions that mirror Jason Taylor's template without changing handler signatures. This extension exists to keep the Clean Architecture layers honest while reducing the friction that teams feel when wiring cross-cutting concerns by hand. The goal is to let you add capability without bending the original template or leaking infrastructure details into Application and Domain code.</p>
+<p>Why it matters for Clean Architecture teams:
+Developers need drop-in behaviors for correlation, logging, and performance, plus expressive Result shapes to replace bool+errors without rewriting controllers. They also need guard clauses, domain events, and clocks to keep tests deterministic and handlers slim. The package narrative lives in the roadmap because we want contributors to see the intended surface area before a single line of code is written. When this lands, expect to see configuration defaults that match the template, clear points to hook into MediatR or middleware, and a way to back out gracefully if you choose not to adopt it.</p>
+<p>How it will integrate:
+Plugs directly into MediatR pipelines and can be adopted incrementally using LegacyResult shims. Works with any logger through IAppLogger/ILogContext and feeds trace identifiers to downstream modules. We will reuse correlation IDs, logging scopes, and Result metadata from Core wherever possible so diagnostics stay consistent. Each adapter or behavior will be optional; you choose how deep you want to go based on your deployment and compliance needs.</p>
+<p>Documentation and design trail:</p>
+<ul>
+<li>Design notes: HighLevelDocs/Domain1-CoreArchitectureExtensions/CleanArchitecture.Extensions.Core.md</li>
+<li>Planned docs entry: docs/extensions/core.md</li>
+<li>Sample plan: Samples already available for pipeline, logging, results, guards, time, options, and domain events.</li>
+</ul>
+<p>Adoption guidance:
+Expect a phased rollout: design doc review, doc stubs under <code>docs/extensions/</code>, sample scaffolding under <code>samples/</code>, then code with tests. Early adopters can start by reading the HighLevelDocs entry and sketching how CleanArchitecture.Extensions.Core would plug into their pipelines. We will ship SourceLink, XML docs, symbols, and a README with concrete install/usage guidance just like Core and Validation.</p>
+<p>Interoperability patterns:
+CleanArchitecture.Extensions.Core will be deliberate about compatibility with other extensions. We will highlight safe ordering in the MediatR pipeline, how to mix with multitenancy (when applicable), and what to do when pairing with Observability or Caching. For teams migrating from the baseline template, we will document shims or adapters so you do not have to rewrite working code to adopt this module.</p>
+<p>Monitoring and reliability:
+Behaviors and adapters will emit correlation-aware logs and, when relevant, metrics that feed Observability once it ships. Failure modes will be documented with mitigations and configuration toggles. Expect guidance on defaults vs production hardening, plus testing tips using fakes or in-memory providers.</p>
+<h2 id="cleanarchitectureextensionsvalidation">CleanArchitecture.Extensions.Validation (shipped — Core Architecture)<a class="headerlink" href="#cleanarchitectureextensionsvalidation" title="Permanent link">&para;</a></h2>
+<p>What we are building:
+CleanArchitecture.Extensions.Validation is focused on FluentValidation-powered MediatR behavior with switchable strategies (throw, return Result, notify) and shared rule catalog for email, phone, pagination, culture, and sort expressions. This extension exists to keep the Clean Architecture layers honest while reducing the friction that teams feel when wiring cross-cutting concerns by hand. The goal is to let you add capability without bending the original template or leaking infrastructure details into Application and Domain code.</p>
+<p>Why it matters for Clean Architecture teams:
+Teams want predictable validation errors with correlation IDs, consistent logging, and the ability to avoid exceptions in background jobs while keeping the template's MediatR signature. The package narrative lives in the roadmap because we want contributors to see the intended surface area before a single line of code is written. When this lands, expect to see configuration defaults that match the template, clear points to hook into MediatR or middleware, and a way to back out gracefully if you choose not to adopt it.</p>
+<p>How it will integrate:
+Aligns with Core's Result and logging abstractions, uses DI scanning from the template, and will later add minimal API filters and tenant-aware rules. We will reuse correlation IDs, logging scopes, and Result metadata from Core wherever possible so diagnostics stay consistent. Each adapter or behavior will be optional; you choose how deep you want to go based on your deployment and compliance needs.</p>
+<p>Documentation and design trail:</p>
+<ul>
+<li>Design notes: HighLevelDocs/Domain1-CoreArchitectureExtensions/CleanArchitecture.Extensions.Validation.md</li>
+<li>Planned docs entry: docs/extensions/validation.md</li>
+<li>Sample plan: Sample ideas include validation in the pipeline plus notification publishers; shipped samples will accompany the package.</li>
+</ul>
+<p>Adoption guidance:
+Expect a phased rollout: design doc review, doc stubs under <code>docs/extensions/</code>, sample scaffolding under <code>samples/</code>, then code with tests. Early adopters can start by reading the HighLevelDocs entry and sketching how CleanArchitecture.Extensions.Validation would plug into their pipelines. We will ship SourceLink, XML docs, symbols, and a README with concrete install/usage guidance just like Core and Validation.</p>
+<p>Interoperability patterns:
+CleanArchitecture.Extensions.Validation will be deliberate about compatibility with other extensions. We will highlight safe ordering in the MediatR pipeline, how to mix with multitenancy (when applicable), and what to do when pairing with Observability or Caching. For teams migrating from the baseline template, we will document shims or adapters so you do not have to rewrite working code to adopt this module.</p>
+<p>Monitoring and reliability:
+Behaviors and adapters will emit correlation-aware logs and, when relevant, metrics that feed Observability once it ships. Failure modes will be documented with mitigations and configuration toggles. Expect guidance on defaults vs production hardening, plus testing tips using fakes or in-memory providers.</p>
+<h2 id="cleanarchitectureextensionsexceptions">CleanArchitecture.Extensions.Exceptions (work in progress — Core Architecture)<a class="headerlink" href="#cleanarchitectureextensionsexceptions" title="Permanent link">&para;</a></h2>
+<p>What we are building:
+CleanArchitecture.Extensions.Exceptions is focused on Exception translation and wrapping behaviors that convert domain/application exceptions to structured errors or Results while preserving correlation IDs. This extension exists to keep the Clean Architecture layers honest while reducing the friction that teams feel when wiring cross-cutting concerns by hand. The goal is to let you add capability without bending the original template or leaking infrastructure details into Application and Domain code.</p>
+<p>Why it matters for Clean Architecture teams:
+Apps that need consistent problem details without leaking infrastructure exceptions, plus the ability to log failures with trace IDs and error codes that map to clients. The package narrative lives in the roadmap because we want contributors to see the intended surface area before a single line of code is written. When this lands, expect to see configuration defaults that match the template, clear points to hook into MediatR or middleware, and a way to back out gracefully if you choose not to adopt it.</p>
+<p>How it will integrate:
+Will sit after correlation/logging behaviors and before validation/performance in the pipeline; adapters will integrate with ASP.NET Core middleware. We will reuse correlation IDs, logging scopes, and Result metadata from Core wherever possible so diagnostics stay consistent. Each adapter or behavior will be optional; you choose how deep you want to go based on your deployment and compliance needs.</p>
+<p>Documentation and design trail:</p>
+<ul>
+<li>Design notes: HighLevelDocs/Domain1-CoreArchitectureExtensions/CleanArchitecture.Extensions.Exceptions.md</li>
+<li>Planned docs entry: docs/extensions/exceptions.md (planned)</li>
+<li>Sample plan: Planned samples will demonstrate exception translation for HTTP endpoints and background jobs.</li>
+</ul>
+<p>Adoption guidance:
+Expect a phased rollout: design doc review, doc stubs under <code>docs/extensions/</code>, sample scaffolding under <code>samples/</code>, then code with tests. Early adopters can start by reading the HighLevelDocs entry and sketching how CleanArchitecture.Extensions.Exceptions would plug into their pipelines. We will ship SourceLink, XML docs, symbols, and a README with concrete install/usage guidance just like Core and Validation.</p>
+<p>Interoperability patterns:
+CleanArchitecture.Extensions.Exceptions will be deliberate about compatibility with other extensions. We will highlight safe ordering in the MediatR pipeline, how to mix with multitenancy (when applicable), and what to do when pairing with Observability or Caching. For teams migrating from the baseline template, we will document shims or adapters so you do not have to rewrite working code to adopt this module.</p>
+<p>Monitoring and reliability:
+Behaviors and adapters will emit correlation-aware logs and, when relevant, metrics that feed Observability once it ships. Failure modes will be documented with mitigations and configuration toggles. Expect guidance on defaults vs production hardening, plus testing tips using fakes or in-memory providers.</p>
+<h2 id="cleanarchitectureextensionscaching">CleanArchitecture.Extensions.Caching (work in progress — Core Architecture)<a class="headerlink" href="#cleanarchitectureextensionscaching" title="Permanent link">&para;</a></h2>
+<p>What we are building:
+CleanArchitecture.Extensions.Caching is focused on Cache abstractions with memory and distributed providers plus pipeline behaviors for caching queries and invalidating on commands. This extension exists to keep the Clean Architecture layers honest while reducing the friction that teams feel when wiring cross-cutting concerns by hand. The goal is to let you add capability without bending the original template or leaking infrastructure details into Application and Domain code.</p>
+<p>Why it matters for Clean Architecture teams:
+Teams that need deterministic cache keys, tenant-aware scoping, and cache busting tied to domain events without sprinkling cache logic across handlers. The package narrative lives in the roadmap because we want contributors to see the intended surface area before a single line of code is written. When this lands, expect to see configuration defaults that match the template, clear points to hook into MediatR or middleware, and a way to back out gracefully if you choose not to adopt it.</p>
+<p>How it will integrate:
+Will layer on Core's logging, correlation, and Result primitives, with adapters for Redis and other stores arriving via Domain 5. We will reuse correlation IDs, logging scopes, and Result metadata from Core wherever possible so diagnostics stay consistent. Each adapter or behavior will be optional; you choose how deep you want to go based on your deployment and compliance needs.</p>
+<p>Documentation and design trail:</p>
+<ul>
+<li>Design notes: HighLevelDocs/Domain1-CoreArchitectureExtensions/CleanArchitecture.Extensions.Caching.md</li>
+<li>Planned docs entry: docs/extensions/caching.md (planned)</li>
+<li>Sample plan: Samples will include query caching with eviction on command success and cache-hit telemetry.</li>
+</ul>
+<p>Adoption guidance:
+Expect a phased rollout: design doc review, doc stubs under <code>docs/extensions/</code>, sample scaffolding under <code>samples/</code>, then code with tests. Early adopters can start by reading the HighLevelDocs entry and sketching how CleanArchitecture.Extensions.Caching would plug into their pipelines. We will ship SourceLink, XML docs, symbols, and a README with concrete install/usage guidance just like Core and Validation.</p>
+<p>Interoperability patterns:
+CleanArchitecture.Extensions.Caching will be deliberate about compatibility with other extensions. We will highlight safe ordering in the MediatR pipeline, how to mix with multitenancy (when applicable), and what to do when pairing with Observability or Caching. For teams migrating from the baseline template, we will document shims or adapters so you do not have to rewrite working code to adopt this module.</p>
+<p>Monitoring and reliability:
+Behaviors and adapters will emit correlation-aware logs and, when relevant, metrics that feed Observability once it ships. Failure modes will be documented with mitigations and configuration toggles. Expect guidance on defaults vs production hardening, plus testing tips using fakes or in-memory providers.</p>
+<h2 id="cleanarchitectureextensionsmultitenancy">CleanArchitecture.Extensions.Multitenancy (work in progress — Multitenancy)<a class="headerlink" href="#cleanarchitectureextensionsmultitenancy" title="Permanent link">&para;</a></h2>
+<p>What we are building:
+CleanArchitecture.Extensions.Multitenancy is focused on Tenant info model, current tenant provider, header/host/route/claim/composite resolution, middleware, attributes, and enforcement/validation behaviors. This extension exists to keep the Clean Architecture layers honest while reducing the friction that teams feel when wiring cross-cutting concerns by hand. The goal is to let you add capability without bending the original template or leaking infrastructure details into Application and Domain code.</p>
+<p>Why it matters for Clean Architecture teams:
+SaaS teams need tenant resolution at HTTP edges, enforcement in MediatR, and tenant metadata flowing into logging and caching to avoid cross-tenant leakage. The package narrative lives in the roadmap because we want contributors to see the intended surface area before a single line of code is written. When this lands, expect to see configuration defaults that match the template, clear points to hook into MediatR or middleware, and a way to back out gracefully if you choose not to adopt it.</p>
+<p>How it will integrate:
+Will provide ICurrentTenant abstraction consumed by EFCore, Identity, caching, storage, and messaging adapters. Pipeline behaviors will align with validation and authorization ordering. We will reuse correlation IDs, logging scopes, and Result metadata from Core wherever possible so diagnostics stay consistent. Each adapter or behavior will be optional; you choose how deep you want to go based on your deployment and compliance needs.</p>
+<p>Documentation and design trail:</p>
+<ul>
+<li>Design notes: HighLevelDocs/Domain2-Multitenancy/CleanArchitecture.Extensions.Multitenancy.md</li>
+<li>Planned docs entry: docs/extensions/multitenancy-core.md</li>
+<li>Sample plan: Planned samples include header-based and route-based tenant resolution with enforcement behaviors in action.</li>
+</ul>
+<p>Adoption guidance:
+Expect a phased rollout: design doc review, doc stubs under <code>docs/extensions/</code>, sample scaffolding under <code>samples/</code>, then code with tests. Early adopters can start by reading the HighLevelDocs entry and sketching how CleanArchitecture.Extensions.Multitenancy would plug into their pipelines. We will ship SourceLink, XML docs, symbols, and a README with concrete install/usage guidance just like Core and Validation.</p>
+<p>Interoperability patterns:
+CleanArchitecture.Extensions.Multitenancy will be deliberate about compatibility with other extensions. We will highlight safe ordering in the MediatR pipeline, how to mix with multitenancy (when applicable), and what to do when pairing with Observability or Caching. For teams migrating from the baseline template, we will document shims or adapters so you do not have to rewrite working code to adopt this module.</p>
+<p>Monitoring and reliability:
+Behaviors and adapters will emit correlation-aware logs and, when relevant, metrics that feed Observability once it ships. Failure modes will be documented with mitigations and configuration toggles. Expect guidance on defaults vs production hardening, plus testing tips using fakes or in-memory providers.</p>
+<h2 id="cleanarchitectureextensionsmultitenancyefcore">CleanArchitecture.Extensions.Multitenancy.EFCore (work in progress — Multitenancy)<a class="headerlink" href="#cleanarchitectureextensionsmultitenancyefcore" title="Permanent link">&para;</a></h2>
+<p>What we are building:
+CleanArchitecture.Extensions.Multitenancy.EFCore is focused on EF Core helpers for shared database, schema-per-tenant, and database-per-tenant strategies with global query filters and tenant-aware DbContext factories. This extension exists to keep the Clean Architecture layers honest while reducing the friction that teams feel when wiring cross-cutting concerns by hand. The goal is to let you add capability without bending the original template or leaking infrastructure details into Application and Domain code.</p>
+<p>Why it matters for Clean Architecture teams:
+Projects need to enforce tenant isolation in EF, manage migrations per tenant, and seed data safely while switching strategies over time. The package narrative lives in the roadmap because we want contributors to see the intended surface area before a single line of code is written. When this lands, expect to see configuration defaults that match the template, clear points to hook into MediatR or middleware, and a way to back out gracefully if you choose not to adopt it.</p>
+<p>How it will integrate:
+Will hook into the multitenancy core for tenant context, reuse Core logging and trace IDs, and ship interceptors/filters to add tenant predicates automatically. We will reuse correlation IDs, logging scopes, and Result metadata from Core wherever possible so diagnostics stay consistent. Each adapter or behavior will be optional; you choose how deep you want to go based on your deployment and compliance needs.</p>
+<p>Documentation and design trail:</p>
+<ul>
+<li>Design notes: HighLevelDocs/Domain2-Multitenancy/CleanArchitecture.Extensions.Multitenancy.EFCore.md</li>
+<li>Planned docs entry: docs/extensions/multitenancy-efcore.md (planned)</li>
+<li>Sample plan: Samples will show global filters, schema migrations, and seeding scripts for new tenants.</li>
+</ul>
+<p>Adoption guidance:
+Expect a phased rollout: design doc review, doc stubs under <code>docs/extensions/</code>, sample scaffolding under <code>samples/</code>, then code with tests. Early adopters can start by reading the HighLevelDocs entry and sketching how CleanArchitecture.Extensions.Multitenancy.EFCore would plug into their pipelines. We will ship SourceLink, XML docs, symbols, and a README with concrete install/usage guidance just like Core and Validation.</p>
+<p>Interoperability patterns:
+CleanArchitecture.Extensions.Multitenancy.EFCore will be deliberate about compatibility with other extensions. We will highlight safe ordering in the MediatR pipeline, how to mix with multitenancy (when applicable), and what to do when pairing with Observability or Caching. For teams migrating from the baseline template, we will document shims or adapters so you do not have to rewrite working code to adopt this module.</p>
+<p>Monitoring and reliability:
+Behaviors and adapters will emit correlation-aware logs and, when relevant, metrics that feed Observability once it ships. Failure modes will be documented with mitigations and configuration toggles. Expect guidance on defaults vs production hardening, plus testing tips using fakes or in-memory providers.</p>
+<h2 id="cleanarchitectureextensionsmultitenancyaspnetcore">CleanArchitecture.Extensions.Multitenancy.AspNetCore (work in progress — Multitenancy)<a class="headerlink" href="#cleanarchitectureextensionsmultitenancyaspnetcore" title="Permanent link">&para;</a></h2>
+<p>What we are building:
+CleanArchitecture.Extensions.Multitenancy.AspNetCore is focused on AspNetCore helpers for route/host/header tenant providers, minimal API filters, endpoint metadata, and middleware that sets tenant context early. This extension exists to keep the Clean Architecture layers honest while reducing the friction that teams feel when wiring cross-cutting concerns by hand. The goal is to let you add capability without bending the original template or leaking infrastructure details into Application and Domain code.</p>
+<p>Why it matters for Clean Architecture teams:
+APIs that must reject requests without tenant context and supply consistent error responses; apps that map tenants to routes or hosts and need helpers to stay DRY. The package narrative lives in the roadmap because we want contributors to see the intended surface area before a single line of code is written. When this lands, expect to see configuration defaults that match the template, clear points to hook into MediatR or middleware, and a way to back out gracefully if you choose not to adopt it.</p>
+<p>How it will integrate:
+Will align with the template's middleware pipeline, flow tenant info into ILogContext, and compose with Validation and Authorization behaviors. We will reuse correlation IDs, logging scopes, and Result metadata from Core wherever possible so diagnostics stay consistent. Each adapter or behavior will be optional; you choose how deep you want to go based on your deployment and compliance needs.</p>
+<p>Documentation and design trail:</p>
+<ul>
+<li>Design notes: HighLevelDocs/Domain2-Multitenancy/CleanArchitecture.Extensions.Multitenancy.AspNetCore.md</li>
+<li>Planned docs entry: docs/extensions/multitenancy-aspnetcore.md (planned)</li>
+<li>Sample plan: Samples will demonstrate minimal API and controller setups with tenant filters and friendly error messages.</li>
+</ul>
+<p>Adoption guidance:
+Expect a phased rollout: design doc review, doc stubs under <code>docs/extensions/</code>, sample scaffolding under <code>samples/</code>, then code with tests. Early adopters can start by reading the HighLevelDocs entry and sketching how CleanArchitecture.Extensions.Multitenancy.AspNetCore would plug into their pipelines. We will ship SourceLink, XML docs, symbols, and a README with concrete install/usage guidance just like Core and Validation.</p>
+<p>Interoperability patterns:
+CleanArchitecture.Extensions.Multitenancy.AspNetCore will be deliberate about compatibility with other extensions. We will highlight safe ordering in the MediatR pipeline, how to mix with multitenancy (when applicable), and what to do when pairing with Observability or Caching. For teams migrating from the baseline template, we will document shims or adapters so you do not have to rewrite working code to adopt this module.</p>
+<p>Monitoring and reliability:
+Behaviors and adapters will emit correlation-aware logs and, when relevant, metrics that feed Observability once it ships. Failure modes will be documented with mitigations and configuration toggles. Expect guidance on defaults vs production hardening, plus testing tips using fakes or in-memory providers.</p>
+<h2 id="cleanarchitectureextensionsmultitenancyidentity">CleanArchitecture.Extensions.Multitenancy.Identity (work in progress — Multitenancy)<a class="headerlink" href="#cleanarchitectureextensionsmultitenancyidentity" title="Permanent link">&para;</a></h2>
+<p>What we are building:
+CleanArchitecture.Extensions.Multitenancy.Identity is focused on Tenant-aware Identity extensions including tenant claim mapping, ITenantUser abstractions, policy provider, and per-tenant role handling. This extension exists to keep the Clean Architecture layers honest while reducing the friction that teams feel when wiring cross-cutting concerns by hand. The goal is to let you add capability without bending the original template or leaking infrastructure details into Application and Domain code.</p>
+<p>Why it matters for Clean Architecture teams:
+Authentication flows where users belong to specific tenants, login isolation is required, and tokens must carry tenant claims reliably. The package narrative lives in the roadmap because we want contributors to see the intended surface area before a single line of code is written. When this lands, expect to see configuration defaults that match the template, clear points to hook into MediatR or middleware, and a way to back out gracefully if you choose not to adopt it.</p>
+<p>How it will integrate:
+Will integrate with ASP.NET Core Identity, multitenancy core, and Authorization policies while remaining optional for non-Identity auth stacks. We will reuse correlation IDs, logging scopes, and Result metadata from Core wherever possible so diagnostics stay consistent. Each adapter or behavior will be optional; you choose how deep you want to go based on your deployment and compliance needs.</p>
+<p>Documentation and design trail:</p>
+<ul>
+<li>Design notes: HighLevelDocs/Domain2-Multitenancy/CleanArchitecture.Extensions.Multitenancy.Identity.md</li>
+<li>Planned docs entry: docs/extensions/multitenancy-identity.md (planned)</li>
+<li>Sample plan: Samples will cover login flows that populate tenant claims and authorize tenant-scoped resources.</li>
+</ul>
+<p>Adoption guidance:
+Expect a phased rollout: design doc review, doc stubs under <code>docs/extensions/</code>, sample scaffolding under <code>samples/</code>, then code with tests. Early adopters can start by reading the HighLevelDocs entry and sketching how CleanArchitecture.Extensions.Multitenancy.Identity would plug into their pipelines. We will ship SourceLink, XML docs, symbols, and a README with concrete install/usage guidance just like Core and Validation.</p>
+<p>Interoperability patterns:
+CleanArchitecture.Extensions.Multitenancy.Identity will be deliberate about compatibility with other extensions. We will highlight safe ordering in the MediatR pipeline, how to mix with multitenancy (when applicable), and what to do when pairing with Observability or Caching. For teams migrating from the baseline template, we will document shims or adapters so you do not have to rewrite working code to adopt this module.</p>
+<p>Monitoring and reliability:
+Behaviors and adapters will emit correlation-aware logs and, when relevant, metrics that feed Observability once it ships. Failure modes will be documented with mitigations and configuration toggles. Expect guidance on defaults vs production hardening, plus testing tips using fakes or in-memory providers.</p>
+<h2 id="cleanarchitectureextensionsmultitenancysharding">CleanArchitecture.Extensions.Multitenancy.Sharding (work in progress — Multitenancy)<a class="headerlink" href="#cleanarchitectureextensionsmultitenancysharding" title="Permanent link">&para;</a></h2>
+<p>What we are building:
+CleanArchitecture.Extensions.Multitenancy.Sharding is focused on Shard resolution strategies (hash, range, geo) and connection managers for large datasets that need partitioning alongside tenant isolation. This extension exists to keep the Clean Architecture layers honest while reducing the friction that teams feel when wiring cross-cutting concerns by hand. The goal is to let you add capability without bending the original template or leaking infrastructure details into Application and Domain code.</p>
+<p>Why it matters for Clean Architecture teams:
+Data-intensive systems that must route requests to the right shard while keeping tenant context intact; operators who need to rebalance shards safely. The package narrative lives in the roadmap because we want contributors to see the intended surface area before a single line of code is written. When this lands, expect to see configuration defaults that match the template, clear points to hook into MediatR or middleware, and a way to back out gracefully if you choose not to adopt it.</p>
+<p>How it will integrate:
+Will align with multitenancy core for tenant identification, with caching and message bus adapters to keep shard context consistent end to end. We will reuse correlation IDs, logging scopes, and Result metadata from Core wherever possible so diagnostics stay consistent. Each adapter or behavior will be optional; you choose how deep you want to go based on your deployment and compliance needs.</p>
+<p>Documentation and design trail:</p>
+<ul>
+<li>Design notes: HighLevelDocs/Domain2-Multitenancy/CleanArchitecture.Extensions.Multitenancy.Sharding.md</li>
+<li>Planned docs entry: docs/extensions/multitenancy-sharding.md (planned)</li>
+<li>Sample plan: Samples will show shard selection strategies and metrics for shard performance.</li>
+</ul>
+<p>Adoption guidance:
+Expect a phased rollout: design doc review, doc stubs under <code>docs/extensions/</code>, sample scaffolding under <code>samples/</code>, then code with tests. Early adopters can start by reading the HighLevelDocs entry and sketching how CleanArchitecture.Extensions.Multitenancy.Sharding would plug into their pipelines. We will ship SourceLink, XML docs, symbols, and a README with concrete install/usage guidance just like Core and Validation.</p>
+<p>Interoperability patterns:
+CleanArchitecture.Extensions.Multitenancy.Sharding will be deliberate about compatibility with other extensions. We will highlight safe ordering in the MediatR pipeline, how to mix with multitenancy (when applicable), and what to do when pairing with Observability or Caching. For teams migrating from the baseline template, we will document shims or adapters so you do not have to rewrite working code to adopt this module.</p>
+<p>Monitoring and reliability:
+Behaviors and adapters will emit correlation-aware logs and, when relevant, metrics that feed Observability once it ships. Failure modes will be documented with mitigations and configuration toggles. Expect guidance on defaults vs production hardening, plus testing tips using fakes or in-memory providers.</p>
+<h2 id="cleanarchitectureextensionsmultitenancyprovisioning">CleanArchitecture.Extensions.Multitenancy.Provisioning (work in progress — Multitenancy)<a class="headerlink" href="#cleanarchitectureextensionsmultitenancyprovisioning" title="Permanent link">&para;</a></h2>
+<p>What we are building:
+CleanArchitecture.Extensions.Multitenancy.Provisioning is focused on Tenant onboarding workflows, provisioning events, schema creation, and per-tenant seed orchestration. This extension exists to keep the Clean Architecture layers honest while reducing the friction that teams feel when wiring cross-cutting concerns by hand. The goal is to let you add capability without bending the original template or leaking infrastructure details into Application and Domain code.</p>
+<p>Why it matters for Clean Architecture teams:
+Automating tenant creation, initializing schemas, and notifying other systems (billing, notifications) as tenants onboard or offboard. The package narrative lives in the roadmap because we want contributors to see the intended surface area before a single line of code is written. When this lands, expect to see configuration defaults that match the template, clear points to hook into MediatR or middleware, and a way to back out gracefully if you choose not to adopt it.</p>
+<p>How it will integrate:
+Will emit events that other modules (Notifications, Audit) can subscribe to, and will use storage/EF adapters to create per-tenant artifacts. We will reuse correlation IDs, logging scopes, and Result metadata from Core wherever possible so diagnostics stay consistent. Each adapter or behavior will be optional; you choose how deep you want to go based on your deployment and compliance needs.</p>
+<p>Documentation and design trail:</p>
+<ul>
+<li>Design notes: HighLevelDocs/Domain2-Multitenancy/CleanArchitecture.Extensions.Multitenancy.Provisioning.md</li>
+<li>Planned docs entry: docs/extensions/multitenancy-provisioning.md (planned)</li>
+<li>Sample plan: Samples will walk through end-to-end tenant provisioning from HTTP request to seeded data.</li>
+</ul>
+<p>Adoption guidance:
+Expect a phased rollout: design doc review, doc stubs under <code>docs/extensions/</code>, sample scaffolding under <code>samples/</code>, then code with tests. Early adopters can start by reading the HighLevelDocs entry and sketching how CleanArchitecture.Extensions.Multitenancy.Provisioning would plug into their pipelines. We will ship SourceLink, XML docs, symbols, and a README with concrete install/usage guidance just like Core and Validation.</p>
+<p>Interoperability patterns:
+CleanArchitecture.Extensions.Multitenancy.Provisioning will be deliberate about compatibility with other extensions. We will highlight safe ordering in the MediatR pipeline, how to mix with multitenancy (when applicable), and what to do when pairing with Observability or Caching. For teams migrating from the baseline template, we will document shims or adapters so you do not have to rewrite working code to adopt this module.</p>
+<p>Monitoring and reliability:
+Behaviors and adapters will emit correlation-aware logs and, when relevant, metrics that feed Observability once it ships. Failure modes will be documented with mitigations and configuration toggles. Expect guidance on defaults vs production hardening, plus testing tips using fakes or in-memory providers.</p>
+<h2 id="cleanarchitectureextensionsmultitenancystorage">CleanArchitecture.Extensions.Multitenancy.Storage (work in progress — Multitenancy)<a class="headerlink" href="#cleanarchitectureextensionsmultitenancystorage" title="Permanent link">&para;</a></h2>
+<p>What we are building:
+CleanArchitecture.Extensions.Multitenancy.Storage is focused on Tenant-aware blob and file storage abstractions with folder strategies and consistent keying. This extension exists to keep the Clean Architecture layers honest while reducing the friction that teams feel when wiring cross-cutting concerns by hand. The goal is to let you add capability without bending the original template or leaking infrastructure details into Application and Domain code.</p>
+<p>Why it matters for Clean Architecture teams:
+Products that need to segregate files per tenant on shared storage accounts, enforce folder naming, and migrate existing assets safely. The package narrative lives in the roadmap because we want contributors to see the intended surface area before a single line of code is written. When this lands, expect to see configuration defaults that match the template, clear points to hook into MediatR or middleware, and a way to back out gracefully if you choose not to adopt it.</p>
+<p>How it will integrate:
+Will leverage ICurrentTenant from multitenancy core and storage adapters from Domain 5 to keep physical storage aligned with tenant context. We will reuse correlation IDs, logging scopes, and Result metadata from Core wherever possible so diagnostics stay consistent. Each adapter or behavior will be optional; you choose how deep you want to go based on your deployment and compliance needs.</p>
+<p>Documentation and design trail:</p>
+<ul>
+<li>Design notes: HighLevelDocs/Domain2-Multitenancy/CleanArchitecture.Extensions.Multitenancy.Storage.md</li>
+<li>Planned docs entry: docs/extensions/multitenancy-storage.md (planned)</li>
+<li>Sample plan: Samples will include upload/download flows that automatically scope paths by tenant.</li>
+</ul>
+<p>Adoption guidance:
+Expect a phased rollout: design doc review, doc stubs under <code>docs/extensions/</code>, sample scaffolding under <code>samples/</code>, then code with tests. Early adopters can start by reading the HighLevelDocs entry and sketching how CleanArchitecture.Extensions.Multitenancy.Storage would plug into their pipelines. We will ship SourceLink, XML docs, symbols, and a README with concrete install/usage guidance just like Core and Validation.</p>
+<p>Interoperability patterns:
+CleanArchitecture.Extensions.Multitenancy.Storage will be deliberate about compatibility with other extensions. We will highlight safe ordering in the MediatR pipeline, how to mix with multitenancy (when applicable), and what to do when pairing with Observability or Caching. For teams migrating from the baseline template, we will document shims or adapters so you do not have to rewrite working code to adopt this module.</p>
+<p>Monitoring and reliability:
+Behaviors and adapters will emit correlation-aware logs and, when relevant, metrics that feed Observability once it ships. Failure modes will be documented with mitigations and configuration toggles. Expect guidance on defaults vs production hardening, plus testing tips using fakes or in-memory providers.</p>
+<h2 id="cleanarchitectureextensionsmultitenancyredis">CleanArchitecture.Extensions.Multitenancy.Redis (work in progress — Multitenancy)<a class="headerlink" href="#cleanarchitectureextensionsmultitenancyredis" title="Permanent link">&para;</a></h2>
+<p>What we are building:
+CleanArchitecture.Extensions.Multitenancy.Redis is focused on Tenant-safe Redis usage with key prefixing conventions and helpers for cache isolation. This extension exists to keep the Clean Architecture layers honest while reducing the friction that teams feel when wiring cross-cutting concerns by hand. The goal is to let you add capability without bending the original template or leaking infrastructure details into Application and Domain code.</p>
+<p>Why it matters for Clean Architecture teams:
+Distributed caches shared across tenants that require strict key isolation and predictable eviction strategies. The package narrative lives in the roadmap because we want contributors to see the intended surface area before a single line of code is written. When this lands, expect to see configuration defaults that match the template, clear points to hook into MediatR or middleware, and a way to back out gracefully if you choose not to adopt it.</p>
+<p>How it will integrate:
+Will sit on top of the Caching module and coordinate with multitenancy core to derive tenant-aware cache keys. We will reuse correlation IDs, logging scopes, and Result metadata from Core wherever possible so diagnostics stay consistent. Each adapter or behavior will be optional; you choose how deep you want to go based on your deployment and compliance needs.</p>
+<p>Documentation and design trail:</p>
+<ul>
+<li>Design notes: HighLevelDocs/Domain2-Multitenancy/CleanArchitecture.Extensions.Multitenancy.Redis.md</li>
+<li>Planned docs entry: docs/extensions/multitenancy-redis.md (planned)</li>
+<li>Sample plan: Samples will show cache gets/sets with tenant prefixes and metrics for cache hits by tenant.</li>
+</ul>
+<p>Adoption guidance:
+Expect a phased rollout: design doc review, doc stubs under <code>docs/extensions/</code>, sample scaffolding under <code>samples/</code>, then code with tests. Early adopters can start by reading the HighLevelDocs entry and sketching how CleanArchitecture.Extensions.Multitenancy.Redis would plug into their pipelines. We will ship SourceLink, XML docs, symbols, and a README with concrete install/usage guidance just like Core and Validation.</p>
+<p>Interoperability patterns:
+CleanArchitecture.Extensions.Multitenancy.Redis will be deliberate about compatibility with other extensions. We will highlight safe ordering in the MediatR pipeline, how to mix with multitenancy (when applicable), and what to do when pairing with Observability or Caching. For teams migrating from the baseline template, we will document shims or adapters so you do not have to rewrite working code to adopt this module.</p>
+<p>Monitoring and reliability:
+Behaviors and adapters will emit correlation-aware logs and, when relevant, metrics that feed Observability once it ships. Failure modes will be documented with mitigations and configuration toggles. Expect guidance on defaults vs production hardening, plus testing tips using fakes or in-memory providers.</p>
+<h2 id="cleanarchitectureextensionsaudit">CleanArchitecture.Extensions.Audit (work in progress — Enterprise)<a class="headerlink" href="#cleanarchitectureextensionsaudit" title="Permanent link">&para;</a></h2>
+<p>What we are building:
+CleanArchitecture.Extensions.Audit is focused on Audit events, entity diffs, command audit behaviors, and multiple audit stores (SQL, file, bus). This extension exists to keep the Clean Architecture layers honest while reducing the friction that teams feel when wiring cross-cutting concerns by hand. The goal is to let you add capability without bending the original template or leaking infrastructure details into Application and Domain code.</p>
+<p>Why it matters for Clean Architecture teams:
+Teams that need compliance-ready audit logs tied to correlation IDs and entity changes, with storage choices based on environment. The package narrative lives in the roadmap because we want contributors to see the intended surface area before a single line of code is written. When this lands, expect to see configuration defaults that match the template, clear points to hook into MediatR or middleware, and a way to back out gracefully if you choose not to adopt it.</p>
+<p>How it will integrate:
+Will depend on Core for time and correlation, integrate with multitenancy for tenant markers, and expose behaviors that plug into MediatR. We will reuse correlation IDs, logging scopes, and Result metadata from Core wherever possible so diagnostics stay consistent. Each adapter or behavior will be optional; you choose how deep you want to go based on your deployment and compliance needs.</p>
+<p>Documentation and design trail:</p>
+<ul>
+<li>Design notes: HighLevelDocs/Domain3-EnterpriseExtensions/CleanArchitecture.Extensions.Audit.md</li>
+<li>Planned docs entry: docs/extensions/audit.md (planned)</li>
+<li>Sample plan: Samples will illustrate audit events for commands and entity diffs with storage providers swapped in/out.</li>
+</ul>
+<p>Adoption guidance:
+Expect a phased rollout: design doc review, doc stubs under <code>docs/extensions/</code>, sample scaffolding under <code>samples/</code>, then code with tests. Early adopters can start by reading the HighLevelDocs entry and sketching how CleanArchitecture.Extensions.Audit would plug into their pipelines. We will ship SourceLink, XML docs, symbols, and a README with concrete install/usage guidance just like Core and Validation.</p>
+<p>Interoperability patterns:
+CleanArchitecture.Extensions.Audit will be deliberate about compatibility with other extensions. We will highlight safe ordering in the MediatR pipeline, how to mix with multitenancy (when applicable), and what to do when pairing with Observability or Caching. For teams migrating from the baseline template, we will document shims or adapters so you do not have to rewrite working code to adopt this module.</p>
+<p>Monitoring and reliability:
+Behaviors and adapters will emit correlation-aware logs and, when relevant, metrics that feed Observability once it ships. Failure modes will be documented with mitigations and configuration toggles. Expect guidance on defaults vs production hardening, plus testing tips using fakes or in-memory providers.</p>
+<h2 id="cleanarchitectureextensionssettings">CleanArchitecture.Extensions.Settings (work in progress — Enterprise)<a class="headerlink" href="#cleanarchitectureextensionssettings" title="Permanent link">&para;</a></h2>
+<p>What we are building:
+CleanArchitecture.Extensions.Settings is focused on Runtime settings with key-value and JSON providers, typed accessors, and optional tenant overrides without redeployments. This extension exists to keep the Clean Architecture layers honest while reducing the friction that teams feel when wiring cross-cutting concerns by hand. The goal is to let you add capability without bending the original template or leaking infrastructure details into Application and Domain code.</p>
+<p>Why it matters for Clean Architecture teams:
+Operations teams adjusting thresholds, toggles, or URLs at runtime; product teams enabling tenant-specific overrides without code changes. The package narrative lives in the roadmap because we want contributors to see the intended surface area before a single line of code is written. When this lands, expect to see configuration defaults that match the template, clear points to hook into MediatR or middleware, and a way to back out gracefully if you choose not to adopt it.</p>
+<p>How it will integrate:
+Will align with Options pattern, integrate with FeatureFlags and Authorization, and support database/file-backed providers. We will reuse correlation IDs, logging scopes, and Result metadata from Core wherever possible so diagnostics stay consistent. Each adapter or behavior will be optional; you choose how deep you want to go based on your deployment and compliance needs.</p>
+<p>Documentation and design trail:</p>
+<ul>
+<li>Design notes: HighLevelDocs/Domain3-EnterpriseExtensions/CleanArchitecture.Extensions.Settings.md</li>
+<li>Planned docs entry: docs/extensions/settings.md (planned)</li>
+<li>Sample plan: Samples will include dynamic configuration reload and tenant override examples.</li>
+</ul>
+<p>Adoption guidance:
+Expect a phased rollout: design doc review, doc stubs under <code>docs/extensions/</code>, sample scaffolding under <code>samples/</code>, then code with tests. Early adopters can start by reading the HighLevelDocs entry and sketching how CleanArchitecture.Extensions.Settings would plug into their pipelines. We will ship SourceLink, XML docs, symbols, and a README with concrete install/usage guidance just like Core and Validation.</p>
+<p>Interoperability patterns:
+CleanArchitecture.Extensions.Settings will be deliberate about compatibility with other extensions. We will highlight safe ordering in the MediatR pipeline, how to mix with multitenancy (when applicable), and what to do when pairing with Observability or Caching. For teams migrating from the baseline template, we will document shims or adapters so you do not have to rewrite working code to adopt this module.</p>
+<p>Monitoring and reliability:
+Behaviors and adapters will emit correlation-aware logs and, when relevant, metrics that feed Observability once it ships. Failure modes will be documented with mitigations and configuration toggles. Expect guidance on defaults vs production hardening, plus testing tips using fakes or in-memory providers.</p>
+<h2 id="cleanarchitectureextensionsfeatureflags">CleanArchitecture.Extensions.FeatureFlags (work in progress — Enterprise)<a class="headerlink" href="#cleanarchitectureextensionsfeatureflags" title="Permanent link">&para;</a></h2>
+<p>What we are building:
+CleanArchitecture.Extensions.FeatureFlags is focused on Feature definitions, providers (memory/db), tenant/user overrides, evaluation behavior, and feature attributes for handlers and endpoints. This extension exists to keep the Clean Architecture layers honest while reducing the friction that teams feel when wiring cross-cutting concerns by hand. The goal is to let you add capability without bending the original template or leaking infrastructure details into Application and Domain code.</p>
+<p>Why it matters for Clean Architecture teams:
+Progressive rollout of features, canary releases per tenant, and experimentation without long-lived branches. The package narrative lives in the roadmap because we want contributors to see the intended surface area before a single line of code is written. When this lands, expect to see configuration defaults that match the template, clear points to hook into MediatR or middleware, and a way to back out gracefully if you choose not to adopt it.</p>
+<p>How it will integrate:
+Will integrate with Settings and Authorization, use correlation IDs for observability, and expose MediatR behaviors for feature checks. We will reuse correlation IDs, logging scopes, and Result metadata from Core wherever possible so diagnostics stay consistent. Each adapter or behavior will be optional; you choose how deep you want to go based on your deployment and compliance needs.</p>
+<p>Documentation and design trail:</p>
+<ul>
+<li>Design notes: HighLevelDocs/Domain3-EnterpriseExtensions/CleanArchitecture.Extensions.FeatureFlags.md</li>
+<li>Planned docs entry: docs/extensions/feature-flags.md (planned)</li>
+<li>Sample plan: Samples will demonstrate feature evaluation in commands and minimal APIs with toggle switches.</li>
+</ul>
+<p>Adoption guidance:
+Expect a phased rollout: design doc review, doc stubs under <code>docs/extensions/</code>, sample scaffolding under <code>samples/</code>, then code with tests. Early adopters can start by reading the HighLevelDocs entry and sketching how CleanArchitecture.Extensions.FeatureFlags would plug into their pipelines. We will ship SourceLink, XML docs, symbols, and a README with concrete install/usage guidance just like Core and Validation.</p>
+<p>Interoperability patterns:
+CleanArchitecture.Extensions.FeatureFlags will be deliberate about compatibility with other extensions. We will highlight safe ordering in the MediatR pipeline, how to mix with multitenancy (when applicable), and what to do when pairing with Observability or Caching. For teams migrating from the baseline template, we will document shims or adapters so you do not have to rewrite working code to adopt this module.</p>
+<p>Monitoring and reliability:
+Behaviors and adapters will emit correlation-aware logs and, when relevant, metrics that feed Observability once it ships. Failure modes will be documented with mitigations and configuration toggles. Expect guidance on defaults vs production hardening, plus testing tips using fakes or in-memory providers.</p>
+<h2 id="cleanarchitectureextensionsnotifications">CleanArchitecture.Extensions.Notifications (work in progress — Enterprise)<a class="headerlink" href="#cleanarchitectureextensionsnotifications" title="Permanent link">&para;</a></h2>
+<p>What we are building:
+CleanArchitecture.Extensions.Notifications is focused on Unified notification pipeline with providers for email, SMS, push, and template management. This extension exists to keep the Clean Architecture layers honest while reducing the friction that teams feel when wiring cross-cutting concerns by hand. The goal is to let you add capability without bending the original template or leaking infrastructure details into Application and Domain code.</p>
+<p>Why it matters for Clean Architecture teams:
+Send templated messages in response to domain events or application commands; switch providers without changing handler logic. The package narrative lives in the roadmap because we want contributors to see the intended surface area before a single line of code is written. When this lands, expect to see configuration defaults that match the template, clear points to hook into MediatR or middleware, and a way to back out gracefully if you choose not to adopt it.</p>
+<p>How it will integrate:
+Will plug into Core logging and multitenancy for tenant-specific channels, and expose a NotificationBehavior for MediatR when needed. We will reuse correlation IDs, logging scopes, and Result metadata from Core wherever possible so diagnostics stay consistent. Each adapter or behavior will be optional; you choose how deep you want to go based on your deployment and compliance needs.</p>
+<p>Documentation and design trail:</p>
+<ul>
+<li>Design notes: HighLevelDocs/Domain3-EnterpriseExtensions/CleanArchitecture.Extensions.Notifications.md</li>
+<li>Planned docs entry: docs/extensions/notifications.md (planned)</li>
+<li>Sample plan: Samples will show email and SMS dispatch using a template engine and mock providers for tests.</li>
+</ul>
+<p>Adoption guidance:
+Expect a phased rollout: design doc review, doc stubs under <code>docs/extensions/</code>, sample scaffolding under <code>samples/</code>, then code with tests. Early adopters can start by reading the HighLevelDocs entry and sketching how CleanArchitecture.Extensions.Notifications would plug into their pipelines. We will ship SourceLink, XML docs, symbols, and a README with concrete install/usage guidance just like Core and Validation.</p>
+<p>Interoperability patterns:
+CleanArchitecture.Extensions.Notifications will be deliberate about compatibility with other extensions. We will highlight safe ordering in the MediatR pipeline, how to mix with multitenancy (when applicable), and what to do when pairing with Observability or Caching. For teams migrating from the baseline template, we will document shims or adapters so you do not have to rewrite working code to adopt this module.</p>
+<p>Monitoring and reliability:
+Behaviors and adapters will emit correlation-aware logs and, when relevant, metrics that feed Observability once it ships. Failure modes will be documented with mitigations and configuration toggles. Expect guidance on defaults vs production hardening, plus testing tips using fakes or in-memory providers.</p>
+<h2 id="cleanarchitectureextensionsratelimiting">CleanArchitecture.Extensions.RateLimiting (work in progress — Enterprise)<a class="headerlink" href="#cleanarchitectureextensionsratelimiting" title="Permanent link">&para;</a></h2>
+<p>What we are building:
+CleanArchitecture.Extensions.RateLimiting is focused on Configurable rate limits for commands, queries, and APIs with tenant/IP/user scopes and friendly failure surfaces. This extension exists to keep the Clean Architecture layers honest while reducing the friction that teams feel when wiring cross-cutting concerns by hand. The goal is to let you add capability without bending the original template or leaking infrastructure details into Application and Domain code.</p>
+<p>Why it matters for Clean Architecture teams:
+Protect APIs from abuse, enforce tenant-specific quotas, and return consistent error payloads when limits are exceeded. The package narrative lives in the roadmap because we want contributors to see the intended surface area before a single line of code is written. When this lands, expect to see configuration defaults that match the template, clear points to hook into MediatR or middleware, and a way to back out gracefully if you choose not to adopt it.</p>
+<p>How it will integrate:
+Will offer minimal API filters, middleware, and MediatR behaviors; will integrate with Observability for metrics and with Multitenancy for tenant-aware limits. We will reuse correlation IDs, logging scopes, and Result metadata from Core wherever possible so diagnostics stay consistent. Each adapter or behavior will be optional; you choose how deep you want to go based on your deployment and compliance needs.</p>
+<p>Documentation and design trail:</p>
+<ul>
+<li>Design notes: HighLevelDocs/Domain3-EnterpriseExtensions/CleanArchitecture.Extensions.RateLimiting.md</li>
+<li>Planned docs entry: docs/extensions/rate-limiting.md (planned)</li>
+<li>Sample plan: Samples will cover per-tenant and per-IP throttling with metrics emitted for dashboards.</li>
+</ul>
+<p>Adoption guidance:
+Expect a phased rollout: design doc review, doc stubs under <code>docs/extensions/</code>, sample scaffolding under <code>samples/</code>, then code with tests. Early adopters can start by reading the HighLevelDocs entry and sketching how CleanArchitecture.Extensions.RateLimiting would plug into their pipelines. We will ship SourceLink, XML docs, symbols, and a README with concrete install/usage guidance just like Core and Validation.</p>
+<p>Interoperability patterns:
+CleanArchitecture.Extensions.RateLimiting will be deliberate about compatibility with other extensions. We will highlight safe ordering in the MediatR pipeline, how to mix with multitenancy (when applicable), and what to do when pairing with Observability or Caching. For teams migrating from the baseline template, we will document shims or adapters so you do not have to rewrite working code to adopt this module.</p>
+<p>Monitoring and reliability:
+Behaviors and adapters will emit correlation-aware logs and, when relevant, metrics that feed Observability once it ships. Failure modes will be documented with mitigations and configuration toggles. Expect guidance on defaults vs production hardening, plus testing tips using fakes or in-memory providers.</p>
+<h2 id="cleanarchitectureextensionslocalization">CleanArchitecture.Extensions.Localization (work in progress — Enterprise)<a class="headerlink" href="#cleanarchitectureextensionslocalization" title="Permanent link">&para;</a></h2>
+<p>What we are building:
+CleanArchitecture.Extensions.Localization is focused on Resource providers, fallback rules, and dynamic translation helpers with optional tenant scoping. This extension exists to keep the Clean Architecture layers honest while reducing the friction that teams feel when wiring cross-cutting concerns by hand. The goal is to let you add capability without bending the original template or leaking infrastructure details into Application and Domain code.</p>
+<p>Why it matters for Clean Architecture teams:
+Applications targeting multiple locales needing resource lookups that can be overridden per tenant or environment without code changes. The package narrative lives in the roadmap because we want contributors to see the intended surface area before a single line of code is written. When this lands, expect to see configuration defaults that match the template, clear points to hook into MediatR or middleware, and a way to back out gracefully if you choose not to adopt it.</p>
+<p>How it will integrate:
+Will align with Validation and Exceptions to localize messages and with multitenancy for per-tenant resource sets. We will reuse correlation IDs, logging scopes, and Result metadata from Core wherever possible so diagnostics stay consistent. Each adapter or behavior will be optional; you choose how deep you want to go based on your deployment and compliance needs.</p>
+<p>Documentation and design trail:</p>
+<ul>
+<li>Design notes: HighLevelDocs/Domain3-EnterpriseExtensions/CleanArchitecture.Extensions.Localization.md</li>
+<li>Planned docs entry: docs/extensions/localization.md (planned)</li>
+<li>Sample plan: Samples will demonstrate localized validation errors and exception messages across cultures.</li>
+</ul>
+<p>Adoption guidance:
+Expect a phased rollout: design doc review, doc stubs under <code>docs/extensions/</code>, sample scaffolding under <code>samples/</code>, then code with tests. Early adopters can start by reading the HighLevelDocs entry and sketching how CleanArchitecture.Extensions.Localization would plug into their pipelines. We will ship SourceLink, XML docs, symbols, and a README with concrete install/usage guidance just like Core and Validation.</p>
+<p>Interoperability patterns:
+CleanArchitecture.Extensions.Localization will be deliberate about compatibility with other extensions. We will highlight safe ordering in the MediatR pipeline, how to mix with multitenancy (when applicable), and what to do when pairing with Observability or Caching. For teams migrating from the baseline template, we will document shims or adapters so you do not have to rewrite working code to adopt this module.</p>
+<p>Monitoring and reliability:
+Behaviors and adapters will emit correlation-aware logs and, when relevant, metrics that feed Observability once it ships. Failure modes will be documented with mitigations and configuration toggles. Expect guidance on defaults vs production hardening, plus testing tips using fakes or in-memory providers.</p>
+<h2 id="cleanarchitectureextensionsauthorization">CleanArchitecture.Extensions.Authorization (work in progress — Enterprise)<a class="headerlink" href="#cleanarchitectureextensionsauthorization" title="Permanent link">&para;</a></h2>
+<p>What we are building:
+CleanArchitecture.Extensions.Authorization is focused on Permission model, policy providers, role-per-tenant support, and decision engine for commands/queries and HTTP endpoints. This extension exists to keep the Clean Architecture layers honest while reducing the friction that teams feel when wiring cross-cutting concerns by hand. The goal is to let you add capability without bending the original template or leaking infrastructure details into Application and Domain code.</p>
+<p>Why it matters for Clean Architecture teams:
+Permission-aware handlers that need to evaluate complex policies, sometimes per tenant, and return consistent failure responses. The package narrative lives in the roadmap because we want contributors to see the intended surface area before a single line of code is written. When this lands, expect to see configuration defaults that match the template, clear points to hook into MediatR or middleware, and a way to back out gracefully if you choose not to adopt it.</p>
+<p>How it will integrate:
+Will integrate with Identity when present, reuse multitenancy context, and expose behaviors to run before Validation/Performance. We will reuse correlation IDs, logging scopes, and Result metadata from Core wherever possible so diagnostics stay consistent. Each adapter or behavior will be optional; you choose how deep you want to go based on your deployment and compliance needs.</p>
+<p>Documentation and design trail:</p>
+<ul>
+<li>Design notes: HighLevelDocs/Domain3-EnterpriseExtensions/CleanArchitecture.Extensions.Authorization.md</li>
+<li>Planned docs entry: docs/extensions/authorization.md (planned)</li>
+<li>Sample plan: Samples will cover permission checks in handlers and minimal APIs with policy wiring.</li>
+</ul>
+<p>Adoption guidance:
+Expect a phased rollout: design doc review, doc stubs under <code>docs/extensions/</code>, sample scaffolding under <code>samples/</code>, then code with tests. Early adopters can start by reading the HighLevelDocs entry and sketching how CleanArchitecture.Extensions.Authorization would plug into their pipelines. We will ship SourceLink, XML docs, symbols, and a README with concrete install/usage guidance just like Core and Validation.</p>
+<p>Interoperability patterns:
+CleanArchitecture.Extensions.Authorization will be deliberate about compatibility with other extensions. We will highlight safe ordering in the MediatR pipeline, how to mix with multitenancy (when applicable), and what to do when pairing with Observability or Caching. For teams migrating from the baseline template, we will document shims or adapters so you do not have to rewrite working code to adopt this module.</p>
+<p>Monitoring and reliability:
+Behaviors and adapters will emit correlation-aware logs and, when relevant, metrics that feed Observability once it ships. Failure modes will be documented with mitigations and configuration toggles. Expect guidance on defaults vs production hardening, plus testing tips using fakes or in-memory providers.</p>
+<h2 id="cleanarchitectureextensionspayments">CleanArchitecture.Extensions.Payments (work in progress — SaaS)<a class="headerlink" href="#cleanarchitectureextensionspayments" title="Permanent link">&para;</a></h2>
+<p>What we are building:
+CleanArchitecture.Extensions.Payments is focused on Payments and subscriptions (starting with Stripe), webhook processing, billing events, and subscription lifecycle helpers. This extension exists to keep the Clean Architecture layers honest while reducing the friction that teams feel when wiring cross-cutting concerns by hand. The goal is to let you add capability without bending the original template or leaking infrastructure details into Application and Domain code.</p>
+<p>Why it matters for Clean Architecture teams:
+SaaS products billing tenants, handling upgrades/downgrades, and reacting to webhooks without scattering billing logic across handlers. The package narrative lives in the roadmap because we want contributors to see the intended surface area before a single line of code is written. When this lands, expect to see configuration defaults that match the template, clear points to hook into MediatR or middleware, and a way to back out gracefully if you choose not to adopt it.</p>
+<p>How it will integrate:
+Will publish billing events that Notifications and Provisioning can consume, and will include adapters for multitenant billing contexts. We will reuse correlation IDs, logging scopes, and Result metadata from Core wherever possible so diagnostics stay consistent. Each adapter or behavior will be optional; you choose how deep you want to go based on your deployment and compliance needs.</p>
+<p>Documentation and design trail:</p>
+<ul>
+<li>Design notes: HighLevelDocs/Domain4-SaaSBusinessExtensions/CleanArchitecture.Extensions.Payments.md</li>
+<li>Planned docs entry: docs/extensions/payments.md (planned)</li>
+<li>Sample plan: Samples will mock Stripe flows, webhook verification, and subscription state transitions.</li>
+</ul>
+<p>Adoption guidance:
+Expect a phased rollout: design doc review, doc stubs under <code>docs/extensions/</code>, sample scaffolding under <code>samples/</code>, then code with tests. Early adopters can start by reading the HighLevelDocs entry and sketching how CleanArchitecture.Extensions.Payments would plug into their pipelines. We will ship SourceLink, XML docs, symbols, and a README with concrete install/usage guidance just like Core and Validation.</p>
+<p>Interoperability patterns:
+CleanArchitecture.Extensions.Payments will be deliberate about compatibility with other extensions. We will highlight safe ordering in the MediatR pipeline, how to mix with multitenancy (when applicable), and what to do when pairing with Observability or Caching. For teams migrating from the baseline template, we will document shims or adapters so you do not have to rewrite working code to adopt this module.</p>
+<p>Monitoring and reliability:
+Behaviors and adapters will emit correlation-aware logs and, when relevant, metrics that feed Observability once it ships. Failure modes will be documented with mitigations and configuration toggles. Expect guidance on defaults vs production hardening, plus testing tips using fakes or in-memory providers.</p>
+<h2 id="cleanarchitectureextensionsdocuments">CleanArchitecture.Extensions.Documents (work in progress — SaaS)<a class="headerlink" href="#cleanarchitectureextensionsdocuments" title="Permanent link">&para;</a></h2>
+<p>What we are building:
+CleanArchitecture.Extensions.Documents is focused on Document generation for PDF/Excel with template-driven rendering and storage-friendly outputs. This extension exists to keep the Clean Architecture layers honest while reducing the friction that teams feel when wiring cross-cutting concerns by hand. The goal is to let you add capability without bending the original template or leaking infrastructure details into Application and Domain code.</p>
+<p>Why it matters for Clean Architecture teams:
+Exporting invoices, reports, and data extracts while keeping generation out of handlers and aligned with storage abstractions. The package narrative lives in the roadmap because we want contributors to see the intended surface area before a single line of code is written. When this lands, expect to see configuration defaults that match the template, clear points to hook into MediatR or middleware, and a way to back out gracefully if you choose not to adopt it.</p>
+<p>How it will integrate:
+Will work with Storage adapters to persist artifacts, with Notifications to deliver links, and with Settings for template configuration. We will reuse correlation IDs, logging scopes, and Result metadata from Core wherever possible so diagnostics stay consistent. Each adapter or behavior will be optional; you choose how deep you want to go based on your deployment and compliance needs.</p>
+<p>Documentation and design trail:</p>
+<ul>
+<li>Design notes: HighLevelDocs/Domain4-SaaSBusinessExtensions/CleanArchitecture.Extensions.Documents.md</li>
+<li>Planned docs entry: docs/extensions/documents.md (planned)</li>
+<li>Sample plan: Samples will include report generation with template engines and storage uploads.</li>
+</ul>
+<p>Adoption guidance:
+Expect a phased rollout: design doc review, doc stubs under <code>docs/extensions/</code>, sample scaffolding under <code>samples/</code>, then code with tests. Early adopters can start by reading the HighLevelDocs entry and sketching how CleanArchitecture.Extensions.Documents would plug into their pipelines. We will ship SourceLink, XML docs, symbols, and a README with concrete install/usage guidance just like Core and Validation.</p>
+<p>Interoperability patterns:
+CleanArchitecture.Extensions.Documents will be deliberate about compatibility with other extensions. We will highlight safe ordering in the MediatR pipeline, how to mix with multitenancy (when applicable), and what to do when pairing with Observability or Caching. For teams migrating from the baseline template, we will document shims or adapters so you do not have to rewrite working code to adopt this module.</p>
+<p>Monitoring and reliability:
+Behaviors and adapters will emit correlation-aware logs and, when relevant, metrics that feed Observability once it ships. Failure modes will be documented with mitigations and configuration toggles. Expect guidance on defaults vs production hardening, plus testing tips using fakes or in-memory providers.</p>
+<h2 id="cleanarchitectureextensionsusermanagement">CleanArchitecture.Extensions.UserManagement (work in progress — SaaS)<a class="headerlink" href="#cleanarchitectureextensionsusermanagement" title="Permanent link">&para;</a></h2>
+<p>What we are building:
+CleanArchitecture.Extensions.UserManagement is focused on User onboarding, invitations, MFA abstraction, and passwordless flows tuned for multitenant applications. This extension exists to keep the Clean Architecture layers honest while reducing the friction that teams feel when wiring cross-cutting concerns by hand. The goal is to let you add capability without bending the original template or leaking infrastructure details into Application and Domain code.</p>
+<p>Why it matters for Clean Architecture teams:
+Invite flows, role assignment per tenant, and MFA enforcement without embedding provider specifics into Application handlers. The package narrative lives in the roadmap because we want contributors to see the intended surface area before a single line of code is written. When this lands, expect to see configuration defaults that match the template, clear points to hook into MediatR or middleware, and a way to back out gracefully if you choose not to adopt it.</p>
+<p>How it will integrate:
+Will align with Identity and Authorization modules, expose events for Notifications, and respect multitenancy context. We will reuse correlation IDs, logging scopes, and Result metadata from Core wherever possible so diagnostics stay consistent. Each adapter or behavior will be optional; you choose how deep you want to go based on your deployment and compliance needs.</p>
+<p>Documentation and design trail:</p>
+<ul>
+<li>Design notes: HighLevelDocs/Domain4-SaaSBusinessExtensions/CleanArchitecture.Extensions.UserManagement.md</li>
+<li>Planned docs entry: docs/extensions/user-management.md (planned)</li>
+<li>Sample plan: Samples will demonstrate invitation acceptance, MFA setup, and passwordless login with mock providers.</li>
+</ul>
+<p>Adoption guidance:
+Expect a phased rollout: design doc review, doc stubs under <code>docs/extensions/</code>, sample scaffolding under <code>samples/</code>, then code with tests. Early adopters can start by reading the HighLevelDocs entry and sketching how CleanArchitecture.Extensions.UserManagement would plug into their pipelines. We will ship SourceLink, XML docs, symbols, and a README with concrete install/usage guidance just like Core and Validation.</p>
+<p>Interoperability patterns:
+CleanArchitecture.Extensions.UserManagement will be deliberate about compatibility with other extensions. We will highlight safe ordering in the MediatR pipeline, how to mix with multitenancy (when applicable), and what to do when pairing with Observability or Caching. For teams migrating from the baseline template, we will document shims or adapters so you do not have to rewrite working code to adopt this module.</p>
+<p>Monitoring and reliability:
+Behaviors and adapters will emit correlation-aware logs and, when relevant, metrics that feed Observability once it ships. Failure modes will be documented with mitigations and configuration toggles. Expect guidance on defaults vs production hardening, plus testing tips using fakes or in-memory providers.</p>
+<h2 id="cleanarchitectureextensionsredis">CleanArchitecture.Extensions.Redis (work in progress — Infrastructure)<a class="headerlink" href="#cleanarchitectureextensionsredis" title="Permanent link">&para;</a></h2>
+<p>What we are building:
+CleanArchitecture.Extensions.Redis is focused on Redis adapters for the caching abstraction with multi-tenant key strategies and optional pub/sub helpers. This extension exists to keep the Clean Architecture layers honest while reducing the friction that teams feel when wiring cross-cutting concerns by hand. The goal is to let you add capability without bending the original template or leaking infrastructure details into Application and Domain code.</p>
+<p>Why it matters for Clean Architecture teams:
+Projects standardizing on Redis who want consistent key naming, instrumentation, and tenant-safe operations. The package narrative lives in the roadmap because we want contributors to see the intended surface area before a single line of code is written. When this lands, expect to see configuration defaults that match the template, clear points to hook into MediatR or middleware, and a way to back out gracefully if you choose not to adopt it.</p>
+<p>How it will integrate:
+Will wrap the Caching module APIs and align with Multitenancy.Redis for key prefixes and eviction rules. We will reuse correlation IDs, logging scopes, and Result metadata from Core wherever possible so diagnostics stay consistent. Each adapter or behavior will be optional; you choose how deep you want to go based on your deployment and compliance needs.</p>
+<p>Documentation and design trail:</p>
+<ul>
+<li>Design notes: HighLevelDocs/Domain5-InfrastructureAdapters/CleanArchitecture.Extensions.Redis.md</li>
+<li>Planned docs entry: docs/extensions/redis.md (planned)</li>
+<li>Sample plan: Samples will show Redis-backed caching with health checks and diagnostics.</li>
+</ul>
+<p>Adoption guidance:
+Expect a phased rollout: design doc review, doc stubs under <code>docs/extensions/</code>, sample scaffolding under <code>samples/</code>, then code with tests. Early adopters can start by reading the HighLevelDocs entry and sketching how CleanArchitecture.Extensions.Redis would plug into their pipelines. We will ship SourceLink, XML docs, symbols, and a README with concrete install/usage guidance just like Core and Validation.</p>
+<p>Interoperability patterns:
+CleanArchitecture.Extensions.Redis will be deliberate about compatibility with other extensions. We will highlight safe ordering in the MediatR pipeline, how to mix with multitenancy (when applicable), and what to do when pairing with Observability or Caching. For teams migrating from the baseline template, we will document shims or adapters so you do not have to rewrite working code to adopt this module.</p>
+<p>Monitoring and reliability:
+Behaviors and adapters will emit correlation-aware logs and, when relevant, metrics that feed Observability once it ships. Failure modes will be documented with mitigations and configuration toggles. Expect guidance on defaults vs production hardening, plus testing tips using fakes or in-memory providers.</p>
+<h2 id="cleanarchitectureextensionsmessagebus">CleanArchitecture.Extensions.MessageBus (work in progress — Infrastructure)<a class="headerlink" href="#cleanarchitectureextensionsmessagebus" title="Permanent link">&para;</a></h2>
+<p>What we are building:
+CleanArchitecture.Extensions.MessageBus is focused on Message bus adapters for RabbitMQ, Azure Service Bus, and Kafka, with outbox patterns and integration event pipelines. This extension exists to keep the Clean Architecture layers honest while reducing the friction that teams feel when wiring cross-cutting concerns by hand. The goal is to let you add capability without bending the original template or leaking infrastructure details into Application and Domain code.</p>
+<p>Why it matters for Clean Architecture teams:
+Handlers publishing integration events that must carry correlation and tenant metadata; consumers needing retry/resiliency guidance. The package narrative lives in the roadmap because we want contributors to see the intended surface area before a single line of code is written. When this lands, expect to see configuration defaults that match the template, clear points to hook into MediatR or middleware, and a way to back out gracefully if you choose not to adopt it.</p>
+<p>How it will integrate:
+Will align with Core correlation/logging, integrate with Observability for tracing, and expose message handlers that mimic MediatR behaviors. We will reuse correlation IDs, logging scopes, and Result metadata from Core wherever possible so diagnostics stay consistent. Each adapter or behavior will be optional; you choose how deep you want to go based on your deployment and compliance needs.</p>
+<p>Documentation and design trail:</p>
+<ul>
+<li>Design notes: HighLevelDocs/Domain5-InfrastructureAdapters/CleanArchitecture.Extensions.MessageBus.md</li>
+<li>Planned docs entry: docs/extensions/message-bus.md (planned)</li>
+<li>Sample plan: Samples will include outbox/inbox flows and multi-transport adapters.</li>
+</ul>
+<p>Adoption guidance:
+Expect a phased rollout: design doc review, doc stubs under <code>docs/extensions/</code>, sample scaffolding under <code>samples/</code>, then code with tests. Early adopters can start by reading the HighLevelDocs entry and sketching how CleanArchitecture.Extensions.MessageBus would plug into their pipelines. We will ship SourceLink, XML docs, symbols, and a README with concrete install/usage guidance just like Core and Validation.</p>
+<p>Interoperability patterns:
+CleanArchitecture.Extensions.MessageBus will be deliberate about compatibility with other extensions. We will highlight safe ordering in the MediatR pipeline, how to mix with multitenancy (when applicable), and what to do when pairing with Observability or Caching. For teams migrating from the baseline template, we will document shims or adapters so you do not have to rewrite working code to adopt this module.</p>
+<p>Monitoring and reliability:
+Behaviors and adapters will emit correlation-aware logs and, when relevant, metrics that feed Observability once it ships. Failure modes will be documented with mitigations and configuration toggles. Expect guidance on defaults vs production hardening, plus testing tips using fakes or in-memory providers.</p>
+<h2 id="cleanarchitectureextensionsobservability">CleanArchitecture.Extensions.Observability (work in progress — Infrastructure)<a class="headerlink" href="#cleanarchitectureextensionsobservability" title="Permanent link">&para;</a></h2>
+<p>What we are building:
+CleanArchitecture.Extensions.Observability is focused on OpenTelemetry tracing, logging enrichers, and metrics that honor correlation IDs and tenant context set by Core and Multitenancy. This extension exists to keep the Clean Architecture layers honest while reducing the friction that teams feel when wiring cross-cutting concerns by hand. The goal is to let you add capability without bending the original template or leaking infrastructure details into Application and Domain code.</p>
+<p>Why it matters for Clean Architecture teams:
+Teams instrumenting handlers, message processing, and HTTP endpoints who want OTEL export with minimal wiring and consistent metadata. The package narrative lives in the roadmap because we want contributors to see the intended surface area before a single line of code is written. When this lands, expect to see configuration defaults that match the template, clear points to hook into MediatR or middleware, and a way to back out gracefully if you choose not to adopt it.</p>
+<p>How it will integrate:
+Will wrap Core logging abstractions, integrate with message bus adapters, and emit metrics that RateLimiting and Caching can use. We will reuse correlation IDs, logging scopes, and Result metadata from Core wherever possible so diagnostics stay consistent. Each adapter or behavior will be optional; you choose how deep you want to go based on your deployment and compliance needs.</p>
+<p>Documentation and design trail:</p>
+<ul>
+<li>Design notes: HighLevelDocs/Domain5-InfrastructureAdapters/CleanArchitecture.Extensions.Observability.md</li>
+<li>Planned docs entry: docs/extensions/observability.md (planned)</li>
+<li>Sample plan: Samples will show trace propagation through MediatR, message buses, and HTTP requests.</li>
+</ul>
+<p>Adoption guidance:
+Expect a phased rollout: design doc review, doc stubs under <code>docs/extensions/</code>, sample scaffolding under <code>samples/</code>, then code with tests. Early adopters can start by reading the HighLevelDocs entry and sketching how CleanArchitecture.Extensions.Observability would plug into their pipelines. We will ship SourceLink, XML docs, symbols, and a README with concrete install/usage guidance just like Core and Validation.</p>
+<p>Interoperability patterns:
+CleanArchitecture.Extensions.Observability will be deliberate about compatibility with other extensions. We will highlight safe ordering in the MediatR pipeline, how to mix with multitenancy (when applicable), and what to do when pairing with Observability or Caching. For teams migrating from the baseline template, we will document shims or adapters so you do not have to rewrite working code to adopt this module.</p>
+<p>Monitoring and reliability:
+Behaviors and adapters will emit correlation-aware logs and, when relevant, metrics that feed Observability once it ships. Failure modes will be documented with mitigations and configuration toggles. Expect guidance on defaults vs production hardening, plus testing tips using fakes or in-memory providers.</p>
+<h2 id="cleanarchitectureextensionsstorage">CleanArchitecture.Extensions.Storage (work in progress — Infrastructure)<a class="headerlink" href="#cleanarchitectureextensionsstorage" title="Permanent link">&para;</a></h2>
+<p>What we are building:
+CleanArchitecture.Extensions.Storage is focused on Storage adapters for Azure Blob, AWS S3, and local storage with consistent abstractions and retry guidance. This extension exists to keep the Clean Architecture layers honest while reducing the friction that teams feel when wiring cross-cutting concerns by hand. The goal is to let you add capability without bending the original template or leaking infrastructure details into Application and Domain code.</p>
+<p>Why it matters for Clean Architecture teams:
+Projects needing to swap storage providers without touching Application code, with optional tenant folder strategies from Multitenancy.Storage. The package narrative lives in the roadmap because we want contributors to see the intended surface area before a single line of code is written. When this lands, expect to see configuration defaults that match the template, clear points to hook into MediatR or middleware, and a way to back out gracefully if you choose not to adopt it.</p>
+<p>How it will integrate:
+Will expose a storage abstraction consumed by Documents, UserManagement, and Multitenancy.Storage while using Core logging for diagnostics. We will reuse correlation IDs, logging scopes, and Result metadata from Core wherever possible so diagnostics stay consistent. Each adapter or behavior will be optional; you choose how deep you want to go based on your deployment and compliance needs.</p>
+<p>Documentation and design trail:</p>
+<ul>
+<li>Design notes: HighLevelDocs/Domain5-InfrastructureAdapters/CleanArchitecture.Extensions.Storage.md</li>
+<li>Planned docs entry: docs/extensions/storage.md (planned)</li>
+<li>Sample plan: Samples will demonstrate uploads/downloads with different providers and integration with tenant folder strategies.</li>
+</ul>
+<p>Adoption guidance:
+Expect a phased rollout: design doc review, doc stubs under <code>docs/extensions/</code>, sample scaffolding under <code>samples/</code>, then code with tests. Early adopters can start by reading the HighLevelDocs entry and sketching how CleanArchitecture.Extensions.Storage would plug into their pipelines. We will ship SourceLink, XML docs, symbols, and a README with concrete install/usage guidance just like Core and Validation.</p>
+<p>Interoperability patterns:
+CleanArchitecture.Extensions.Storage will be deliberate about compatibility with other extensions. We will highlight safe ordering in the MediatR pipeline, how to mix with multitenancy (when applicable), and what to do when pairing with Observability or Caching. For teams migrating from the baseline template, we will document shims or adapters so you do not have to rewrite working code to adopt this module.</p>
+<p>Monitoring and reliability:
+Behaviors and adapters will emit correlation-aware logs and, when relevant, metrics that feed Observability once it ships. Failure modes will be documented with mitigations and configuration toggles. Expect guidance on defaults vs production hardening, plus testing tips using fakes or in-memory providers.</p>
+<h2 id="cleanarchitectureextensionssearch">CleanArchitecture.Extensions.Search (work in progress — Infrastructure)<a class="headerlink" href="#cleanarchitectureextensionssearch" title="Permanent link">&para;</a></h2>
+<p>What we are building:
+CleanArchitecture.Extensions.Search is focused on Search adapters for ElasticSearch, Azure Search, and full-text providers with clean query interfaces. This extension exists to keep the Clean Architecture layers honest while reducing the friction that teams feel when wiring cross-cutting concerns by hand. The goal is to let you add capability without bending the original template or leaking infrastructure details into Application and Domain code.</p>
+<p>Why it matters for Clean Architecture teams:
+Applications implementing search without committing to a provider, needing multi-tenant index strategies and consistent analyzers. The package narrative lives in the roadmap because we want contributors to see the intended surface area before a single line of code is written. When this lands, expect to see configuration defaults that match the template, clear points to hook into MediatR or middleware, and a way to back out gracefully if you choose not to adopt it.</p>
+<p>How it will integrate:
+Will align with Observability and Multitenancy to propagate correlation and tenant metadata; may include pipelines for indexing domain events. We will reuse correlation IDs, logging scopes, and Result metadata from Core wherever possible so diagnostics stay consistent. Each adapter or behavior will be optional; you choose how deep you want to go based on your deployment and compliance needs.</p>
+<p>Documentation and design trail:</p>
+<ul>
+<li>Design notes: HighLevelDocs/Domain5-InfrastructureAdapters/CleanArchitecture.Extensions.Search.md</li>
+<li>Planned docs entry: docs/extensions/search.md (planned)</li>
+<li>Sample plan: Samples will show indexing and querying with interchangeable providers and tenant-aware indexes.</li>
+</ul>
+<p>Adoption guidance:
+Expect a phased rollout: design doc review, doc stubs under <code>docs/extensions/</code>, sample scaffolding under <code>samples/</code>, then code with tests. Early adopters can start by reading the HighLevelDocs entry and sketching how CleanArchitecture.Extensions.Search would plug into their pipelines. We will ship SourceLink, XML docs, symbols, and a README with concrete install/usage guidance just like Core and Validation.</p>
+<p>Interoperability patterns:
+CleanArchitecture.Extensions.Search will be deliberate about compatibility with other extensions. We will highlight safe ordering in the MediatR pipeline, how to mix with multitenancy (when applicable), and what to do when pairing with Observability or Caching. For teams migrating from the baseline template, we will document shims or adapters so you do not have to rewrite working code to adopt this module.</p>
+<p>Monitoring and reliability:
+Behaviors and adapters will emit correlation-aware logs and, when relevant, metrics that feed Observability once it ships. Failure modes will be documented with mitigations and configuration toggles. Expect guidance on defaults vs production hardening, plus testing tips using fakes or in-memory providers.</p>
+<h2 id="cleanarchitectureextensionscli">CleanArchitecture.Extensions.CLI (work in progress — Developer Experience)<a class="headerlink" href="#cleanarchitectureextensionscli" title="Permanent link">&para;</a></h2>
+<p>What we are building:
+CleanArchitecture.Extensions.CLI is focused on CLI for scaffolding modules, wiring extensions into projects, and generating CQRS artifacts with consistent conventions. This extension exists to keep the Clean Architecture layers honest while reducing the friction that teams feel when wiring cross-cutting concerns by hand. The goal is to let you add capability without bending the original template or leaking infrastructure details into Application and Domain code.</p>
+<p>Why it matters for Clean Architecture teams:
+Developers who want <code>caext new module</code> or <code>caext add multitenancy</code> commands to wire packages and samples quickly. The package narrative lives in the roadmap because we want contributors to see the intended surface area before a single line of code is written. When this lands, expect to see configuration defaults that match the template, clear points to hook into MediatR or middleware, and a way to back out gracefully if you choose not to adopt it.</p>
+<p>How it will integrate:
+Will rely on Templates and NuGetPackaging conventions, and will include commands to fetch latest docs or snippets. We will reuse correlation IDs, logging scopes, and Result metadata from Core wherever possible so diagnostics stay consistent. Each adapter or behavior will be optional; you choose how deep you want to go based on your deployment and compliance needs.</p>
+<p>Documentation and design trail:</p>
+<ul>
+<li>Design notes: HighLevelDocs/Domain6-DeveloperExperience/CleanArchitecture.Extensions.CLI.md</li>
+<li>Planned docs entry: docs/extensions/cli.md (planned)</li>
+<li>Sample plan: Samples will be command transcripts and generated projects showing the CLI output.</li>
+</ul>
+<p>Adoption guidance:
+Expect a phased rollout: design doc review, doc stubs under <code>docs/extensions/</code>, sample scaffolding under <code>samples/</code>, then code with tests. Early adopters can start by reading the HighLevelDocs entry and sketching how CleanArchitecture.Extensions.CLI would plug into their pipelines. We will ship SourceLink, XML docs, symbols, and a README with concrete install/usage guidance just like Core and Validation.</p>
+<p>Interoperability patterns:
+CleanArchitecture.Extensions.CLI will be deliberate about compatibility with other extensions. We will highlight safe ordering in the MediatR pipeline, how to mix with multitenancy (when applicable), and what to do when pairing with Observability or Caching. For teams migrating from the baseline template, we will document shims or adapters so you do not have to rewrite working code to adopt this module.</p>
+<p>Monitoring and reliability:
+Behaviors and adapters will emit correlation-aware logs and, when relevant, metrics that feed Observability once it ships. Failure modes will be documented with mitigations and configuration toggles. Expect guidance on defaults vs production hardening, plus testing tips using fakes or in-memory providers.</p>
+<h2 id="cleanarchitectureextensionstemplates">CleanArchitecture.Extensions.Templates (work in progress — Developer Experience)<a class="headerlink" href="#cleanarchitectureextensionstemplates" title="Permanent link">&para;</a></h2>
+<p>What we are building:
+CleanArchitecture.Extensions.Templates is focused on Template variants layered on Jason's base: multitenant, audit-ready, SaaS, and microservices-friendly starters. This extension exists to keep the Clean Architecture layers honest while reducing the friction that teams feel when wiring cross-cutting concerns by hand. The goal is to let you add capability without bending the original template or leaking infrastructure details into Application and Domain code.</p>
+<p>Why it matters for Clean Architecture teams:
+Teams that want prewired solutions with extensions included, ensuring composition rules are respected without manual steps. The package narrative lives in the roadmap because we want contributors to see the intended surface area before a single line of code is written. When this lands, expect to see configuration defaults that match the template, clear points to hook into MediatR or middleware, and a way to back out gracefully if you choose not to adopt it.</p>
+<p>How it will integrate:
+Will track the upstream template closely, integrate with CLI commands, and include sample data and scripts per variant. We will reuse correlation IDs, logging scopes, and Result metadata from Core wherever possible so diagnostics stay consistent. Each adapter or behavior will be optional; you choose how deep you want to go based on your deployment and compliance needs.</p>
+<p>Documentation and design trail:</p>
+<ul>
+<li>Design notes: HighLevelDocs/Domain6-DeveloperExperience/CleanArchitecture.Extensions.Templates.md</li>
+<li>Planned docs entry: docs/extensions/templates.md (planned)</li>
+<li>Sample plan: Templates will include runnable starter solutions; docs will show what is wired where.</li>
+</ul>
+<p>Adoption guidance:
+Expect a phased rollout: design doc review, doc stubs under <code>docs/extensions/</code>, sample scaffolding under <code>samples/</code>, then code with tests. Early adopters can start by reading the HighLevelDocs entry and sketching how CleanArchitecture.Extensions.Templates would plug into their pipelines. We will ship SourceLink, XML docs, symbols, and a README with concrete install/usage guidance just like Core and Validation.</p>
+<p>Interoperability patterns:
+CleanArchitecture.Extensions.Templates will be deliberate about compatibility with other extensions. We will highlight safe ordering in the MediatR pipeline, how to mix with multitenancy (when applicable), and what to do when pairing with Observability or Caching. For teams migrating from the baseline template, we will document shims or adapters so you do not have to rewrite working code to adopt this module.</p>
+<p>Monitoring and reliability:
+Behaviors and adapters will emit correlation-aware logs and, when relevant, metrics that feed Observability once it ships. Failure modes will be documented with mitigations and configuration toggles. Expect guidance on defaults vs production hardening, plus testing tips using fakes or in-memory providers.</p>
+<h2 id="cleanarchitectureextensionstesting">CleanArchitecture.Extensions.Testing (work in progress — Developer Experience)<a class="headerlink" href="#cleanarchitectureextensionstesting" title="Permanent link">&para;</a></h2>
+<p>What we are building:
+CleanArchitecture.Extensions.Testing is focused on Testing utilities for CQRS handlers, tenant-aware contexts, and pipeline behaviors with fakes and fixtures. This extension exists to keep the Clean Architecture layers honest while reducing the friction that teams feel when wiring cross-cutting concerns by hand. The goal is to let you add capability without bending the original template or leaking infrastructure details into Application and Domain code.</p>
+<p>Why it matters for Clean Architecture teams:
+Developers wanting to assert Results, domain events, and tenant-aware behaviors without verbose setup code. The package narrative lives in the roadmap because we want contributors to see the intended surface area before a single line of code is written. When this lands, expect to see configuration defaults that match the template, clear points to hook into MediatR or middleware, and a way to back out gracefully if you choose not to adopt it.</p>
+<p>How it will integrate:
+Will reuse Core abstractions (clock, logger, results) and plug into multitenancy/testing helpers for tenant context. We will reuse correlation IDs, logging scopes, and Result metadata from Core wherever possible so diagnostics stay consistent. Each adapter or behavior will be optional; you choose how deep you want to go based on your deployment and compliance needs.</p>
+<p>Documentation and design trail:</p>
+<ul>
+<li>Design notes: HighLevelDocs/Domain6-DeveloperExperience/CleanArchitecture.Extensions.Testing.md</li>
+<li>Planned docs entry: docs/extensions/testing.md (planned)</li>
+<li>Sample plan: Samples will include test fixtures for handlers and pipeline behaviors with deterministic clocks.</li>
+</ul>
+<p>Adoption guidance:
+Expect a phased rollout: design doc review, doc stubs under <code>docs/extensions/</code>, sample scaffolding under <code>samples/</code>, then code with tests. Early adopters can start by reading the HighLevelDocs entry and sketching how CleanArchitecture.Extensions.Testing would plug into their pipelines. We will ship SourceLink, XML docs, symbols, and a README with concrete install/usage guidance just like Core and Validation.</p>
+<p>Interoperability patterns:
+CleanArchitecture.Extensions.Testing will be deliberate about compatibility with other extensions. We will highlight safe ordering in the MediatR pipeline, how to mix with multitenancy (when applicable), and what to do when pairing with Observability or Caching. For teams migrating from the baseline template, we will document shims or adapters so you do not have to rewrite working code to adopt this module.</p>
+<p>Monitoring and reliability:
+Behaviors and adapters will emit correlation-aware logs and, when relevant, metrics that feed Observability once it ships. Failure modes will be documented with mitigations and configuration toggles. Expect guidance on defaults vs production hardening, plus testing tips using fakes or in-memory providers.</p>
+<h2 id="cleanarchitectureextensionssourcelinkandsymbols">CleanArchitecture.Extensions.SourceLinkAndSymbols (work in progress — Developer Experience)<a class="headerlink" href="#cleanarchitectureextensionssourcelinkandsymbols" title="Permanent link">&para;</a></h2>
+<p>What we are building:
+CleanArchitecture.Extensions.SourceLinkAndSymbols is focused on Build-time helpers to ensure NuGet packages ship with SourceLink and snupkg symbols consistently across modules. This extension exists to keep the Clean Architecture layers honest while reducing the friction that teams feel when wiring cross-cutting concerns by hand. The goal is to let you add capability without bending the original template or leaking infrastructure details into Application and Domain code.</p>
+<p>Why it matters for Clean Architecture teams:
+Package maintainers ensuring debugger-friendly distributions without copy/pasting configuration across projects. The package narrative lives in the roadmap because we want contributors to see the intended surface area before a single line of code is written. When this lands, expect to see configuration defaults that match the template, clear points to hook into MediatR or middleware, and a way to back out gracefully if you choose not to adopt it.</p>
+<p>How it will integrate:
+Will be consumed by the build pipeline and referenced by new modules via props/targets files. We will reuse correlation IDs, logging scopes, and Result metadata from Core wherever possible so diagnostics stay consistent. Each adapter or behavior will be optional; you choose how deep you want to go based on your deployment and compliance needs.</p>
+<p>Documentation and design trail:</p>
+<ul>
+<li>Design notes: HighLevelDocs/Domain6-DeveloperExperience/CleanArchitecture.Extensions.SourceLinkAndSymbols.md</li>
+<li>Planned docs entry: docs/extensions/sourcelink-and-symbols.md (planned)</li>
+<li>Sample plan: Samples will demonstrate stepping into package source from a consumer project.</li>
+</ul>
+<p>Adoption guidance:
+Expect a phased rollout: design doc review, doc stubs under <code>docs/extensions/</code>, sample scaffolding under <code>samples/</code>, then code with tests. Early adopters can start by reading the HighLevelDocs entry and sketching how CleanArchitecture.Extensions.SourceLinkAndSymbols would plug into their pipelines. We will ship SourceLink, XML docs, symbols, and a README with concrete install/usage guidance just like Core and Validation.</p>
+<p>Interoperability patterns:
+CleanArchitecture.Extensions.SourceLinkAndSymbols will be deliberate about compatibility with other extensions. We will highlight safe ordering in the MediatR pipeline, how to mix with multitenancy (when applicable), and what to do when pairing with Observability or Caching. For teams migrating from the baseline template, we will document shims or adapters so you do not have to rewrite working code to adopt this module.</p>
+<p>Monitoring and reliability:
+Behaviors and adapters will emit correlation-aware logs and, when relevant, metrics that feed Observability once it ships. Failure modes will be documented with mitigations and configuration toggles. Expect guidance on defaults vs production hardening, plus testing tips using fakes or in-memory providers.</p>
+<h2 id="cleanarchitectureextensionsnugetpackaging">CleanArchitecture.Extensions.NuGetPackaging (work in progress — Developer Experience)<a class="headerlink" href="#cleanarchitectureextensionsnugetpackaging" title="Permanent link">&para;</a></h2>
+<p>What we are building:
+CleanArchitecture.Extensions.NuGetPackaging is focused on Packaging conventions, semantic versioning guidance, and CI tasks for publishing extensions with consistent metadata. This extension exists to keep the Clean Architecture layers honest while reducing the friction that teams feel when wiring cross-cutting concerns by hand. The goal is to let you add capability without bending the original template or leaking infrastructure details into Application and Domain code.</p>
+<p>Why it matters for Clean Architecture teams:
+Maintainers who need repeatable packaging with version bumps, changelog updates, and artifact signing across the ecosystem. The package narrative lives in the roadmap because we want contributors to see the intended surface area before a single line of code is written. When this lands, expect to see configuration defaults that match the template, clear points to hook into MediatR or middleware, and a way to back out gracefully if you choose not to adopt it.</p>
+<p>How it will integrate:
+Will be consumed by build scripts and CLI templates, ensuring every module ships with the same quality gates. We will reuse correlation IDs, logging scopes, and Result metadata from Core wherever possible so diagnostics stay consistent. Each adapter or behavior will be optional; you choose how deep you want to go based on your deployment and compliance needs.</p>
+<p>Documentation and design trail:</p>
+<ul>
+<li>Design notes: HighLevelDocs/Domain6-DeveloperExperience/CleanArchitecture.Extensions.NuGetPackaging.md</li>
+<li>Planned docs entry: docs/extensions/nuget-packaging.md (planned)</li>
+<li>Sample plan: Samples will include CI snippets and local packaging walkthroughs.</li>
+</ul>
+<p>Adoption guidance:
+Expect a phased rollout: design doc review, doc stubs under <code>docs/extensions/</code>, sample scaffolding under <code>samples/</code>, then code with tests. Early adopters can start by reading the HighLevelDocs entry and sketching how CleanArchitecture.Extensions.NuGetPackaging would plug into their pipelines. We will ship SourceLink, XML docs, symbols, and a README with concrete install/usage guidance just like Core and Validation.</p>
+<p>Interoperability patterns:
+CleanArchitecture.Extensions.NuGetPackaging will be deliberate about compatibility with other extensions. We will highlight safe ordering in the MediatR pipeline, how to mix with multitenancy (when applicable), and what to do when pairing with Observability or Caching. For teams migrating from the baseline template, we will document shims or adapters so you do not have to rewrite working code to adopt this module.</p>
+<p>Monitoring and reliability:
+Behaviors and adapters will emit correlation-aware logs and, when relevant, metrics that feed Observability once it ships. Failure modes will be documented with mitigations and configuration toggles. Expect guidance on defaults vs production hardening, plus testing tips using fakes or in-memory providers.</p>
+
+
+
+
+
+
+
+  
+    
+  
+  
+
+
+  <aside class="md-source-file">
+    
+      
+  <span class="md-source-file__fact">
+    <span class="md-icon" title="Last update">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1-2.1-2M12.5 7v5.2l4 2.4-1 1L11 13V7h1.5M11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2v1.8Z"/></svg>
+    </span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">December 7, 2025</span>
+  </span>
+
+    
+    
+    
+    
+  </aside>
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var tab,labels=set.querySelector(".tabbed-labels");for(tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.sections", "navigation.tracking", "content.code.copy", "content.tabs.link", "search.suggest", "search.highlight"], "search": "../../assets/javascripts/workers/search.b8dbb3d2.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.c8d2eff1.min.js"></script>
+      
+    
+  </body>
+</html>
