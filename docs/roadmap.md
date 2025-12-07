@@ -1,38 +1,71 @@
 # Roadmap
 
-Early-stage view of where CleanArchitecture.Extensions is heading. Status tags keep us honest about what is shipping now versus what is queued or still being explored.
+An honest, Jason-Taylor-aligned look at where CleanArchitecture.Extensions is headed. We ship extensions as opt-in NuGet packages that plug into the upstream template without forking it. This roadmap tracks what is ready today, what is being built next, and what is queued behind it. Use it alongside HighLevelDocs/\* for the detailed design intent of each module.
 
 ## Status legend
-- **Now**: active development and doc polish.
-- **Next**: planned immediately after the current focus.
-- **Exploring**: shaping scope and design; timeline not locked.
-- **Later**: anchored idea, likely to follow once earlier phases land.
 
-## Current focus
-- Harden the Core extension (guards, `Result`/`Error`, correlation/logging/performance behaviors) and add quickstart-style samples.
-- Finish the Multitenancy Core outline: tenant resolution pipeline, tenant context propagation, and doc coverage that matches the Clean Architecture template.
+- **Shipped** – package available (currently preview), docs + samples live.
+- **Now** – active implementation and doc polish.
+- **Next** – starts immediately after current work; requirements captured in HighLevelDocs.
+- **Exploring** – shaping scope/design; timeline flexible.
+- **Later** – anchored idea, sequenced after earlier phases.
+
+## Current release snapshot
+
+- Shipped (preview): CleanArchitecture.Extensions.Core, CleanArchitecture.Extensions.Validation (net8.0/net10.0, SourceLink, snupkg). Docs and samples are live.
+- Now: Core polish (API/compat tests), Validation polish (samples, rule catalog hardening), documentation sync.
+- Next: Multitenancy Core design → first implementation spike + sample; roadmap-backed doc updates for Multitenancy and Caching.
+
+## Near-term milestones (0–90 days)
+
+- Core/Validation: finalize samples coverage, add missing recipes, keep nav/links aligned with README.
+- Multitenancy Core: lock resolution/enforcement pipeline, DI patterns, and logging/correlation alignment; publish first sample.
+- Caching (planning): finalize abstractions and behaviors; design tenant-safe keying conventions to pair with Multitenancy.
+- Docs hygiene: replace placeholders in Getting Started, Reference, Recipes, Samples, Troubleshooting, and Release Notes with concrete guidance tied to shipped packages.
 
 ## Domains and extensions
 
-### Foundations
-- **Core** — Guard clauses, rich `Result`/`Error` primitives, logging/time abstractions, and pipeline behaviors for correlation, logging, and performance. _Status: Now._ Focus: API polish, samples that mirror Jason Taylor's template, and logging adapter guidance.
+### Domain 1 — Core Architecture Extensions
 
-### Multitenancy
-- **Multitenancy Core** — Tenant resolution strategies (host/header/route/claims), tenant context, and middleware/pipeline hooks to enforce tenant scope. _Status: Next._ Focus: finalize the resolution pipeline, document data-access patterns, and validate with a starter sample.
-- **Tenant-aware caching helpers** — Key conventions and pipeline behaviors layered on the caching extension to prevent cross-tenant leakage. _Status: Exploring._ Focus: design cache key builders that compose with tenant resolution.
+- **CleanArchitecture.Extensions.Core** — guards, rich Result/Error, logging/correlation/performance behaviors, domain events, time, options. _Status: Shipped (preview)_. Focus: API polish, compatibility tests, and adapter guidance.
+- **CleanArchitecture.Extensions.Validation** — FluentValidation behavior, strategies (throw/result/notify), rule catalog, correlation-aware logging. _Status: Shipped (preview)_. Focus: samples + rule coverage.
+- **CleanArchitecture.Extensions.Exceptions** — exception translation/wrapping, problem-details alignment, pipeline behavior. _Status: Exploring_. Depends on Core logging/result contracts.
+- **CleanArchitecture.Extensions.Caching** — cache abstractions, behaviors, invalidation hooks, tenant-safe keying. _Status: Planning_. Will align with Multitenancy and Redis adapters.
 
-### Identity & Access
-- **Authentication bridge** — Opinionated integration with ASP.NET Core Identity/external IdPs that fits the Clean Architecture layers and Core pipeline behaviors. _Status: Exploring._ Focus: align with the Authentication recipe and ensure multi-tenant awareness.
-- **Authorization policies kit** — Simple policy helpers/guards for role-, permission-, and tenant-based checks in the Application and Domain layers. _Status: Exploring._
+### Domain 2 — Multitenancy Ecosystem
 
-### Data & Caching
-- **Caching extension** — Abstractions and behaviors for cache-first queries, invalidation helpers, and tenant-aware key builders. _Status: Planning._ Focus: lock the API surface, pick in-memory/distributed adapters, and wire it into the Caching recipe.
-- **Resilience helpers** — Standardized retry/circuit-breaker wrappers for external calls with Core logging/correlation baked in. _Status: Later._ Focus: decide whether to ship as behaviors, decorators, or both.
+- **Multitenancy Core** — tenant model, resolution providers (host/header/route/claims), middleware, enforcement/validation behaviors. _Status: Next_. First sample planned.
+- **Multitenancy.EFCore** — shared DB/schema-per-tenant/DB-per-tenant filters, DbContext factories, migrations/seeding. _Status: Exploring_.
+- **Multitenancy.AspNetCore** — minimal API/controllers helpers, endpoint filters, provider wiring. _Status: Exploring_.
+- **Multitenancy.Identity** — tenant claim mapping, policy provider, role-per-tenant support. _Status: Exploring_.
+- **Multitenancy.Sharding / Provisioning / Storage / Redis** — sharding strategies, onboarding workflows, tenant-aware storage/cache. _Status: Later/Exploring_ depending on adapter.
 
-### Observability & Operations
-- **Logging adapters** — Bind `IAppLogger`/`ILogContext` to Serilog/`ILogger` with correlation and performance scopes. _Status: Exploring._ Focus: document adapter patterns and provide a Serilog starter.
-- **Metrics and tracing hooks** — Minimal instrumentation around pipeline behaviors and background jobs. _Status: Later._ Focus: choose baseline OpenTelemetry conventions and keep them opt-in.
+### Domain 3 — Enterprise Extensions
 
-### Developer Experience
-- **Samples and templates** — End-to-end sample solutions that combine Core + Multitenancy + caching/auth recipes. _Status: Next._ Focus: publish a minimal sample first, then layer on multitenancy and caching variants.
-- **Documentation hygiene** — Keep MkDocs navigation, quick links, and extension templates in sync with shipped packages. _Status: Now._ Focus: update extension pages as APIs settle and keep this roadmap current.
+- **Audit**, **Settings**, **FeatureFlags**, **Notifications**, **RateLimiting**, **Localization**, **Authorization** — cross-cutting packages to add audit trails, runtime config, feature toggles, notification channels, throttling, localization, and permission models. _Status: Exploring/Later_. Each will align with Core correlation/time and Multitenancy when present.
+
+### Domain 4 — SaaS Business Extensions
+
+- **Payments**, **Documents**, **UserManagement** — SaaS-focused building blocks (billing, document generation, onboarding/MFA/passwordless). _Status: Exploring_. Will emit events for Notifications and Provisioning.
+
+### Domain 5 — Infrastructure Adapters
+
+- **Redis**, **MessageBus** (RabbitMQ/ASB/Kafka + outbox), **Observability** (OTEL), **Storage** (Blob/S3/local), **Search** (Elastic/Azure Search) — adapters to keep Application clean while swapping providers. _Status: Planning/Exploring_. Will reuse Core logging/correlation and Multitenancy context where relevant.
+
+### Domain 6 — Developer Experience
+
+- **CLI**, **Templates**, **Testing**, **SourceLinkAndSymbols**, **NuGetPackaging** — tooling to scaffold modules, keep packaging consistent, and improve test ergonomics. _Status: Exploring/Later_. Templates/CLI follow once Multitenancy/Caching patterns stabilize.
+
+## Workstream priorities and dependencies
+
+- **Docs-first**: every shipped capability must have a filled extension page, sample, and recipe. README links depend on this.
+- **Sample-first**: new modules land with runnable samples; prioritize pipeline wiring (MediatR, DI) and logs showing correlation/tenant context.
+- **Compatibility**: keep MediatR signatures and template ordering intact; legacy Result shims remain until migrations are trivial.
+- **Tenant-aware design**: Caching, Redis, Storage, MessageBus, RateLimiting must consume Multitenancy abstractions to prevent cross-tenant leakage.
+- **Observability alignment**: adapters should carry correlation IDs from Core; OTEL conventions to follow once Observability ships.
+
+## How to engage
+
+- Building with shipped packages: start with Core + Validation, run the samples under samples/, and follow the extension pages for wiring and options.
+- Contributing: pick a WIP module, read the matching HighLevelDocs/Domain*/CleanArchitecture.Extensions.*.md, propose doc/sample scaffolds, then code + tests.
+- Tracking progress: watch releases and docs/release-notes/ once populated; this roadmap will be updated as milestones move.
