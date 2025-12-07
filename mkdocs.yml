@@ -19,10 +19,13 @@ theme:
 
 nav:
   - Home: index.md
-  - Roadmap: roadmap.md
+  - Roadmap:
+      - Roadmap: roadmap.md
+      - Package Blueprints: roadmap/package-blueprints.md
   - Getting Started:
       - Quickstart: getting-started/quickstart.md
       - Install: getting-started/installation.md
+      - Adoption Playbooks: getting-started/adoption-playbooks.md
   - Concepts:
       - Architecture Fit: concepts/architecture-fit.md
       - Composition & Invariants: concepts/composition.md
