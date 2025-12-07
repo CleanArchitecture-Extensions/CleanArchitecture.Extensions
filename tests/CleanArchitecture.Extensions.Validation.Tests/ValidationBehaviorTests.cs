@@ -1,3 +1,5 @@
+using CleanArchitecture.Extensions.Core.Logging;
+using CleanArchitecture.Extensions.Core.Options;
 using CleanArchitecture.Extensions.Core.Results;
 using CleanArchitecture.Extensions.Validation.Behaviors;
 using CleanArchitecture.Extensions.Validation.Exceptions;
@@ -103,6 +105,175 @@ public class ValidationBehaviorTests
         Assert.NotNull(publisher.LastErrors);
         Assert.NotEmpty(publisher.LastErrors!);
     }
+
+    [Fact]
+    public async Task Handle_UsesValidationOptionsTraceIdOverContextAndCoreOptions()
+    {
+        var validator = new FakeRequestValidator();
+        var logContext = new InMemoryLogContext { CorrelationId = "corr-override" };
+        var options = new ValidationOptions
+        {
+            Strategy = ValidationStrategy.ReturnResult,
+            TraceId = "options-trace"
+        };
+        var coreOptions = MicrosoftOptions.Create(new CoreExtensionsOptions { TraceId = "core-trace" });
+        var behavior = new ValidationBehavior<FakeRequest, Result>(
+            new[] { validator },
+            MicrosoftOptions.Create(options),
+            logContext: logContext,
+            coreOptions: coreOptions);
+
+        var result = await behavior.Handle(new FakeRequest(string.Empty, 0, "bad-email"), _ => Task.FromResult(Result.Success()), CancellationToken.None);
+
+        Assert.True(result.IsFailure);
+        Assert.Equal("options-trace", result.TraceId);
+        Assert.All(result.Errors, error => Assert.Equal("options-trace", error.TraceId));
+    }
+
+    [Fact]
+    public async Task Handle_FallsBackToCorrelationIdWhenTraceIdMissing()
+    {
+        var validator = new FakeRequestValidator();
+        var logContext = new InMemoryLogContext { CorrelationId = "corr-fallback" };
+        var behavior = new ValidationBehavior<FakeRequest, Result>(
+            new[] { validator },
+            MicrosoftOptions.Create(new ValidationOptions { Strategy = ValidationStrategy.ReturnResult }),
+            logContext: logContext,
+            coreOptions: MicrosoftOptions.Create(new CoreExtensionsOptions { TraceId = "core-trace" }));
+
+        var result = await behavior.Handle(new FakeRequest(string.Empty, 0, "bad-email"), _ => Task.FromResult(Result.Success()), CancellationToken.None);
+
+        Assert.True(result.IsFailure);
+        Assert.Equal("corr-fallback", result.TraceId);
+        Assert.All(result.Errors, error => Assert.Equal("corr-fallback", error.TraceId));
+    }
+
+    [Fact]
+    public async Task Handle_FallsBackToCoreOptionsTraceIdWhenContextUnavailable()
+    {
+        var validator = new FakeRequestValidator();
+        var coreOptions = MicrosoftOptions.Create(new CoreExtensionsOptions { TraceId = "core-only-trace" });
+        var behavior = new ValidationBehavior<FakeRequest, Result>(
+            new[] { validator },
+            MicrosoftOptions.Create(new ValidationOptions { Strategy = ValidationStrategy.ReturnResult }),
+            logContext: null,
+            coreOptions: coreOptions);
+
+        var result = await behavior.Handle(new FakeRequest(string.Empty, 0, "bad-email"), _ => Task.FromResult(Result.Success()), CancellationToken.None);
+
+        Assert.True(result.IsFailure);
+        Assert.Equal("core-only-trace", result.TraceId);
+        Assert.All(result.Errors, error => Assert.Equal("core-only-trace", error.TraceId));
+    }
+
+    [Fact]
+    public async Task LogValidationFailures_WhenEnabled_LogsWithCorrelationAndTrace()
+    {
+        var logContext = new InMemoryLogContext { CorrelationId = "corr-log" };
+        var logger = new InMemoryAppLogger<FakeRequest>(logContext);
+        var options = new ValidationOptions
+        {
+            Strategy = ValidationStrategy.ReturnResult,
+            TraceId = "trace-log",
+            LogValidationFailures = true
+        };
+        var behavior = new ValidationBehavior<FakeRequest, Result>(
+            new[] { new FakeRequestValidator() },
+            MicrosoftOptions.Create(options),
+            logContext: logContext,
+            logger: logger);
+
+        var result = await behavior.Handle(new FakeRequest(string.Empty, 0, "bad-email"), _ => Task.FromResult(Result.Success()), CancellationToken.None);
+
+        var entry = Assert.Single(logger.Entries);
+        Assert.Equal(LogLevel.Warning, entry.Level);
+        Assert.Equal("Validation failed for FakeRequest", entry.Message);
+        Assert.Equal("corr-log", entry.CorrelationId);
+
+        var properties = Assert.IsAssignableFrom<IReadOnlyDictionary<string, object?>>(entry.Properties);
+        Assert.Equal(typeof(FakeRequest).FullName ?? typeof(FakeRequest).Name, properties["RequestType"]);
+        Assert.Equal("corr-log", properties["CorrelationId"]);
+        Assert.Equal("trace-log", properties["TraceId"]);
+        Assert.Equal(result.Errors.Count, Assert.IsType<int>(properties["FailureCount"]));
+        Assert.Equal(result.Errors.Count, Assert.IsType<int>(properties["TotalFailureCount"]));
+        Assert.False(Assert.IsType<bool>(properties["Truncated"]));
+        Assert.NotNull(properties["Errors"]);
+    }
+
+    [Fact]
+    public async Task LogValidationFailures_WhenDisabled_SkipsLogging()
+    {
+        var logContext = new InMemoryLogContext { CorrelationId = "corr-log" };
+        var logger = new InMemoryAppLogger<FakeRequest>(logContext);
+        var options = new ValidationOptions
+        {
+            Strategy = ValidationStrategy.ReturnResult,
+            LogValidationFailures = false
+        };
+        var behavior = new ValidationBehavior<FakeRequest, Result>(
+            new[] { new FakeRequestValidator() },
+            MicrosoftOptions.Create(options),
+            logContext: logContext,
+            logger: logger);
+
+        var result = await behavior.Handle(new FakeRequest(string.Empty, 0, "bad-email"), _ => Task.FromResult(Result.Success()), CancellationToken.None);
+
+        Assert.True(result.IsFailure);
+        Assert.Empty(logger.Entries);
+    }
+
+    [Fact]
+    public async Task LogValidationFailures_UsesSeverityMappingForHighestLevel()
+    {
+        var logContext = new InMemoryLogContext();
+        var logger = new InMemoryAppLogger<FakeRequest>(logContext);
+        var options = new ValidationOptions
+        {
+            Strategy = ValidationStrategy.ReturnResult,
+            SeverityLogLevels = new Dictionary<Severity, LogLevel>
+            {
+                [Severity.Warning] = LogLevel.Error,
+                [Severity.Info] = LogLevel.Debug
+            },
+            DefaultLogLevel = LogLevel.Trace
+        };
+        var behavior = new ValidationBehavior<FakeRequest, Result>(
+            new[] { new MixedSeverityValidator() },
+            MicrosoftOptions.Create(options),
+            logContext: logContext,
+            logger: logger);
+
+        await behavior.Handle(new FakeRequest(string.Empty, 0, null), _ => Task.FromResult(Result.Success()), CancellationToken.None);
+
+        var entry = Assert.Single(logger.Entries);
+        Assert.Equal(LogLevel.Error, entry.Level);
+    }
+
+    [Fact]
+    public async Task LogValidationFailures_UsesDefaultLogLevelWhenSeverityNotMapped()
+    {
+        var logContext = new InMemoryLogContext();
+        var logger = new InMemoryAppLogger<FakeRequest>(logContext);
+        var options = new ValidationOptions
+        {
+            Strategy = ValidationStrategy.ReturnResult,
+            DefaultLogLevel = LogLevel.Debug,
+            SeverityLogLevels = new Dictionary<Severity, LogLevel>
+            {
+                [Severity.Error] = LogLevel.Critical
+            }
+        };
+        var behavior = new ValidationBehavior<FakeRequest, Result>(
+            new[] { new InfoSeverityValidator() },
+            MicrosoftOptions.Create(options),
+            logContext: logContext,
+            logger: logger);
+
+        await behavior.Handle(new FakeRequest(string.Empty, 1, null), _ => Task.FromResult(Result.Success()), CancellationToken.None);
+
+        var entry = Assert.Single(logger.Entries);
+        Assert.Equal(LogLevel.Debug, entry.Level);
+    }
 }
 
 internal sealed class FakeRequestValidator : AbstractValidatorBase<FakeRequest>
@@ -121,6 +292,23 @@ internal sealed class MultiFailureValidator : AbstractValidatorBase<FakeRequest>
     {
         RuleFor(request => request.Name).NotEmptyTrimmed("VAL.EMPTY.NAME", "Name is required.");
         RuleFor(request => request.PageSize).PageSize(5, 6, "VAL.PAGE_SIZE.RANGE", "Page size must be between 5 and 6.");
+    }
+}
+
+internal sealed class MixedSeverityValidator : AbstractValidatorBase<FakeRequest>
+{
+    public MixedSeverityValidator()
+    {
+        RuleFor(request => request.Name).NotEmpty().WithSeverity(Severity.Warning);
+        RuleFor(request => request.PageSize).GreaterThan(5).WithSeverity(Severity.Info);
+    }
+}
+
+internal sealed class InfoSeverityValidator : AbstractValidatorBase<FakeRequest>
+{
+    public InfoSeverityValidator()
+    {
+        RuleFor(request => request.Name).NotEmpty().WithSeverity(Severity.Info);
     }
 }
 
