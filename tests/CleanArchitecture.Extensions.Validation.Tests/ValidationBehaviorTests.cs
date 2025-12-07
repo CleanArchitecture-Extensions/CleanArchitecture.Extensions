@@ -8,6 +8,7 @@ using CleanArchitecture.Extensions.Validation.Rules;
 using CleanArchitecture.Extensions.Validation.Validators;
 using FluentValidation;
 using MediatR;
+using MicrosoftOptions = Microsoft.Extensions.Options.Options;
 using ValidationException = CleanArchitecture.Extensions.Validation.Exceptions.ValidationException;
 
 namespace CleanArchitecture.Extensions.Validation.Tests;
@@ -19,7 +20,9 @@ public class ValidationBehaviorTests
     [Fact]
     public async Task Handle_NoValidators_CallsNext()
     {
-        var behavior = new ValidationBehavior<FakeRequest, Result>(Array.Empty<IValidator<FakeRequest>>(), new ValidationOptions { Strategy = ValidationStrategy.ReturnResult });
+        var behavior = new ValidationBehavior<FakeRequest, Result>(
+            Array.Empty<IValidator<FakeRequest>>(),
+            MicrosoftOptions.Create(new ValidationOptions { Strategy = ValidationStrategy.ReturnResult }));
         var nextCalled = false;
         RequestHandlerDelegate<Result> next = _ =>
         {
@@ -37,7 +40,7 @@ public class ValidationBehaviorTests
     public async Task Handle_WithFailures_DefaultThrowsValidationException()
     {
         var validator = new FakeRequestValidator();
-        var behavior = new ValidationBehavior<FakeRequest, Result>(new[] { validator }, ValidationOptions.Default);
+        var behavior = new ValidationBehavior<FakeRequest, Result>(new[] { validator }, MicrosoftOptions.Create(ValidationOptions.Default));
 
         await Assert.ThrowsAsync<ValidationException>(() =>
             behavior.Handle(new FakeRequest(string.Empty, 0, "bad-email"), _ => Task.FromResult(Result.Success()), CancellationToken.None));
@@ -53,7 +56,7 @@ public class ValidationBehaviorTests
             IncludeAttemptedValue = true,
             TraceId = "trace-123"
         };
-        var behavior = new ValidationBehavior<FakeRequest, Result>(new[] { validator }, options);
+        var behavior = new ValidationBehavior<FakeRequest, Result>(new[] { validator }, MicrosoftOptions.Create(options));
         var nextCalled = false;
 
         RequestHandlerDelegate<Result> next = _ =>
@@ -76,7 +79,7 @@ public class ValidationBehaviorTests
     public async Task Handle_RespectsMaxFailures()
     {
         var validator = new MultiFailureValidator();
-        var options = new ValidationOptions { Strategy = ValidationStrategy.ReturnResult, MaxFailures = 1 };
+        var options = MicrosoftOptions.Create(new ValidationOptions { Strategy = ValidationStrategy.ReturnResult, MaxFailures = 1 });
         var behavior = new ValidationBehavior<FakeRequest, Result>(new[] { validator }, options);
 
         var result = await behavior.Handle(new FakeRequest(string.Empty, 1, null), _ => Task.FromResult(Result.Success()), CancellationToken.None);
@@ -90,7 +93,7 @@ public class ValidationBehaviorTests
     {
         var validator = new FakeRequestValidator();
         var publisher = new RecordingPublisher();
-        var options = new ValidationOptions { Strategy = ValidationStrategy.Notify, NotifyBehavior = ValidationNotifyBehavior.ReturnResult };
+        var options = MicrosoftOptions.Create(new ValidationOptions { Strategy = ValidationStrategy.Notify, NotifyBehavior = ValidationNotifyBehavior.ReturnResult });
         var behavior = new ValidationBehavior<FakeRequest, Result>(new[] { validator }, options, publisher);
 
         var result = await behavior.Handle(new FakeRequest(string.Empty, 0, "bad-email"), _ => Task.FromResult(Result.Success()), CancellationToken.None);
