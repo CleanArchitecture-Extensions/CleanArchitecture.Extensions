@@ -1,7 +1,7 @@
 # Extension: Validation
 
 ## Overview
-Validation pipeline and helpers built on FluentValidation for Clean Architecture solutions. Ships a configurable MediatR behavior, a template-shaped `ValidationException`, rule helpers, and a base validator that applies common conventions. Designed to be drop-in compatible with Jason Taylor’s template while enabling Result-based short-circuiting when desired.
+Validation pipeline and helpers built on FluentValidation for Clean Architecture solutions. Ships a configurable MediatR behaviour, a template-shaped `ValidationException`, rule helpers, and a base validator that applies common conventions. Designed to be drop-in compatible with Jason Taylor’s template while enabling Result-based short-circuiting when desired.
 
 ## When to use
 - You follow the template’s MediatR pipeline and want richer control over how validation failures surface (throw vs Result vs notify).
@@ -20,10 +20,10 @@ dotnet add src/YourProject/YourProject.csproj package CleanArchitecture.Extensio
 
 ## Usage
 
-### Wire up validators and behavior (DI)
+### Wire up validators and behaviour (DI)
 ```csharp
 services.AddValidatorsFromAssemblyContaining<Startup>(); // or your Application assembly marker
-services.AddScoped(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
+services.AddScoped(typeof(IPipelineBehavior<,>), typeof(ValidationBehaviour<,>));
 
 // Optional: configure strategy/options
 services.Configure<ValidationOptions>(options =>
@@ -54,12 +54,17 @@ Key options: `MaxFailures`, `IncludePropertyName`, `IncludeAttemptedValue`, `Inc
   - `PositiveId`
   - `PageNumber`
   - `PageSize`
+  - `PhoneE164`
+  - `UrlAbsoluteHttpHttps`
+  - `CultureCode`
+  - `SortExpression` (whitelist allowed fields)
+  - Tenant-aware rules (planned with the Multitenancy module)
 
 ### Result short-circuit example
 ```csharp
 var options = new ValidationOptions { Strategy = ValidationStrategy.ReturnResult };
-var behavior = new ValidationBehavior<CreateTodo, Result<TodoVm>>(validators, options);
-// When validation fails, the behavior returns Result<T>.Failure(errors) instead of throwing.
+var behavior = new ValidationBehaviour<CreateTodo, Result<TodoVm>>(validators, options);
+// When validation fails, the behaviour returns Result<T>.Failure(errors) instead of throwing.
 ```
 
 ## Troubleshooting

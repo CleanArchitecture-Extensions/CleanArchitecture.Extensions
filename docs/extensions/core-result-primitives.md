@@ -38,8 +38,8 @@ The extension keeps the success/failure semantics but adds the capabilities team
 
 ## Compatibility and migration from the template
 You can start with the template’s existing patterns and layer Core Results gradually:
-- **Mapping template → Core:** `Result.Success()` becomes `Result.Success(traceId)`; `Result.Failure(strings)` can be projected to `Result.Failure(strings.Select(s => new Error("identity", s)))`.
-- **Mapping Core → template:** `Result.Success(traceId)` can return `CleanArchitecture.Application.Common.Models.Result.Success()`. Failures can flatten via `Errors.Select(e => $"{e.Code}: {e.Message}")`.
+- **Mapping template → Core:** `Result.Success()` becomes `Result.Success(traceId)`; `Result.Failure(strings)` can be projected to `Result.Failure(strings.Select(s => new Error("identity", s)))` or use `LegacyResult.Failure(strings).ToResult(traceId)`.
+- **Mapping Core → template:** `Result.Success(traceId)` can return `CleanArchitecture.Application.Common.Models.Result.Success()` or `LegacyResult.FromResult(result)`. Failures can flatten via `Errors.Select(e => $"{e.Code}: {e.Message}")` or rely on the adapter’s default formatter.
 - **Handlers:** Keep return types as your feature needs (DTOs, primitives). Introduce `Result<T>` where you want richer errors without throwing. You can adopt it per handler; nothing requires a big bang change.
 - **Pipelines:** Core Results do not change pipeline signatures; they work with the template’s behaviors. Validation that throws still bubbles through `UnhandledExceptionBehaviour`; you can prefer guard/result composition to avoid exceptions when appropriate.
 

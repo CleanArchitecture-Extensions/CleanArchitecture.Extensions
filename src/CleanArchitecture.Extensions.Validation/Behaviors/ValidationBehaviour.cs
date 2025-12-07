@@ -15,11 +15,11 @@ using ValidationException = CleanArchitecture.Extensions.Validation.Exceptions.V
 namespace CleanArchitecture.Extensions.Validation.Behaviors;
 
 /// <summary>
-/// MediatR pipeline behavior that executes FluentValidation validators and surfaces failures using configured strategy.
+/// MediatR pipeline behaviour that executes FluentValidation validators and surfaces failures using configured strategy.
 /// </summary>
 /// <typeparam name="TRequest">Request type.</typeparam>
 /// <typeparam name="TResponse">Response type.</typeparam>
-public sealed class ValidationBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
+public sealed class ValidationBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
     where TRequest : notnull
 {
     private readonly IReadOnlyCollection<IValidator<TRequest>> _validators;
@@ -30,7 +30,7 @@ public sealed class ValidationBehavior<TRequest, TResponse> : IPipelineBehavior<
     private readonly IAppLogger<TRequest>? _logger;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="ValidationBehavior{TRequest, TResponse}"/> class.
+    /// Initializes a new instance of the <see cref="ValidationBehaviour{TRequest, TResponse}"/> class.
     /// </summary>
     /// <param name="validators">Validators to execute.</param>
     /// <param name="options">Validation behavior options.</param>
@@ -38,7 +38,7 @@ public sealed class ValidationBehavior<TRequest, TResponse> : IPipelineBehavior<
     /// <param name="logContext">Optional log context providing correlation identifiers.</param>
     /// <param name="coreOptions">Optional shared core options for default trace identifiers.</param>
     /// <param name="logger">Optional logger for emitting validation summaries.</param>
-    public ValidationBehavior(
+    public ValidationBehaviour(
         IEnumerable<IValidator<TRequest>> validators,
         IOptions<ValidationOptions>? options = null,
         IValidationNotificationPublisher? notificationPublisher = null,
@@ -131,7 +131,7 @@ public sealed class ValidationBehavior<TRequest, TResponse> : IPipelineBehavior<
         }
 
         throw new InvalidOperationException(
-            "ValidationBehavior is configured to return a Result, but TResponse is not a Result or Result<T>. " +
+            "ValidationBehaviour is configured to return a Result, but TResponse is not a Result or Result<T>. " +
             "Use ValidationStrategy.Throw for non-Result handlers or update handlers to return Result.");
     }
 

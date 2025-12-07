@@ -5,6 +5,7 @@ Core primitives for Clean Architecture apps built on MediatR.
 - Pipeline behaviors for logging, performance timing, and correlation IDs.
 - Result model with trace identifiers, error aggregation, and success/failure helpers.
 - Domain event support, guard helpers, and clock abstractions for deterministic tests.
+- Legacy template shims (`LegacyResult`/`LegacyResult<T>`) to ease migration from Jason Taylor’s `Result` shape.
 - Ships with SourceLink, XML docs, and snupkg symbols for a smooth debugging experience.
 
 ## Install
@@ -37,6 +38,10 @@ if (result.IsFailure)
 {
     return Results.BadRequest(result.Errors);
 }
+
+// Map to/from template-style Result shape during migration.
+var legacy = LegacyResult.FromResult(result);
+var backToRich = legacy.ToResult(result.TraceId);
 ```
 
 ## Target frameworks

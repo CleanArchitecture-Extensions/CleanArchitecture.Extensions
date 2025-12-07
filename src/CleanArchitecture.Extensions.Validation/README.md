@@ -24,7 +24,7 @@ using FluentValidation;
 using MediatR;
 
 services.AddValidatorsFromAssemblyContaining<CreateOrderValidator>();
-services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
+services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehaviour<,>));
 
 services.Configure<ValidationOptions>(options =>
 {
@@ -36,6 +36,20 @@ services.Configure<ValidationOptions>(options =>
 ```
 
 Implement `IValidationNotificationPublisher` if you want to capture validation failures without throwing.
+
+## Rule helpers
+
+- `NotEmptyTrimmed`
+- `EmailAddressBasic`
+- `OptionalEmailAddress`
+- `PositiveId`
+- `PageNumber`
+- `PageSize`
+- `PhoneE164`
+- `UrlAbsoluteHttpHttps`
+- `CultureCode`
+- `SortExpression` (allowed field whitelist)
+- Tenant-aware rules (planned alongside the Multitenancy module)
 
 ## Target frameworks
 
