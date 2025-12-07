@@ -65,15 +65,12 @@ public sealed class ExceptionCatalog : IExceptionCatalog
 
     private ExceptionDescriptor? ResolveDescriptorByType(Type type)
     {
-        var current = type;
-        while (current is not null)
+        for (var current = type; current is not null; current = current.BaseType)
         {
             if (_descriptors.TryGetValue(current, out var descriptor))
             {
                 return descriptor;
             }
-
-            current = current.BaseType!;
         }
 
         return null;

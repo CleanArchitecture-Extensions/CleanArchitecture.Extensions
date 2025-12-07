@@ -10,8 +10,10 @@ Exception catalog and MediatR pipeline behavior that standardize how Clean Archi
 ## Install
 
 ```powershell
-dotnet add package CleanArchitecture.Extensions.Exceptions --version 0.1.1-preview.1
+dotnet add package CleanArchitecture.Extensions.Exceptions --version <latest-version>
 ```
+
+Check NuGet.org for the latest stable or preview version before installing.
 
 ## Usage
 

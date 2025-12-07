@@ -8,9 +8,53 @@ namespace CleanArchitecture.Extensions.Exceptions.Redaction;
 /// </summary>
 public sealed class ExceptionRedactor
 {
-    private static readonly string[] SensitiveKeys = { "password", "pwd", "token", "secret", "authorization", "cookie", "apikey", "api-key", "credential" };
-    private static readonly Regex SensitiveValueRegex = new(@"(?i)(password|pwd|token|secret|authorization|cookie|apikey|api-key)[=:]\s*([^\s;]+)", RegexOptions.Compiled);
-    private static readonly Regex EmailRegex = new(@"[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}", RegexOptions.Compiled);
+    private static readonly string[] SensitiveKeys =
+    {
+        "password",
+        "passphrase",
+        "pwd",
+        "token",
+        "auth",
+        "auth-token",
+        "access-token",
+        "refresh-token",
+        "secret",
+        "client-secret",
+        "authorization",
+        "cookie",
+        "session",
+        "sessionid",
+        "apikey",
+        "api-key",
+        "api_key",
+        "credential",
+        "jwt",
+        "bearer"
+    };
+
+    private static readonly Regex EmailRegex = new(
+        @"(?ix)(?<![\w@])[\p{L}\p{N}._%+-]+@(?:[\p{L}\p{N}-]+\.)+[\p{L}\p{N}]{2,}",
+        RegexOptions.Compiled | RegexOptions.CultureInvariant);
+
+    private static readonly Regex BearerTokenRegex = new(
+        @"(?ix)\bBearer\s+(?<value>[A-Za-z0-9\-\._~+/]+=*)",
+        RegexOptions.Compiled | RegexOptions.CultureInvariant);
+
+    private static readonly Regex SensitiveKeyValueRegex = new(
+        @"(?ix)
+            (?<key>
+                password|passphrase|pwd|
+                token|auth[_-]?token|access[_-]?token|refresh[_-]?token|
+                secret|client[_-]?secret|
+                authorization|auth|
+                cookie|session(?:id)?|
+                api(?:key|[-_ ]?key|[-_ ]?secret)|
+                credential|jwt|bearer
+            )
+            (?<separator>\s*[:=]?\s+)
+            (?<value>""[^""]*""|'[^']*'|[^\s;,]+)
+        ",
+        RegexOptions.Compiled | RegexOptions.CultureInvariant);
 
     /// <summary>
     /// Redacts sensitive values from a string.
@@ -25,7 +69,10 @@ public sealed class ExceptionRedactor
         }
 
         var redacted = EmailRegex.Replace(value, "[redacted-email]");
-        redacted = SensitiveValueRegex.Replace(redacted, "$1=[redacted]");
+        redacted = BearerTokenRegex.Replace(redacted, "Bearer [redacted]");
+        redacted = SensitiveKeyValueRegex.Replace(
+            redacted,
+            match => $"{match.Groups["key"].Value}{match.Groups["separator"].Value}[redacted]");
         return redacted;
     }
 

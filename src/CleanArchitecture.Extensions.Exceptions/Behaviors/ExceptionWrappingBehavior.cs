@@ -141,22 +141,8 @@ public sealed class ExceptionWrappingBehavior<TRequest, TResponse> : IPipelineBe
             return (TResponse)(object)Result.Failure(error, traceId);
         }
 
-        var failure = CreateGenericFailure(valueType, error, traceId);
+        var failure = ResultFailureFactory.CreateGenericFailure(valueType, new[] { error }, traceId);
         return (TResponse)failure;
-    }
-
-    private static object CreateGenericFailure(Type valueType, Error error, string? traceId)
-    {
-        var failureMethod = typeof(Result)
-            .GetMethods(BindingFlags.Public | BindingFlags.Static)
-            .First(method =>
-                method.IsGenericMethod &&
-                method.Name == nameof(Result.Failure) &&
-                method.GetParameters().Length == 2 &&
-                method.GetParameters()[0].ParameterType == typeof(IEnumerable<Error>));
-
-        var closed = failureMethod.MakeGenericMethod(valueType);
-        return closed.Invoke(null, new object?[] { new[] { error }, traceId })!;
     }
 
     private static bool TryLocateTemplateResult(out MethodInfo? failureMethod)

@@ -145,22 +145,8 @@ public sealed class ValidationBehaviour<TRequest, TResponse> : IPipelineBehavior
             return (TResponse)(object)Result.Failure(mappedErrors, traceId);
         }
 
-        var genericFailure = CreateGenericFailure(valueType, mappedErrors, traceId);
+        var genericFailure = ResultFailureFactory.CreateGenericFailure(valueType, mappedErrors, traceId);
         return (TResponse)genericFailure;
-
-        static object CreateGenericFailure(Type valueType, IReadOnlyCollection<Error> mappedErrors, string? trace)
-        {
-            var failureMethod = typeof(Result)
-                .GetMethods(BindingFlags.Public | BindingFlags.Static)
-                .First(method =>
-                    method.IsGenericMethod &&
-                    method.Name == nameof(Result.Failure) &&
-                    method.GetParameters().Length == 2 &&
-                    method.GetParameters()[0].ParameterType == typeof(IEnumerable<Error>));
-
-            var closed = failureMethod.MakeGenericMethod(valueType);
-            return closed.Invoke(null, new object?[] { mappedErrors, trace })!;
-        }
     }
 
     private string? ResolveTraceId()
