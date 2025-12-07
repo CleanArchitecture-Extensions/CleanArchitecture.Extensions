@@ -1954,7 +1954,7 @@
 <h2 id="what-this-page-gives-you">What this page gives you<a class="headerlink" href="#what-this-page-gives-you" title="Permanent link">&para;</a></h2>
 <ul>
 <li>Understand how CleanArchitecture.Extensions stays aligned with Jason Taylor's template while adding opt-in capabilities.</li>
-<li>See the current catalog (Core, Validation) plus the roadmap across multitenancy, enterprise, SaaS, infrastructure, and developer experience.</li>
+<li>See the current catalog (Core, Validation, Exceptions) plus the roadmap across multitenancy, enterprise, SaaS, infrastructure, and developer experience.</li>
 <li>Install the preview packages in under ten minutes with copy-ready commands and pipeline wiring.</li>
 <li>Navigate docs, samples, recipes, and tests without guessing where things live.</li>
 <li>Pick an adoption path that matches your project (greenfield, migration, observability-first, SaaS, compliance-ready).</li>
@@ -1998,9 +1998,9 @@
 </ul>
 <h2 id="status-at-a-glance">Status at a glance<a class="headerlink" href="#status-at-a-glance" title="Permanent link">&para;</a></h2>
 <ul>
-<li><strong>Implemented (preview)</strong>: <code>CleanArchitecture.Extensions.Core</code>, <code>CleanArchitecture.Extensions.Validation</code></li>
-<li><strong>In design/build-out</strong>: Exceptions, Caching, Multitenancy family, Enterprise extensions, SaaS extensions, Infrastructure adapters, Developer Experience toolchain (CLI, templates, testing, packaging).</li>
-<li><strong>Target frameworks</strong>: <code>net8.0</code>, <code>net10.0</code></li>
+<li><strong>Implemented (preview)</strong>: <code>CleanArchitecture.Extensions.Core</code>, <code>CleanArchitecture.Extensions.Validation</code>, <code>CleanArchitecture.Extensions.Exceptions</code></li>
+<li><strong>In design/build-out</strong>: Caching, Multitenancy family, Enterprise extensions, SaaS extensions, Infrastructure adapters, Developer Experience toolchain (CLI, templates, testing, packaging).</li>
+<li><strong>Target frameworks</strong>: <code>net10.0</code></li>
 <li><strong>Packaging discipline</strong>: SourceLink, XML docs, snupkg symbols for debugger-friendly consumption.</li>
 <li><strong>Docs</strong>: MkDocs + Material; everything lives under <code>docs/</code> and is published to GitHub Pages.</li>
 <li><strong>Samples</strong>: runnable under <code>samples/</code>; each mirrors a doc scenario.</li>
@@ -2108,7 +2108,7 @@
 <ul>
 <li>CleanArchitecture.Extensions.Core (shipped, preview)</li>
 <li>CleanArchitecture.Extensions.Validation (shipped, preview)</li>
-<li>CleanArchitecture.Extensions.Exceptions (planned)</li>
+<li>CleanArchitecture.Extensions.Exceptions (shipped, preview)</li>
 <li>CleanArchitecture.Extensions.Caching (planned)</li>
 </ul>
 <h3 id="domain-2-multitenancy-ecosystem">Domain 2 — Multitenancy ecosystem<a class="headerlink" href="#domain-2-multitenancy-ecosystem" title="Permanent link">&para;</a></h3>
@@ -2201,7 +2201,7 @@
 <h2 id="quality-packaging-and-compatibility-promises">Quality, packaging, and compatibility promises<a class="headerlink" href="#quality-packaging-and-compatibility-promises" title="Permanent link">&para;</a></h2>
 <ul>
 <li><strong>SourceLink and symbols</strong>: every package ships with SourceLink and snupkg symbols for debugger-friendly consumption.</li>
-<li><strong>Target frameworks</strong>: <code>net8.0</code> and <code>net10.0</code> for shipped packages; future modules will follow the same strategy unless noted.</li>
+<li><strong>Target frameworks</strong>: <code>net10.0</code> for shipped packages; future modules will follow the same strategy unless noted.</li>
 <li><strong>MediatR pipeline discipline</strong>: behaviors are ordered to avoid surprises and to align with the template.</li>
 <li><strong>Logging and correlation</strong>: consistent scopes and trace identifiers across behaviors, validation, and future adapters.</li>
 <li><strong>Docs and samples parity</strong>: docs reference code that exists; samples are runnable; release notes call out breaking changes.</li>
@@ -2220,7 +2220,7 @@
 <li><strong>Do I have to fork Jason's template?</strong> No. Install packages and register behaviors; the template stays pristine.</li>
 <li><strong>Can I migrate gradually?</strong> Yes. Use Legacy result shims, enable behaviors incrementally, and configure strategies per environment.</li>
 <li><strong>How do I know pipeline ordering?</strong> See Core pipeline docs; we mirror the template order and call it out explicitly.</li>
-<li><strong>What frameworks are supported?</strong> <code>net8.0</code> and <code>net10.0</code> for shipped packages; others will state compatibility on their pages.</li>
+<li><strong>What frameworks are supported?</strong> <code>net10.0</code> for shipped packages; others will state compatibility on their pages.</li>
 <li><strong>Where are tests and samples?</strong> <code>tests/</code> and <code>samples/</code> in the solution; each doc page links to the relevant ones.</li>
 <li><strong>How do I track progress?</strong> Watch <a href="roadmap/">roadmap.md</a> and <a href="release-notes/">release-notes/index.md</a>; design intent lives in <code>HighLevelDocs/</code>.</li>
 </ul>
