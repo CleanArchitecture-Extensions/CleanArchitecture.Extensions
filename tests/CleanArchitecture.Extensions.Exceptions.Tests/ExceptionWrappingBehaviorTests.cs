@@ -85,5 +85,23 @@ public class ExceptionWrappingBehaviorTests
         Assert.Equal(ExceptionCodes.Forbidden, result.Errors.Single().Code);
     }
 
+    [Fact]
+    public async Task Handle_PreservesApplicationExceptionMessage_WhenDetailsAreHidden()
+    {
+        var options = new ExceptionHandlingOptions { IncludeExceptionDetails = false };
+        var behavior = new ExceptionWrappingBehavior<TestRequest, Result>(
+            new ExceptionCatalog(),
+            Microsoft.Extensions.Options.Options.Create(options));
+
+        const string message = "Order 9 was not found for tenant foo.";
+        var result = await behavior.Handle(
+            new TestRequest(),
+            _ => throw new NotFoundException(message),
+            CancellationToken.None);
+
+        var error = result.Errors.Single();
+        Assert.Equal(message, error.Message);
+    }
+
     private sealed record TestRequest;
 }

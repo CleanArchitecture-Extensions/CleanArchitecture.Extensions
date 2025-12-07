@@ -32,6 +32,24 @@ public class ExceptionCatalogTests
     }
 
     [Fact]
+    public void Resolve_UsesApplicationExceptionMessage()
+    {
+        const string message = "Resource Order with id 7 was not found.";
+        var descriptor = _catalog.Resolve(new NotFoundException(message));
+
+        Assert.Equal(message, descriptor.Message);
+    }
+
+    [Fact]
+    public void Resolve_MarksConcurrencyAsTransient()
+    {
+        var descriptor = _catalog.Resolve(new ConcurrencyException());
+
+        Assert.True(descriptor.IsTransient);
+        Assert.Equal(ExceptionSeverity.Warning, descriptor.Severity);
+    }
+
+    [Fact]
     public void Resolve_UnknownException_UsesFallbackDescriptor()
     {
         var descriptor = _catalog.Resolve(new InvalidOperationException("boom"));

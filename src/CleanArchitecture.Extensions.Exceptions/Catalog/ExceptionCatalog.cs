@@ -49,11 +49,14 @@ public sealed class ExceptionCatalog : IExceptionCatalog
         {
             var descriptorFromCatalog = ResolveDescriptorByType(applicationException.GetType()) ?? _unknownDescriptor;
             var mergedMetadata = MergeMetadata(descriptorFromCatalog.Metadata, applicationException.Metadata);
+            var message = string.IsNullOrWhiteSpace(applicationException.Message)
+                ? descriptorFromCatalog.Message
+                : applicationException.Message;
 
             return new ExceptionDescriptor(
                 applicationException.GetType(),
                 applicationException.Code,
-                descriptorFromCatalog.Message,
+                message,
                 applicationException.Severity,
                 applicationException.IsTransient,
                 applicationException.StatusCode ?? descriptorFromCatalog.StatusCode,

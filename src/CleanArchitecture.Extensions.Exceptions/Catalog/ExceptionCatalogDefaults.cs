@@ -53,8 +53,8 @@ internal static class ExceptionCatalogDefaults
                 typeof(ConcurrencyException),
                 ExceptionCodes.Concurrency,
                 "A concurrency conflict occurred.",
-                ExceptionSeverity.Error,
-                false,
+                ExceptionSeverity.Warning,
+                true,
                 HttpStatusCode.Conflict),
             [typeof(TransientException)] = new ExceptionDescriptor(
                 typeof(TransientException),
@@ -152,8 +152,8 @@ internal static class ExceptionCatalogDefaults
                 type,
                 ExceptionCodes.Concurrency,
                 "A concurrency conflict occurred.",
-                ExceptionSeverity.Error,
-                false,
+                ExceptionSeverity.Warning,
+                true,
                 HttpStatusCode.Conflict);
         }
     }
