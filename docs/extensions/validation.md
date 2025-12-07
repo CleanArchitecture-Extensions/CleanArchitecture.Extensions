@@ -9,7 +9,7 @@ Validation pipeline and helpers built on FluentValidation for Clean Architecture
 - You want compatibility with existing `ValidationException` handling (dictionary of property -> messages) but also want to map failures to `Result`.
 
 ## Prereqs & Compatibility
-- Target frameworks: `net8.0`.
+- Target frameworks: `net8.0`, `net10.0`.
 - Dependencies: FluentValidation `12.1.0`, MediatR `13.1.0`.
 - Template fit: register the behavior in Application after Authorization and before Performance, same signature as the template’s `ValidationBehaviour<,>`.
 
