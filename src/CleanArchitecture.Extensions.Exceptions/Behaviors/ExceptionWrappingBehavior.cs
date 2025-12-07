@@ -81,9 +81,16 @@ public sealed class ExceptionWrappingBehavior<TRequest, TResponse> : IPipelineBe
 
         LogException(exception, descriptor, error);
 
-        if (_options.ConvertToResult && IsResultResponse(out var valueType))
+        var templateFailureMethod = default(MethodInfo);
+        var hasResultResponse = IsResultResponse(out var valueType);
+        if (!hasResultResponse)
         {
-            return CreateResultResponse(error, valueType, traceId);
+            hasResultResponse = TryLocateTemplateResult(out templateFailureMethod);
+        }
+
+        if (_options.ConvertToResult && hasResultResponse)
+        {
+            return CreateResultResponse(error, valueType, traceId, templateFailureMethod);
         }
 
         ExceptionDispatchInfo.Capture(exception).Throw();
@@ -120,8 +127,15 @@ public sealed class ExceptionWrappingBehavior<TRequest, TResponse> : IPipelineBe
         return false;
     }
 
-    private TResponse CreateResultResponse(Error error, Type? valueType, string? traceId)
+    private TResponse CreateResultResponse(Error error, Type? valueType, string? traceId, MethodInfo? templateFailureMethod)
     {
+        if (templateFailureMethod is not null)
+        {
+            var formatted = string.IsNullOrWhiteSpace(error.Message) ? error.Code : $"{error.Code}: {error.Message}";
+            var template = templateFailureMethod.Invoke(null, new object?[] { new[] { formatted } });
+            return (TResponse)template!;
+        }
+
         if (valueType is null)
         {
             return (TResponse)(object)Result.Failure(error, traceId);
@@ -143,6 +157,26 @@ public sealed class ExceptionWrappingBehavior<TRequest, TResponse> : IPipelineBe
 
         var closed = failureMethod.MakeGenericMethod(valueType);
         return closed.Invoke(null, new object?[] { new[] { error }, traceId })!;
+    }
+
+    private static bool TryLocateTemplateResult(out MethodInfo? failureMethod)
+    {
+        failureMethod = null;
+        var responseType = typeof(TResponse);
+        if (!string.Equals(responseType.Name, "Result", StringComparison.Ordinal))
+        {
+            return false;
+        }
+
+        failureMethod = responseType
+            .GetMethods(BindingFlags.Public | BindingFlags.Static)
+            .FirstOrDefault(method =>
+                method.Name == "Failure" &&
+                method.GetParameters().Length == 1 &&
+                typeof(IEnumerable<string>).IsAssignableFrom(method.GetParameters()[0].ParameterType) &&
+                method.ReturnType == responseType);
+
+        return failureMethod is not null;
     }
 
     private string? ResolveTraceId()
