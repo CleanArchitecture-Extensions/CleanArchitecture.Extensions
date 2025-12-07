@@ -17,12 +17,12 @@ namespace CleanArchitecture.Extensions.Validation.Tests;
 
 public sealed record FakeRequest(string Name, int PageSize, string? Email);
 
-public class ValidationBehaviorTests
+public class ValidationBehaviourTests
 {
     [Fact]
     public async Task Handle_NoValidators_CallsNext()
     {
-        var behavior = new ValidationBehavior<FakeRequest, Result>(
+        var behavior = new ValidationBehaviour<FakeRequest, Result>(
             Array.Empty<IValidator<FakeRequest>>(),
             MicrosoftOptions.Create(new ValidationOptions { Strategy = ValidationStrategy.ReturnResult }));
         var nextCalled = false;
@@ -42,7 +42,7 @@ public class ValidationBehaviorTests
     public async Task Handle_WithFailures_DefaultThrowsValidationException()
     {
         var validator = new FakeRequestValidator();
-        var behavior = new ValidationBehavior<FakeRequest, Result>(new[] { validator }, MicrosoftOptions.Create(ValidationOptions.Default));
+        var behavior = new ValidationBehaviour<FakeRequest, Result>(new[] { validator }, MicrosoftOptions.Create(ValidationOptions.Default));
 
         await Assert.ThrowsAsync<ValidationException>(() =>
             behavior.Handle(new FakeRequest(string.Empty, 0, "bad-email"), _ => Task.FromResult(Result.Success()), CancellationToken.None));
@@ -58,7 +58,7 @@ public class ValidationBehaviorTests
             IncludeAttemptedValue = true,
             TraceId = "trace-123"
         };
-        var behavior = new ValidationBehavior<FakeRequest, Result>(new[] { validator }, MicrosoftOptions.Create(options));
+        var behavior = new ValidationBehaviour<FakeRequest, Result>(new[] { validator }, MicrosoftOptions.Create(options));
         var nextCalled = false;
 
         RequestHandlerDelegate<Result> next = _ =>
@@ -82,7 +82,7 @@ public class ValidationBehaviorTests
     {
         var validator = new MultiFailureValidator();
         var options = MicrosoftOptions.Create(new ValidationOptions { Strategy = ValidationStrategy.ReturnResult, MaxFailures = 1 });
-        var behavior = new ValidationBehavior<FakeRequest, Result>(new[] { validator }, options);
+        var behavior = new ValidationBehaviour<FakeRequest, Result>(new[] { validator }, options);
 
         var result = await behavior.Handle(new FakeRequest(string.Empty, 1, null), _ => Task.FromResult(Result.Success()), CancellationToken.None);
 
@@ -96,7 +96,7 @@ public class ValidationBehaviorTests
         var validator = new FakeRequestValidator();
         var publisher = new RecordingPublisher();
         var options = MicrosoftOptions.Create(new ValidationOptions { Strategy = ValidationStrategy.Notify, NotifyBehavior = ValidationNotifyBehavior.ReturnResult });
-        var behavior = new ValidationBehavior<FakeRequest, Result>(new[] { validator }, options, publisher);
+        var behavior = new ValidationBehaviour<FakeRequest, Result>(new[] { validator }, options, publisher);
 
         var result = await behavior.Handle(new FakeRequest(string.Empty, 0, "bad-email"), _ => Task.FromResult(Result.Success()), CancellationToken.None);
 
@@ -117,7 +117,7 @@ public class ValidationBehaviorTests
             TraceId = "options-trace"
         };
         var coreOptions = MicrosoftOptions.Create(new CoreExtensionsOptions { TraceId = "core-trace" });
-        var behavior = new ValidationBehavior<FakeRequest, Result>(
+        var behavior = new ValidationBehaviour<FakeRequest, Result>(
             new[] { validator },
             MicrosoftOptions.Create(options),
             logContext: logContext,
@@ -135,7 +135,7 @@ public class ValidationBehaviorTests
     {
         var validator = new FakeRequestValidator();
         var logContext = new InMemoryLogContext { CorrelationId = "corr-fallback" };
-        var behavior = new ValidationBehavior<FakeRequest, Result>(
+        var behavior = new ValidationBehaviour<FakeRequest, Result>(
             new[] { validator },
             MicrosoftOptions.Create(new ValidationOptions { Strategy = ValidationStrategy.ReturnResult }),
             logContext: logContext,
@@ -153,7 +153,7 @@ public class ValidationBehaviorTests
     {
         var validator = new FakeRequestValidator();
         var coreOptions = MicrosoftOptions.Create(new CoreExtensionsOptions { TraceId = "core-only-trace" });
-        var behavior = new ValidationBehavior<FakeRequest, Result>(
+        var behavior = new ValidationBehaviour<FakeRequest, Result>(
             new[] { validator },
             MicrosoftOptions.Create(new ValidationOptions { Strategy = ValidationStrategy.ReturnResult }),
             logContext: null,
@@ -177,7 +177,7 @@ public class ValidationBehaviorTests
             TraceId = "trace-log",
             LogValidationFailures = true
         };
-        var behavior = new ValidationBehavior<FakeRequest, Result>(
+        var behavior = new ValidationBehaviour<FakeRequest, Result>(
             new[] { new FakeRequestValidator() },
             MicrosoftOptions.Create(options),
             logContext: logContext,
@@ -210,7 +210,7 @@ public class ValidationBehaviorTests
             Strategy = ValidationStrategy.ReturnResult,
             LogValidationFailures = false
         };
-        var behavior = new ValidationBehavior<FakeRequest, Result>(
+        var behavior = new ValidationBehaviour<FakeRequest, Result>(
             new[] { new FakeRequestValidator() },
             MicrosoftOptions.Create(options),
             logContext: logContext,
@@ -237,7 +237,7 @@ public class ValidationBehaviorTests
             },
             DefaultLogLevel = LogLevel.Trace
         };
-        var behavior = new ValidationBehavior<FakeRequest, Result>(
+        var behavior = new ValidationBehaviour<FakeRequest, Result>(
             new[] { new MixedSeverityValidator() },
             MicrosoftOptions.Create(options),
             logContext: logContext,
@@ -263,7 +263,7 @@ public class ValidationBehaviorTests
                 [Severity.Error] = LogLevel.Critical
             }
         };
-        var behavior = new ValidationBehavior<FakeRequest, Result>(
+        var behavior = new ValidationBehaviour<FakeRequest, Result>(
             new[] { new InfoSeverityValidator() },
             MicrosoftOptions.Create(options),
             logContext: logContext,

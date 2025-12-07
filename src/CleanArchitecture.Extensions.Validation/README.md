@@ -24,7 +24,7 @@ using FluentValidation;
 using MediatR;
 
 services.AddValidatorsFromAssemblyContaining<CreateOrderValidator>();
-services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
+services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehaviour<,>));
 
 services.Configure<ValidationOptions>(options =>
 {
