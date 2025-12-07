@@ -286,9 +286,11 @@ dotnet run --project samples/CleanArchitecture.Extensions.Core.Result.Sample/Cle
 - Getting started: [getting-started/quickstart.md](getting-started/quickstart.md) · [getting-started/installation.md](getting-started/installation.md)
 - Concepts: [concepts/architecture-fit.md](concepts/architecture-fit.md) · [concepts/composition.md](concepts/composition.md)
 - Catalog: [extensions/index.md](extensions/index.md) with links to Core, Validation, Multitenancy placeholder, and future stubs.
+- Package blueprints: [roadmap/package-blueprints.md](roadmap/package-blueprints.md) for the long-form per-extension blueprint formerly in the README.
 - Recipes: [recipes/authentication.md](recipes/authentication.md) · [recipes/caching.md](recipes/caching.md)
 - Samples: [samples/index.md](samples/index.md)
 - Reference & Ops: [reference/configuration.md](reference/configuration.md) · [troubleshooting/index.md](troubleshooting/index.md) · [release-notes/index.md](release-notes/index.md) · [roadmap.md](roadmap.md)
+- Adoption playbooks: [getting-started/adoption-playbooks.md](getting-started/adoption-playbooks.md) for scenario-driven guidance moved from the README.
 - Contributing: [contributing/index.md](contributing/index.md)
 
 ## Quality, packaging, and compatibility promises
