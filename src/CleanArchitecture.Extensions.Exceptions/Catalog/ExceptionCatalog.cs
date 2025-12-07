@@ -47,10 +47,25 @@ public sealed class ExceptionCatalog : IExceptionCatalog
 
         if (exception is ApplicationExceptionBase applicationException)
         {
-            return ExceptionDescriptor.FromApplicationException(applicationException);
+            var descriptorFromCatalog = ResolveDescriptorByType(applicationException.GetType()) ?? _unknownDescriptor;
+            var mergedMetadata = MergeMetadata(descriptorFromCatalog.Metadata, applicationException.Metadata);
+
+            return new ExceptionDescriptor(
+                applicationException.GetType(),
+                applicationException.Code,
+                descriptorFromCatalog.Message,
+                applicationException.Severity,
+                applicationException.IsTransient,
+                applicationException.StatusCode ?? descriptorFromCatalog.StatusCode,
+                mergedMetadata);
         }
 
-        var current = exception.GetType();
+        return ResolveDescriptorByType(exception.GetType()) ?? _unknownDescriptor;
+    }
+
+    private ExceptionDescriptor? ResolveDescriptorByType(Type type)
+    {
+        var current = type;
         while (current is not null)
         {
             if (_descriptors.TryGetValue(current, out var descriptor))
@@ -58,9 +73,27 @@ public sealed class ExceptionCatalog : IExceptionCatalog
                 return descriptor;
             }
 
-            current = current.BaseType;
+            current = current.BaseType!;
         }
 
-        return _unknownDescriptor;
+        return null;
+    }
+
+    private static IReadOnlyDictionary<string, string> MergeMetadata(
+        IReadOnlyDictionary<string, string> primary,
+        IReadOnlyDictionary<string, string> secondary)
+    {
+        if (primary.Count == 0 && secondary.Count == 0)
+        {
+            return primary.Count == 0 ? secondary : primary;
+        }
+
+        var merged = new Dictionary<string, string>(primary, StringComparer.OrdinalIgnoreCase);
+        foreach (var pair in secondary)
+        {
+            merged[pair.Key] = pair.Value;
+        }
+
+        return merged;
     }
 }

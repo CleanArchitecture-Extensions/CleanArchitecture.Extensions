@@ -90,6 +90,8 @@ public sealed class ValidationBehaviour<TRequest, TResponse> : IPipelineBehavior
 
         LogValidationFailures(limitedFailures, failures.Count, traceId);
 
+        var supportsResultResponse = IsResultResponse(typeof(TResponse), out var valueType);
+
         if (_options.Strategy == ValidationStrategy.Notify)
         {
             if (_notificationPublisher is not null)
@@ -97,42 +99,38 @@ public sealed class ValidationBehaviour<TRequest, TResponse> : IPipelineBehavior
                 await _notificationPublisher.PublishAsync(validationErrors, cancellationToken).ConfigureAwait(false);
             }
 
-            if (_options.NotifyBehavior == ValidationNotifyBehavior.Throw)
+            if (_options.NotifyBehavior == ValidationNotifyBehavior.Throw || !supportsResultResponse)
             {
                 throw new ValidationException(limitedFailures);
             }
 
-            return CreateResultOrThrow(validationErrors, traceId);
+            return CreateResultResponse(validationErrors, traceId, valueType);
         }
 
         if (_options.Strategy == ValidationStrategy.ReturnResult)
         {
-            return CreateResultOrThrow(validationErrors, traceId);
+            if (!supportsResultResponse)
+            {
+                throw new ValidationException(limitedFailures);
+            }
+
+            return CreateResultResponse(validationErrors, traceId, valueType);
         }
 
         throw new ValidationException(limitedFailures);
     }
 
-    private TResponse CreateResultOrThrow(IReadOnlyCollection<ValidationError> errors, string? traceId)
+    private TResponse CreateResultResponse(IReadOnlyCollection<ValidationError> errors, string? traceId, Type? valueType)
     {
-        var responseType = typeof(TResponse);
         var mappedErrors = errors.Select(error => error.ToCoreError(traceId)).ToList();
 
-        if (responseType == typeof(Result))
+        if (valueType is null)
         {
             return (TResponse)(object)Result.Failure(mappedErrors, traceId);
         }
 
-        if (responseType.IsGenericType && responseType.GetGenericTypeDefinition() == typeof(Result<>))
-        {
-            var valueType = responseType.GetGenericArguments()[0];
-            var genericFailure = CreateGenericFailure(valueType, mappedErrors, traceId);
-            return (TResponse)genericFailure;
-        }
-
-        throw new InvalidOperationException(
-            "ValidationBehaviour is configured to return a Result, but TResponse is not a Result or Result<T>. " +
-            "Use ValidationStrategy.Throw for non-Result handlers or update handlers to return Result.");
+        var genericFailure = CreateGenericFailure(valueType, mappedErrors, traceId);
+        return (TResponse)genericFailure;
     }
 
     private string? ResolveTraceId()
@@ -218,5 +216,23 @@ public sealed class ValidationBehaviour<TRequest, TResponse> : IPipelineBehavior
 
         var closed = failureMethod.MakeGenericMethod(valueType);
         return closed.Invoke(null, new object?[] { errors, traceId })!;
+    }
+
+    private static bool IsResultResponse(Type responseType, out Type? valueType)
+    {
+        if (responseType == typeof(Result))
+        {
+            valueType = null;
+            return true;
+        }
+
+        if (responseType.IsGenericType && responseType.GetGenericTypeDefinition() == typeof(Result<>))
+        {
+            valueType = responseType.GetGenericArguments()[0];
+            return true;
+        }
+
+        valueType = null;
+        return false;
     }
 }

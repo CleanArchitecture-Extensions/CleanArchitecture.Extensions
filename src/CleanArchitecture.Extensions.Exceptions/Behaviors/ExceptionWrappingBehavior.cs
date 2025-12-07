@@ -173,6 +173,13 @@ public sealed class ExceptionWrappingBehavior<TRequest, TResponse> : IPipelineBe
             return;
         }
 
+        var includeDetails = _options.IncludeExceptionDetails;
+        var logMessage = includeDetails ? exception.Message : descriptor.Message;
+        if (_options.RedactSensitiveData)
+        {
+            logMessage = _redactor.Redact(logMessage);
+        }
+
         var properties = new Dictionary<string, object?>
         {
             ["RequestType"] = typeof(TRequest).FullName ?? typeof(TRequest).Name,
@@ -189,7 +196,11 @@ public sealed class ExceptionWrappingBehavior<TRequest, TResponse> : IPipelineBe
             properties["StatusCode"] = (int)descriptor.StatusCode.Value;
         }
 
-        _logger.Log(level, $"Unhandled exception for {typeof(TRequest).Name}", exception, properties);
+        properties["ExceptionMessage"] = logMessage;
+
+        // Avoid logging full exception when details are disabled or must be redacted.
+        var exceptionToLog = includeDetails && !_options.RedactSensitiveData ? exception : null;
+        _logger.Log(level, $"Unhandled exception for {typeof(TRequest).Name}: {logMessage}", exceptionToLog, properties);
     }
 
     private static LogLevel MapLogLevel(ExceptionSeverity severity) => severity switch
