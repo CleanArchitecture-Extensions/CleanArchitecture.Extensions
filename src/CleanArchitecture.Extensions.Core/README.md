@@ -11,7 +11,7 @@ Core primitives for Clean Architecture apps built on MediatR.
 ## Install
 
 ```powershell
-dotnet add package CleanArchitecture.Extensions.Core --version 0.1.0-preview.1
+dotnet add package CleanArchitecture.Extensions.Core --version 0.1.1-preview.1
 ```
 
 ## Usage

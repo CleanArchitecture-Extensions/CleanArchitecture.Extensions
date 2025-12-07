@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
         <RootNamespace>CleanArchitecture.Extensions.Core.Time.Sample.Application.UnitTests</RootNamespace>
@@ -20,12 +20,12 @@
         </PackageReference>
         <PackageReference Include="Moq" />
         <PackageReference Include="Shouldly" />
+        <PackageReference Include="CleanArchitecture.Extensions.Core" />
     </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\Application\Application.csproj" />
     <ProjectReference Include="..\..\src\Infrastructure\Infrastructure.csproj" />
-    <ProjectReference Include="..\..\..\..\src\CleanArchitecture.Extensions.Core\CleanArchitecture.Extensions.Core.csproj" />
   </ItemGroup>
 
 </Project>
