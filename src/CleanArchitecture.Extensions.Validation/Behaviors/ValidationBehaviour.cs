@@ -90,6 +90,13 @@ public sealed class ValidationBehaviour<TRequest, TResponse> : IPipelineBehavior
 
         LogValidationFailures(limitedFailures, failures.Count, traceId);
 
+        var supportsResultResponse = IsResultResponse(typeof(TResponse), out var valueType);
+        MethodInfo? templateFailureMethod = null;
+        if (!supportsResultResponse)
+        {
+            supportsResultResponse = TryLocateTemplateResult(typeof(TResponse), out templateFailureMethod);
+        }
+
         if (_options.Strategy == ValidationStrategy.Notify)
         {
             if (_notificationPublisher is not null)
@@ -97,42 +104,49 @@ public sealed class ValidationBehaviour<TRequest, TResponse> : IPipelineBehavior
                 await _notificationPublisher.PublishAsync(validationErrors, cancellationToken).ConfigureAwait(false);
             }
 
-            if (_options.NotifyBehavior == ValidationNotifyBehavior.Throw)
+            if (_options.NotifyBehavior == ValidationNotifyBehavior.Throw || !supportsResultResponse)
             {
                 throw new ValidationException(limitedFailures);
             }
 
-            return CreateResultOrThrow(validationErrors, traceId);
+            return CreateResultResponse(validationErrors, traceId, valueType, templateFailureMethod);
         }
 
         if (_options.Strategy == ValidationStrategy.ReturnResult)
         {
-            return CreateResultOrThrow(validationErrors, traceId);
+            if (!supportsResultResponse)
+            {
+                throw new ValidationException(limitedFailures);
+            }
+
+            return CreateResultResponse(validationErrors, traceId, valueType, templateFailureMethod);
         }
 
         throw new ValidationException(limitedFailures);
     }
 
-    private TResponse CreateResultOrThrow(IReadOnlyCollection<ValidationError> errors, string? traceId)
+    private TResponse CreateResultResponse(
+        IReadOnlyCollection<ValidationError> errors,
+        string? traceId,
+        Type? valueType,
+        MethodInfo? templateFailureMethod)
     {
-        var responseType = typeof(TResponse);
         var mappedErrors = errors.Select(error => error.ToCoreError(traceId)).ToList();
 
-        if (responseType == typeof(Result))
+        if (templateFailureMethod is not null)
+        {
+            var messages = errors.Select(error => error.Message);
+            var template = templateFailureMethod.Invoke(null, new object?[] { messages });
+            return (TResponse)template!;
+        }
+
+        if (valueType is null)
         {
             return (TResponse)(object)Result.Failure(mappedErrors, traceId);
         }
 
-        if (responseType.IsGenericType && responseType.GetGenericTypeDefinition() == typeof(Result<>))
-        {
-            var valueType = responseType.GetGenericArguments()[0];
-            var genericFailure = CreateGenericFailure(valueType, mappedErrors, traceId);
-            return (TResponse)genericFailure;
-        }
-
-        throw new InvalidOperationException(
-            "ValidationBehaviour is configured to return a Result, but TResponse is not a Result or Result<T>. " +
-            "Use ValidationStrategy.Throw for non-Result handlers or update handlers to return Result.");
+        var genericFailure = ResultFailureFactory.CreateGenericFailure(valueType, mappedErrors, traceId);
+        return (TResponse)genericFailure;
     }
 
     private string? ResolveTraceId()
@@ -206,17 +220,40 @@ public sealed class ValidationBehaviour<TRequest, TResponse> : IPipelineBehavior
         return highestLevel ?? _options.DefaultLogLevel;
     }
 
-    private static object CreateGenericFailure(Type valueType, IReadOnlyCollection<Error> errors, string? traceId)
+    private static bool IsResultResponse(Type responseType, out Type? valueType)
     {
-        var failureMethod = typeof(Result)
-            .GetMethods(BindingFlags.Public | BindingFlags.Static)
-            .First(method =>
-                method.IsGenericMethod &&
-                method.Name == nameof(Result.Failure) &&
-                method.GetParameters().Length == 2 &&
-                method.GetParameters()[0].ParameterType == typeof(IEnumerable<Error>));
+        if (responseType == typeof(Result))
+        {
+            valueType = null;
+            return true;
+        }
 
-        var closed = failureMethod.MakeGenericMethod(valueType);
-        return closed.Invoke(null, new object?[] { errors, traceId })!;
+        if (responseType.IsGenericType && responseType.GetGenericTypeDefinition() == typeof(Result<>))
+        {
+            valueType = responseType.GetGenericArguments()[0];
+            return true;
+        }
+
+        valueType = null;
+        return false;
+    }
+
+    private static bool TryLocateTemplateResult(Type responseType, out MethodInfo? failureMethod)
+    {
+        failureMethod = null;
+        if (!string.Equals(responseType.Name, "Result", StringComparison.Ordinal))
+        {
+            return false;
+        }
+
+        failureMethod = responseType
+            .GetMethods(BindingFlags.Public | BindingFlags.Static)
+            .FirstOrDefault(method =>
+                method.Name == "Failure" &&
+                method.GetParameters().Length == 1 &&
+                typeof(IEnumerable<string>).IsAssignableFrom(method.GetParameters()[0].ParameterType) &&
+                method.ReturnType == responseType);
+
+        return failureMethod is not null;
     }
 }

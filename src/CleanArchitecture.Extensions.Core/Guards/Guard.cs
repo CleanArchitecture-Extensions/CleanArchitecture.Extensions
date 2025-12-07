@@ -22,7 +22,7 @@ public static class Guard
             return Result.Success(input, options?.TraceId);
         }
 
-        return HandleFailure<T>(CreateError("guard.null", $"{parameterName} cannot be null.", options), options);
+        return HandleFailure<T>(CreateError("guard.null", $"{parameterName} cannot be null.", options), options, parameterName);
     }
 
     /// <summary>
@@ -39,7 +39,7 @@ public static class Guard
             return Result.Success(input!, options?.TraceId);
         }
 
-        return HandleFailure<string>(CreateError("guard.empty", $"{parameterName} cannot be null or whitespace.", options), options);
+        return HandleFailure<string>(CreateError("guard.empty", $"{parameterName} cannot be null or whitespace.", options), options, parameterName);
     }
 
     /// <summary>
@@ -60,7 +60,7 @@ public static class Guard
             return Result.Success(value, options?.TraceId);
         }
 
-        return HandleFailure<T>(CreateError("guard.range", $"{parameterName} must be between {minimum} and {maximum}.", options), options);
+        return HandleFailure<T>(CreateError("guard.range", $"{parameterName} must be between {minimum} and {maximum}.", options), options, parameterName);
     }
 
     /// <summary>
@@ -79,7 +79,7 @@ public static class Guard
             return Result.Success(value, options?.TraceId);
         }
 
-        return HandleFailure<TEnum>(CreateError("guard.enum", $"{parameterName} is not a defined {typeof(TEnum).Name} value.", options), options);
+        return HandleFailure<TEnum>(CreateError("guard.enum", $"{parameterName} is not a defined {typeof(TEnum).Name} value.", options), options, parameterName);
     }
 
     /// <summary>
@@ -97,7 +97,7 @@ public static class Guard
             return Result.Success(input, options?.TraceId);
         }
 
-        return HandleFailure<string>(CreateError("guard.length", $"{parameterName} must be at least {minLength} characters long.", options), options);
+        return HandleFailure<string>(CreateError("guard.length", $"{parameterName} must be at least {minLength} characters long.", options), options, parameterName);
     }
 
     /// <summary>
@@ -115,7 +115,7 @@ public static class Guard
             return Result.Success(input, options?.TraceId);
         }
 
-        return HandleFailure<string>(CreateError("guard.length", $"{parameterName} must be {maxLength} characters or fewer.", options), options);
+        return HandleFailure<string>(CreateError("guard.length", $"{parameterName} must be {maxLength} characters or fewer.", options), options, parameterName);
     }
 
     /// <summary>
@@ -138,14 +138,15 @@ public static class Guard
     /// </summary>
     /// <param name="error">Error describing the guard failure.</param>
     /// <param name="options">Guard behavior options.</param>
+    /// <param name="parameterName">Name of the parameter used when throwing exceptions.</param>
     /// <returns>A failure result when not throwing.</returns>
-    private static Result HandleFailure(Error error, GuardOptions? options)
+    private static Result HandleFailure(Error error, GuardOptions? options, string? parameterName = null)
     {
         var strategy = options?.Strategy ?? GuardStrategy.ReturnFailure;
         switch (strategy)
         {
             case GuardStrategy.Throw:
-                throw options?.ExceptionFactory?.Invoke(error) ?? new ArgumentException(error.Message, error.Code);
+                throw options?.ExceptionFactory?.Invoke(error) ?? new ArgumentException(error.Message, parameterName);
             case GuardStrategy.Accumulate:
                 options?.ErrorSink?.Add(error);
                 return Result.Failure(error, error.TraceId);
@@ -160,14 +161,15 @@ public static class Guard
     /// <typeparam name="T">Type of the successful result value.</typeparam>
     /// <param name="error">Error describing the guard failure.</param>
     /// <param name="options">Guard behavior options.</param>
+    /// <param name="parameterName">Name of the parameter used when throwing exceptions.</param>
     /// <returns>A failure result when not throwing.</returns>
-    private static Result<T> HandleFailure<T>(Error error, GuardOptions? options)
+    private static Result<T> HandleFailure<T>(Error error, GuardOptions? options, string? parameterName = null)
     {
         var strategy = options?.Strategy ?? GuardStrategy.ReturnFailure;
         switch (strategy)
         {
             case GuardStrategy.Throw:
-                throw options?.ExceptionFactory?.Invoke(error) ?? new ArgumentException(error.Message, error.Code);
+                throw options?.ExceptionFactory?.Invoke(error) ?? new ArgumentException(error.Message, parameterName);
             case GuardStrategy.Accumulate:
                 options?.ErrorSink?.Add(error);
                 return Result.Failure<T>(error, error.TraceId);

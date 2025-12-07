@@ -44,52 +44,13 @@ Namespace: `CleanArchitecture.Extensions.Core.Logging`
 ## Wiring in DI
 Minimum registration to get logging working with Core behaviors:
 ```csharp
-services.AddScoped<ILogContext, InMemoryLogContext>();              // replace with provider-specific context
-services.AddScoped(typeof(IAppLogger<>), typeof(NoOpAppLogger<>));   // replace with adapter for your logger
-services.AddSingleton<IClock, SystemClock>();                       // behaviors need a clock
+services.AddCleanArchitectureCore(); // IClock, ILogContext, MelAppLoggerAdapter<T>, DomainEvent dispatcher/tracker
+services.Configure<CoreExtensionsOptions>(configuration.GetSection("Extensions:Core"));
 ```
-If you’re using Core pipeline behaviors, ensure they’re registered (see the Pipeline Behaviors doc). You can swap `NoOpAppLogger<>` with an adapter that bridges to MEL or Serilog.
+If you need a different provider, replace `MelAppLoggerAdapter<T>` with your adapter; `ILogContext` can also be swapped for a provider-specific scope wrapper.
 
 ## Adapting to Microsoft.Extensions.Logging (MEL)
-```csharp
-public sealed class MelAppLogger<T> : IAppLogger<T>
-{
-    private readonly ILogger<T> _logger;
-    private readonly ILogContext _context;
-
-    public MelAppLogger(ILogger<T> logger, ILogContext context)
-    {
-        _logger = logger;
-        _context = context;
-    }
-
-    public void Log(LogLevel level, string message, Exception? exception = null, IReadOnlyDictionary<string, object?>? properties = null)
-    {
-        using var scope = _logger.BeginScope(new Dictionary<string, object?>
-        {
-            ["CorrelationId"] = _context.CorrelationId
-        });
-
-        _logger.Log(Map(level), exception, message + " {@props}", properties);
-    }
-
-    private Microsoft.Extensions.Logging.LogLevel Map(LogLevel level) => level switch
-    {
-        LogLevel.Trace => Microsoft.Extensions.Logging.LogLevel.Trace,
-        LogLevel.Debug => Microsoft.Extensions.Logging.LogLevel.Debug,
-        LogLevel.Information => Microsoft.Extensions.Logging.LogLevel.Information,
-        LogLevel.Warning => Microsoft.Extensions.Logging.LogLevel.Warning,
-        LogLevel.Error => Microsoft.Extensions.Logging.LogLevel.Error,
-        LogLevel.Critical => Microsoft.Extensions.Logging.LogLevel.Critical,
-        _ => Microsoft.Extensions.Logging.LogLevel.None
-    };
-}
-```
-Register it:
-```csharp
-services.AddScoped(typeof(IAppLogger<>), typeof(MelAppLogger<>));
-services.AddScoped<ILogContext, InMemoryLogContext>(); // or your own scope wrapper
-```
+The package now ships `MelAppLoggerAdapter<T>`, which pushes `CorrelationId` into an `ILogger<T>` scope and logs structured properties. Swap it into DI (it’s registered by default via `AddCleanArchitectureCore`) or replace it with your own adapter if you need custom enrichment.
 
 ## Adapting to Serilog
 ```csharp

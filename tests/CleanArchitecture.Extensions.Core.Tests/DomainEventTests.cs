@@ -1,4 +1,6 @@
 using CleanArchitecture.Extensions.Core.DomainEvents;
+using System.Linq;
+using MediatR;
 
 namespace CleanArchitecture.Extensions.Core.Tests;
 
@@ -41,6 +43,47 @@ public class DomainEventTests
         Assert.Equal(events.Select(e => e.CorrelationId), published.Select(e => e.CorrelationId));
     }
 
+    [Fact]
+    public void AggregateRoot_RaisesAndClears_Events()
+    {
+        var aggregate = new TestAggregate();
+        aggregate.DoSomething();
+
+        Assert.Single(aggregate.DomainEvents);
+
+        var drained = aggregate.DequeueDomainEvents();
+        Assert.Single(drained);
+        Assert.Empty(aggregate.DomainEvents);
+    }
+
+    [Fact]
+    public async Task DispatchAndClear_Dispatches_From_Aggregates()
+    {
+        var aggregate = new TestAggregate();
+        aggregate.DoSomething();
+        var published = new List<DomainEvent>();
+        var dispatcher = new CollectingDispatcher(published);
+
+        await dispatcher.DispatchAndClearAsync(new[] { aggregate });
+
+        Assert.Single(published);
+        Assert.Empty(aggregate.DomainEvents);
+    }
+
+    [Fact]
+    public async Task MediatRDispatcher_Publishes_Notifications()
+    {
+        var mediator = new CollectingMediator();
+        var dispatcher = new MediatRDomainEventDispatcher(mediator);
+        var evt = new TestEvent("cid-mediatr");
+
+        await dispatcher.DispatchAsync(evt);
+        await dispatcher.DispatchAsync(new[] { evt });
+
+        Assert.Equal(2, mediator.Published.Count);
+        Assert.All(mediator.Published, e => Assert.Equal("cid-mediatr", e.CorrelationId));
+    }
+
     private sealed record TestEvent(string? CorrelationId = null) : DomainEvent(CorrelationId);
 
     private sealed class CollectingDispatcher(List<DomainEvent> published) : IDomainEventDispatcher
@@ -55,6 +98,56 @@ public class DomainEventTests
         {
             published.AddRange(domainEvents);
             return Task.CompletedTask;
+        }
+    }
+
+    private sealed class TestAggregate : AggregateRoot
+    {
+        public void DoSomething() => RaiseDomainEvent(new TestEvent("agg"));
+    }
+
+    private sealed class CollectingMediator : IMediator
+    {
+        public List<DomainEvent> Published { get; } = new();
+
+        public Task Publish(object notification, CancellationToken cancellationToken = default)
+        {
+            if (notification is DomainEvent domainEvent)
+            {
+                Published.Add(domainEvent);
+            }
+
+            return Task.CompletedTask;
+        }
+
+        public Task Publish<TNotification>(TNotification notification, CancellationToken cancellationToken = default) where TNotification : INotification
+        {
+            if (notification is DomainEvent domainEvent)
+            {
+                Published.Add(domainEvent);
+            }
+
+            return Task.CompletedTask;
+        }
+
+        public Task<TResponse> Send<TResponse>(IRequest<TResponse> request, CancellationToken cancellationToken = default) =>
+            Task.FromResult(default(TResponse)!);
+
+        public Task<object?> Send(object request, CancellationToken cancellationToken = default) =>
+            Task.FromResult(default(object));
+
+        public Task Send<TRequest>(TRequest request, CancellationToken cancellationToken = default) where TRequest : IRequest =>
+            Task.CompletedTask;
+
+        public IAsyncEnumerable<TResponse> CreateStream<TResponse>(IStreamRequest<TResponse> request, CancellationToken cancellationToken = default) =>
+            Empty<TResponse>();
+
+        public IAsyncEnumerable<object?> CreateStream(object request, CancellationToken cancellationToken = default) =>
+            Empty<object?>();
+
+        private static async IAsyncEnumerable<T> Empty<T>()
+        {
+            yield break;
         }
     }
 }
