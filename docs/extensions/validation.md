@@ -9,7 +9,7 @@ Validation pipeline and helpers built on FluentValidation for Clean Architecture
 - You want compatibility with existing `ValidationException` handling (dictionary of property -> messages) but also want to map failures to `Result`.
 
 ## Prereqs & Compatibility
-- Target frameworks: `net10.0` (current).
+- Target frameworks: `net8.0`.
 - Dependencies: FluentValidation `12.1.0`, MediatR `13.1.0`.
 - Template fit: register the behavior in Application after Authorization and before Performance, same signature as the template’s `ValidationBehaviour<,>`.
 
@@ -36,7 +36,7 @@ services.Configure<ValidationOptions>(options =>
 
 ### Strategies
 - `Throw` (default): matches template; throws `ValidationException` with `Dictionary<string,string[]>`.
-- `ReturnResult`: short-circuits with `Result.Failure`/`Result<T>.Failure` when handlers return `Result`.
+- `ReturnResult`: short-circuits with `Result.Failure`/`Result<T>.Failure` when handlers return `Result`. Also understands the template’s `Result` shape (Succeeded + Errors) by invoking its static `Failure(IEnumerable<string>)` method.
 - `Notify`: publishes via `IValidationNotificationPublisher` then either throws or returns `Result` based on `NotifyBehavior`.
 
 Key options: `MaxFailures`, `IncludePropertyName`, `IncludeAttemptedValue`, `IncludePlaceholderValues`, `DefaultErrorCode`, `TraceId`, `ErrorCodeSelector`, `MessageFormatter`.
