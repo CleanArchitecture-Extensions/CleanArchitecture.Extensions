@@ -4,7 +4,8 @@ FluentValidation-powered MediatR pipeline aligned with CleanArchitecture.Extensi
 
 - Executes validators in the MediatR pipeline and surfaces failures as exceptions or `Result` responses.
 - Optional notification publishing through `IValidationNotificationPublisher` for UI or logging hooks.
-- Tunable options for fail-fast limits, message formatting, and notify/return/throw strategies.
+- Correlation-aware summaries: plugs into `ILogContext`/`IAppLogger` and uses `SeverityLogLevels` to choose log levels per failure.
+- Tunable options for fail-fast limits, message formatting, notify/return/throw strategies, and trace ID propagation from Core.
 - Ships with SourceLink, XML docs, and snupkg symbols for debugger-friendly packages.
 
 ## Install
@@ -18,6 +19,7 @@ dotnet add package CleanArchitecture.Extensions.Validation --version 0.1.0-previ
 ```csharp
 using CleanArchitecture.Extensions.Validation.Behaviors;
 using CleanArchitecture.Extensions.Validation.Options;
+using CleanArchitecture.Extensions.Core.Logging;
 using FluentValidation;
 using MediatR;
 
@@ -28,6 +30,8 @@ services.Configure<ValidationOptions>(options =>
 {
     options.Strategy = ValidationStrategy.ReturnResult;
     options.IncludePropertyName = true;
+    options.SeverityLogLevels[Severity.Error] = LogLevel.Warning;
+    options.LogValidationFailures = true;
 });
 ```
 
