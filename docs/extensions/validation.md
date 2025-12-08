@@ -81,6 +81,7 @@ var behavior = new ValidationBehaviour<CreateTodo, Result<TodoVm>>(validators, o
 - ASP.NET Core adapters (MVC/endpoint filters) for global model validation outside MediatR.
 - Standalone validator provider for background jobs/message handlers using the same strategies/options.
 - Tenant-aware rule helpers once multitenancy ships.
+- Profiling/metrics hooks (timing + counters) once the Observability module is available.
 
 ## Troubleshooting
 
