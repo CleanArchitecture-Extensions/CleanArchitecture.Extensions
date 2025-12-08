@@ -76,6 +76,12 @@ var behavior = new ValidationBehaviour<CreateTodo, Result<TodoVm>>(validators, o
 // When validation fails, the behaviour returns Result<T>.Failure(errors) instead of throwing.
 ```
 
+## Roadmap
+
+- ASP.NET Core adapters (MVC/endpoint filters) for global model validation outside MediatR.
+- Standalone validator provider for background jobs/message handlers using the same strategies/options.
+- Tenant-aware rule helpers once multitenancy ships.
+
 ## Troubleshooting
 
 - Behavior throws when handler return type is not `Result`/`Result<T>` and strategy is `ReturnResult`/`Notify` with `ReturnResult`; switch to `Throw` or update handler return types.
