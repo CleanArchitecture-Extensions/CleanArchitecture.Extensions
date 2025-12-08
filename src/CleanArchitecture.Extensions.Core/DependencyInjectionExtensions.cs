@@ -28,6 +28,12 @@ public static class DependencyInjectionExtensions
         services.TryAddScoped(typeof(IAppLogger<>), typeof(MelAppLoggerAdapter<>));
         services.TryAddScoped<DomainEvents.DomainEventTracker>();
         services.TryAddScoped<DomainEvents.IDomainEventDispatcher, DomainEvents.MediatRDomainEventDispatcher>();
+        services.TryAddScoped<DomainEvents.DispatchDomainEventsInterceptor>();
+        services.AddSingleton(provider =>
+        {
+            DomainEvents.DomainEventTime.SetProvider(() => provider.GetRequiredService<IClock>().UtcNow);
+            return DomainEvents.DomainEventTimeMarker.Instance;
+        });
 
         return services;
     }
