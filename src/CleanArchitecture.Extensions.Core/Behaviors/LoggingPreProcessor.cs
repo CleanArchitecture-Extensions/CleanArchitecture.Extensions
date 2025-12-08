@@ -49,12 +49,21 @@ public sealed class LoggingPreProcessor<TRequest> : IRequestPreProcessor<TReques
 
     private string EnsureCorrelationId()
     {
-        if (string.IsNullOrWhiteSpace(_logContext.CorrelationId))
+        if (!string.IsNullOrWhiteSpace(_logContext.CorrelationId))
         {
-            var factory = _options.CorrelationIdFactory ?? (() => _clock.NewGuid().ToString());
-            _logContext.CorrelationId = factory();
+            return _logContext.CorrelationId!;
         }
 
-        return _logContext.CorrelationId!;
+        var resolved = _options.CorrelationIdResolver?.Invoke();
+        if (!string.IsNullOrWhiteSpace(resolved))
+        {
+            _logContext.CorrelationId = resolved;
+            return resolved!;
+        }
+
+        var factory = _options.CorrelationIdFactory ?? (() => _clock.NewGuid().ToString());
+        var generated = factory();
+        _logContext.CorrelationId = generated;
+        return generated;
     }
 }

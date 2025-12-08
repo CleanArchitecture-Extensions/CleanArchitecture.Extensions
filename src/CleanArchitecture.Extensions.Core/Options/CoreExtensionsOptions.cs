@@ -33,6 +33,11 @@ public sealed class CoreExtensionsOptions
     public Func<string> CorrelationIdFactory { get; set; } = () => Guid.NewGuid().ToString("N");
 
     /// <summary>
+    /// Gets or sets a resolver used to pull an existing correlation identifier from the current context (e.g., HTTP headers).
+    /// </summary>
+    public Func<string?>? CorrelationIdResolver { get; set; }
+
+    /// <summary>
     /// Gets or sets the trace identifier applied to results and guard errors.
     /// </summary>
     public string? TraceId { get; set; }
