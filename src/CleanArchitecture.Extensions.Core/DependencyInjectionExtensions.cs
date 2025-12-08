@@ -18,11 +18,18 @@ public static class DependencyInjectionExtensions
     /// <summary>
     /// Registers default Core abstractions (clock, log context, logger adapter) and options.
     /// </summary>
-    public static IServiceCollection AddCleanArchitectureCore(this IServiceCollection services)
+    public static IServiceCollection AddCleanArchitectureCore(
+        this IServiceCollection services,
+        Action<CoreExtensionsOptions>? configure = null)
     {
         ArgumentNullException.ThrowIfNull(services);
 
-        services.AddOptions<CoreExtensionsOptions>();
+        var optionsBuilder = services.AddOptions<CoreExtensionsOptions>();
+        if (configure is not null)
+        {
+            optionsBuilder.Configure(configure);
+        }
+
         services.TryAddSingleton<IClock, SystemClock>();
         services.TryAddScoped<ILogContext, InMemoryLogContext>();
         services.TryAddScoped(typeof(IAppLogger<>), typeof(MelAppLoggerAdapter<>));
@@ -44,14 +51,35 @@ public static class DependencyInjectionExtensions
     /// <remarks>
     /// Call this inside your MediatR registration: <c>services.AddMediatR(cfg => cfg.AddCleanArchitectureCorePipeline());</c>
     /// </remarks>
-    public static MediatRServiceConfiguration AddCleanArchitectureCorePipeline(this MediatRServiceConfiguration configuration)
+    public static MediatRServiceConfiguration AddCleanArchitectureCorePipeline(
+        this MediatRServiceConfiguration configuration,
+        Action<CorePipelineOptions>? configure = null)
     {
         ArgumentNullException.ThrowIfNull(configuration);
 
-        configuration.AddOpenRequestPreProcessor(typeof(LoggingPreProcessor<>));
-        configuration.AddOpenBehavior(typeof(CorrelationBehavior<,>));
-        configuration.AddOpenBehavior(typeof(LoggingBehavior<,>));
-        configuration.AddOpenBehavior(typeof(PerformanceBehavior<,>));
+        var options = new CorePipelineOptions();
+        configure?.Invoke(options);
+
+        if (options.UseLoggingPreProcessor)
+        {
+            configuration.AddOpenRequestPreProcessor(typeof(LoggingPreProcessor<>));
+        }
+
+        if (options.UseCorrelationBehavior)
+        {
+            configuration.AddOpenBehavior(typeof(CorrelationBehavior<,>));
+        }
+
+        if (options.UseLoggingBehavior)
+        {
+            configuration.AddOpenBehavior(typeof(LoggingBehavior<,>));
+        }
+
+        if (options.UsePerformanceBehavior)
+        {
+            configuration.AddOpenBehavior(typeof(PerformanceBehavior<,>));
+        }
+
         return configuration;
     }
 }
