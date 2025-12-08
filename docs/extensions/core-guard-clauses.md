@@ -75,7 +75,10 @@ dotnet add src/YourProject/YourProject.csproj package CleanArchitecture.Extensio
 Register `CoreExtensionsOptions` in DI so guards can inherit defaults:
 
 ```csharp
-services.Configure<CoreExtensionsOptions>(configuration.GetSection("Extensions:Core"));
+services.AddCleanArchitectureCore(options =>
+{
+    options.GuardStrategy = GuardStrategy.ReturnFailure;
+});
 ```
 
 ## Quick-start examples (backed by the guard sample)

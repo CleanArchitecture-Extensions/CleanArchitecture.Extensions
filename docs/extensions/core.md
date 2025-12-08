@@ -81,30 +81,32 @@ dotnet add src/YourProject/YourProject.csproj package CleanArchitecture.Extensio
 
 ## Integration guide (Application layer)
 
-1. **Register clocks, log context, and logger:**
+1. **Register Core + options in one call:**
 
 ```csharp
-services.AddSingleton<IClock, SystemClock>();
-services.AddScoped<ILogContext, InMemoryLogContext>(); // replace with Serilog/MEL adapter
-services.AddScoped(typeof(IAppLogger<>), typeof(NoOpAppLogger<>)); // swap with your provider adapter
+services.AddCleanArchitectureCore(options =>
+{
+    options.CorrelationHeaderName = "X-Correlation-ID";
+    options.GuardStrategy = GuardStrategy.ReturnFailure;
+    options.EnablePerformanceLogging = true;
+    options.PerformanceWarningThreshold = TimeSpan.FromMilliseconds(500);
+});
 ```
 
-2. **Wire pipeline behaviors:** keep template order; prefer correlation first.
+2. **Wire pipeline behaviors with the helper (keep template order):**
 
 ```csharp
-services.AddScoped(typeof(IPipelineBehavior<,>), typeof(CorrelationBehavior<,>));
-services.AddScoped(typeof(IRequestPreProcessor<>), typeof(LoggingPreProcessor<>)); // pre-processor registration
-services.AddScoped(typeof(IPipelineBehavior<,>), typeof(LoggingBehavior<,>));
-services.AddScoped(typeof(IPipelineBehavior<,>), typeof(PerformanceBehavior<,>));
+services.AddMediatR(cfg =>
+{
+    cfg.RegisterServicesFromAssemblyContaining<Program>();
+    cfg.AddCleanArchitectureCorePipeline(); // Correlation -> Logging pre/post -> Performance
+    cfg.AddOpenBehavior(typeof(UnhandledExceptionBehaviour<,>));
+    cfg.AddOpenBehavior(typeof(AuthorizationBehaviour<,>));
+    cfg.AddOpenBehavior(typeof(ValidationBehaviour<,>));
+});
 ```
 
-3. **Configure options:** align with your transports/logging/search queries.
-
-```csharp
-services.Configure<CoreExtensionsOptions>(configuration.GetSection("Extensions:Core"));
-```
-
-4. **Adopt Results + guards in handlers:** return `Result<T>` from commands/queries; compose with guards and validation.
+3. **Adopt Results + guards in handlers:** return `Result<T>` from commands/queries; compose with guards and validation.
 
 ```csharp
 var nameResult = Guard.AgainstNullOrWhiteSpace(request.Name, nameof(request.Name),
@@ -124,26 +126,7 @@ return Result.Success(created.Id, nameResult.TraceId);
 
 ## Configuration reference
 
-`appsettings.json` example:
-
-```json
-{
-  "Extensions": {
-    "Core": {
-      "CorrelationHeaderName": "X-Correlation-ID",
-      "GuardStrategy": "ReturnFailure",
-      "EnablePerformanceLogging": true,
-      "PerformanceWarningThreshold": "00:00:00.500",
-      "TraceId": null
-    }
-  }
-}
-```
-
-- **CorrelationHeaderName:** match your API gateway/clients.
-- **GuardStrategy:** choose `ReturnFailure` for handler-friendly results, `Throw` when using middleware to translate exceptions, `Accumulate` for batch validations.
-- **PerformanceWarningThreshold:** keep 500 ms to mirror template defaults; tune for your SLOs.
-- **TraceId:** set when upstream (API) passes a trace/correlation token you want to propagate through results and guard errors.
+Configure inline (as above) for clarity in samples. If you prefer configuration binding, call `services.AddCleanArchitectureCore(opts => configuration.GetSection("Extensions:Core").Bind(opts));`.
 
 ## Troubleshooting & adoption tips
 

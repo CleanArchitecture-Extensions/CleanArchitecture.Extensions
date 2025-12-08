@@ -1,6 +1,7 @@
 ﻿using System.Reflection;
+using CleanArchitecture.Extensions.Core;
+using CleanArchitecture.Extensions.Core.Guards;
 using CleanArchitecture.Extensions.Core.Guards.Sample.Application.Common.Behaviours;
-using CleanArchitecture.Extensions.Core.Options;
 using Microsoft.Extensions.Hosting;
 
 namespace Microsoft.Extensions.DependencyInjection;
@@ -14,15 +15,19 @@ public static class DependencyInjection
 
         builder.Services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
 
-        builder.Services.Configure<CoreExtensionsOptions>(builder.Configuration.GetSection("Extensions:Core"));
+        builder.Services.AddCleanArchitectureCore(options =>
+        {
+            options.CorrelationHeaderName = "X-Correlation-ID";
+            options.GuardStrategy = GuardStrategy.ReturnFailure;
+        });
 
-        builder.Services.AddMediatR(cfg => {
+        builder.Services.AddMediatR(cfg =>
+        {
             cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());
-            cfg.AddOpenRequestPreProcessor(typeof(LoggingBehaviour<>));
+            cfg.AddCleanArchitectureCorePipeline();
             cfg.AddOpenBehavior(typeof(UnhandledExceptionBehaviour<,>));
             cfg.AddOpenBehavior(typeof(AuthorizationBehaviour<,>));
             cfg.AddOpenBehavior(typeof(ValidationBehaviour<,>));
-            cfg.AddOpenBehavior(typeof(PerformanceBehaviour<,>));
         });
     }
 }

@@ -27,15 +27,23 @@ dotnet add src/YourProject/YourProject.csproj package CleanArchitecture.Extensio
 ### Wire up validators and behaviour (DI)
 
 ```csharp
-services.AddValidatorsFromAssemblyContaining<Startup>(); // or your Application assembly marker
-services.AddScoped(typeof(IPipelineBehavior<,>), typeof(ValidationBehaviour<,>));
+using CleanArchitecture.Extensions.Validation;
+using CleanArchitecture.Extensions.Validation.Options;
+using FluentValidation;
+using MediatR;
 
-// Optional: configure strategy/options
-services.Configure<ValidationOptions>(options =>
+services.AddCleanArchitectureValidation(options =>
 {
     options.Strategy = ValidationStrategy.Throw; // default to template behavior
     options.MaxFailures = 50;
     options.IncludeAttemptedValue = false;
+});
+
+services.AddValidatorsFromAssemblyContaining<Startup>(); // or your Application assembly marker
+services.AddMediatR(cfg =>
+{
+    cfg.RegisterServicesFromAssemblyContaining<Startup>();
+    cfg.AddCleanArchitectureValidationPipeline(); // place after Authorization, before Performance
 });
 ```
 
