@@ -46,5 +46,4 @@ var backToRich = legacy.ToResult(result.TraceId);
 
 ## Target frameworks
 
-- net8.0
 - net10.0

@@ -53,5 +53,4 @@ Implement `IValidationNotificationPublisher` if you want to capture validation f
 
 ## Target frameworks
 
-- net8.0
 - net10.0
