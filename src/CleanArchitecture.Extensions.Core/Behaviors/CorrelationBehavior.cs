@@ -38,13 +38,28 @@ public sealed class CorrelationBehavior<TRequest, TResponse> : IPipelineBehavior
     /// <returns>The response from the next handler.</returns>
     public Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
     {
-        if (string.IsNullOrWhiteSpace(_logContext.CorrelationId))
-        {
-            _logContext.CorrelationId = (_options.CorrelationIdFactory ?? (() => _clock.NewGuid().ToString()))();
-        }
-
-        var correlationId = _logContext.CorrelationId;
+        var correlationId = ResolveCorrelationId();
         using var scope = _logContext.PushProperty("CorrelationId", correlationId);
         return next(cancellationToken);
+    }
+
+    private string ResolveCorrelationId()
+    {
+        if (!string.IsNullOrWhiteSpace(_logContext.CorrelationId))
+        {
+            return _logContext.CorrelationId!;
+        }
+
+        var resolved = _options.CorrelationIdResolver?.Invoke();
+        if (!string.IsNullOrWhiteSpace(resolved))
+        {
+            _logContext.CorrelationId = resolved;
+            return resolved!;
+        }
+
+        var factory = _options.CorrelationIdFactory ?? (() => _clock.NewGuid().ToString());
+        var generated = factory();
+        _logContext.CorrelationId = generated;
+        return generated;
     }
 }

@@ -24,7 +24,7 @@ public abstract record DomainEvent : INotification
     /// <summary>
     /// Gets the UTC timestamp when the event occurred.
     /// </summary>
-    public DateTimeOffset OccurredOnUtc { get; init; } = DateTimeOffset.UtcNow;
+    public DateTimeOffset OccurredOnUtc { get; init; } = DomainEventTime.Now;
 
     /// <summary>
     /// Gets the correlation identifier that links the event to a request or operation.

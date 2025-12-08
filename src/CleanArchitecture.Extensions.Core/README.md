@@ -16,15 +16,26 @@ dotnet add package CleanArchitecture.Extensions.Core --version 0.1.1-preview.1
 
 ## Usage
 
-Register the pipeline behaviors you need:
+Register Core services and configure options:
 
 ```csharp
-using CleanArchitecture.Extensions.Core.Behaviors;
+using CleanArchitecture.Extensions.Core;
+using CleanArchitecture.Extensions.Core.Options;
 using MediatR;
 
-services.AddTransient(typeof(IPipelineBehavior<,>), typeof(CorrelationBehavior<,>));
-services.AddTransient(typeof(IPipelineBehavior<,>), typeof(LoggingBehavior<,>));
-services.AddTransient(typeof(IPipelineBehavior<,>), typeof(PerformanceBehavior<,>));
+services.AddCleanArchitectureCore(options =>
+{
+    options.CorrelationHeaderName = "X-Trace-ID";
+    options.EnablePerformanceLogging = true;
+    options.PerformanceWarningThreshold = TimeSpan.FromMilliseconds(250);
+});
+
+services.AddMediatR(cfg =>
+{
+    cfg.RegisterServicesFromAssemblyContaining<Program>();
+    cfg.AddCleanArchitectureCorePipeline();
+    // Optional: cfg.AddCleanArchitectureCorePipeline(p => p.UsePerformanceBehavior = false);
+});
 ```
 
 Work with results:
@@ -46,5 +57,4 @@ var backToRich = legacy.ToResult(result.TraceId);
 
 ## Target frameworks
 
-- net8.0
 - net10.0

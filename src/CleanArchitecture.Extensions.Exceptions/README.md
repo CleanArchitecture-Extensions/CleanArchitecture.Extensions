@@ -20,16 +20,36 @@ Check NuGet.org for the latest stable or preview version before installing.
 Register the behavior in the MediatR pipeline (after validation, before performance logging) and tune the options if needed:
 
 ```csharp
-using CleanArchitecture.Extensions.Exceptions.Behaviors;
+using System.Net;
+using CleanArchitecture.Extensions.Exceptions;
 using CleanArchitecture.Extensions.Exceptions.Options;
+using CleanArchitecture.Extensions.Exceptions.BaseTypes;
+using CleanArchitecture.Extensions.Exceptions.Catalog;
 using MediatR;
 
-services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ExceptionWrappingBehavior<,>));
-
-services.Configure<ExceptionHandlingOptions>(options =>
+services.AddCleanArchitectureExceptions(options =>
 {
     options.IncludeExceptionDetails = false;
     options.RethrowExceptionTypes.Add(typeof(OperationCanceledException));
+    options.EnvironmentName = env.EnvironmentName; // include details/stack in configured environments (e.g., Development)
+    options.IncludeStackTrace = false;
+    options.StatusCodeOverrides["ERR.DOMAIN.GENERIC"] = HttpStatusCode.UnprocessableEntity;
+});
+
+services.AddMediatR(cfg =>
+{
+    cfg.RegisterServicesFromAssemblyContaining<Program>();
+    cfg.AddCleanArchitectureExceptionsPipeline();
+});
+
+// Optional: configure catalog overrides
+services.Configure<ExceptionCatalogOptions>(catalog =>
+{
+    catalog.Descriptors.Add(new ExceptionDescriptor(
+        typeof(CustomDomainException),
+        "ERR.DOMAIN.CUSTOM",
+        "Custom domain failure",
+        ExceptionSeverity.Error));
 });
 ```
 

@@ -1,10 +1,22 @@
 namespace CleanArchitecture.Extensions.Exceptions.Options;
 
+using System.Net;
+
 /// <summary>
 /// Configures how exceptions are wrapped, logged, and translated to results.
 /// </summary>
 public sealed class ExceptionHandlingOptions
 {
+    /// <summary>
+    /// Gets or sets the current environment name (e.g., Development, Production) used for detail/stack toggles.
+    /// </summary>
+    public string? EnvironmentName { get; set; }
+
+    /// <summary>
+    /// Gets the environments in which exception details are included automatically.
+    /// </summary>
+    public ISet<string> IncludeExceptionDetailsEnvironments { get; } = new HashSet<string>(StringComparer.OrdinalIgnoreCase) { "Development" };
+
     /// <summary>
     /// Gets or sets a value indicating whether exceptions should be converted to <see cref="CleanArchitecture.Extensions.Core.Results.Result"/> when the response type supports it.
     /// </summary>
@@ -15,6 +27,17 @@ public sealed class ExceptionHandlingOptions
     /// </summary>
     public bool IncludeExceptionDetails { get; set; }
         = false;
+
+    /// <summary>
+    /// Gets or sets a value indicating whether stack traces should be logged/passed through when details are included.
+    /// </summary>
+    public bool IncludeStackTrace { get; set; }
+        = false;
+
+    /// <summary>
+    /// Gets the environments in which stack traces are included automatically.
+    /// </summary>
+    public ISet<string> IncludeStackTraceEnvironments { get; } = new HashSet<string>(StringComparer.OrdinalIgnoreCase) { "Development" };
 
     /// <summary>
     /// Gets or sets a value indicating whether sensitive data should be redacted from exception details and metadata.
@@ -40,6 +63,11 @@ public sealed class ExceptionHandlingOptions
     /// Gets or sets a value indicating whether exceptions should be logged.
     /// </summary>
     public bool LogExceptions { get; set; } = true;
+
+    /// <summary>
+    /// Gets the overrides for mapping error codes to HTTP status codes.
+    /// </summary>
+    public IDictionary<string, HttpStatusCode> StatusCodeOverrides { get; } = new Dictionary<string, HttpStatusCode>(StringComparer.OrdinalIgnoreCase);
 
     /// <summary>
     /// Gets the default options instance.
