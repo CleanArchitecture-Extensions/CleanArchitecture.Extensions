@@ -42,6 +42,9 @@ services.Configure<ExceptionHandlingOptions>(options =>
     options.IncludeExceptionDetails = false; // prefer catalog messages in prod
     options.RedactSensitiveData = true;
     options.RethrowCancellationExceptions = true; // OperationCanceledException is bypassed by default
+    options.EnvironmentName = builder.Environment.EnvironmentName; // auto-enable details/stack in chosen environments
+    options.IncludeStackTrace = false; // set true or use IncludeStackTraceEnvironments for dev-only stack traces
+    options.StatusCodeOverrides["ERR.DOMAIN.GENERIC"] = HttpStatusCode.UnprocessableEntity;
 });
 ```
 
@@ -60,8 +63,10 @@ services.Configure<ExceptionHandlingOptions>(options =>
 
 - When `ConvertToResult` is `true`, exceptions map to `Result`/`Result<T>` errors (or the template `Result.Failure(IEnumerable<string>)` when the response type matches the template shape).
 - Trace/correlation IDs flow into `Error.TraceId` using `ExceptionHandlingOptions.TraceId`, `ILogContext`, or `CoreExtensionsOptions.TraceId`.
-- `IncludeExceptionDetails` toggles whether raw exception messages flow to errors/logs; catalog messages remain stable, and redaction is applied when `RedactSensitiveData` is enabled.
+- `IncludeExceptionDetails` toggles whether raw exception messages flow to errors/logs; use `EnvironmentName` + `IncludeExceptionDetailsEnvironments` to enable details in Dev only. Redaction applies when `RedactSensitiveData` is enabled.
+- `IncludeStackTrace`/`IncludeStackTraceEnvironments` control whether stack traces are logged when details are enabled.
 - `RethrowExceptionTypes` defaults to cancellation + validation exceptions; add your own to bypass wrapping.
+- `StatusCodeOverrides` lets you remap catalog codes (e.g., `ERR.DOMAIN.GENERIC` -> 422) without changing descriptors.
 
 ### Customize the catalog and transient classification
 
