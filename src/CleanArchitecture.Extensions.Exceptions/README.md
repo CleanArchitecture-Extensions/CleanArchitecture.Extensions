@@ -30,6 +30,9 @@ services.Configure<ExceptionHandlingOptions>(options =>
 {
     options.IncludeExceptionDetails = false;
     options.RethrowExceptionTypes.Add(typeof(OperationCanceledException));
+    options.EnvironmentName = env.EnvironmentName; // include details/stack in configured environments (e.g., Development)
+    options.IncludeStackTrace = false;
+    options.StatusCodeOverrides["ERR.DOMAIN.GENERIC"] = HttpStatusCode.UnprocessableEntity;
 });
 ```
 

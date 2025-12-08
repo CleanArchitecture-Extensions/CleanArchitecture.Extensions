@@ -1,4 +1,6 @@
+using System.Globalization;
 using System.Linq;
+using System.Net;
 using System.Reflection;
 using System.Runtime.ExceptionServices;
 using CleanArchitecture.Extensions.Core.Logging;
@@ -27,7 +29,6 @@ public sealed class ExceptionWrappingBehavior<TRequest, TResponse> : IPipelineBe
     private readonly IAppLogger<TRequest>? _logger;
     private readonly ILogContext? _logContext;
     private readonly CoreExtensionsOptions? _coreOptions;
-
     /// <summary>
     /// Initializes a new instance of the <see cref="ExceptionWrappingBehavior{TRequest, TResponse}"/> class.
     /// </summary>
@@ -76,10 +77,17 @@ public sealed class ExceptionWrappingBehavior<TRequest, TResponse> : IPipelineBe
     private TResponse HandleException(Exception exception)
     {
         var descriptor = _catalog.Resolve(exception);
+        var statusOverride = ResolveStatusOverride(descriptor.Code);
         var traceId = ResolveTraceId();
-        var error = descriptor.ToError(exception, traceId, _options.IncludeExceptionDetails, _options.RedactSensitiveData, _redactor);
+        var includeDetails = ShouldIncludeExceptionDetails();
+        var error = descriptor.ToError(exception, traceId, includeDetails, _options.RedactSensitiveData, _redactor);
+        if (statusOverride.HasValue)
+        {
+            var statusString = ((int)statusOverride.Value).ToString(CultureInfo.InvariantCulture);
+            error = error.WithMetadata("status", statusString);
+        }
 
-        LogException(exception, descriptor, error);
+        LogException(exception, descriptor, error, statusOverride);
 
         var templateFailureMethod = default(MethodInfo);
         var hasResultResponse = IsResultResponse(out var valueType);
@@ -95,6 +103,36 @@ public sealed class ExceptionWrappingBehavior<TRequest, TResponse> : IPipelineBe
 
         ExceptionDispatchInfo.Capture(exception).Throw();
         return default!;
+    }
+
+    private bool ShouldIncludeExceptionDetails()
+    {
+        if (_options.IncludeExceptionDetails)
+        {
+            return true;
+        }
+
+        if (string.IsNullOrWhiteSpace(_options.EnvironmentName))
+        {
+            return false;
+        }
+
+        return _options.IncludeExceptionDetailsEnvironments.Contains(_options.EnvironmentName);
+    }
+
+    private bool ShouldIncludeStackTrace()
+    {
+        if (_options.IncludeStackTrace)
+        {
+            return true;
+        }
+
+        if (string.IsNullOrWhiteSpace(_options.EnvironmentName))
+        {
+            return false;
+        }
+
+        return _options.IncludeStackTraceEnvironments.Contains(_options.EnvironmentName);
     }
 
     private bool ShouldRethrow(Exception exception)
@@ -180,7 +218,7 @@ public sealed class ExceptionWrappingBehavior<TRequest, TResponse> : IPipelineBe
         return _coreOptions?.TraceId;
     }
 
-    private void LogException(Exception exception, ExceptionDescriptor descriptor, Error error)
+    private void LogException(Exception exception, ExceptionDescriptor descriptor, Error error, HttpStatusCode? statusOverride)
     {
         if (!_options.LogExceptions || _logger is null)
         {
@@ -193,7 +231,7 @@ public sealed class ExceptionWrappingBehavior<TRequest, TResponse> : IPipelineBe
             return;
         }
 
-        var includeDetails = _options.IncludeExceptionDetails;
+        var includeDetails = ShouldIncludeExceptionDetails();
         var logMessage = includeDetails ? exception.Message : descriptor.Message;
         if (_options.RedactSensitiveData)
         {
@@ -211,15 +249,17 @@ public sealed class ExceptionWrappingBehavior<TRequest, TResponse> : IPipelineBe
             ["Severity"] = descriptor.Severity.ToString()
         };
 
-        if (descriptor.StatusCode.HasValue)
+        var effectiveStatus = statusOverride ?? descriptor.StatusCode;
+        if (effectiveStatus.HasValue)
         {
-            properties["StatusCode"] = (int)descriptor.StatusCode.Value;
+            properties["StatusCode"] = (int)effectiveStatus.Value;
         }
 
         properties["ExceptionMessage"] = logMessage;
 
         // Avoid logging full exception when details are disabled or must be redacted.
-        var exceptionToLog = includeDetails && !_options.RedactSensitiveData ? exception : null;
+        var includeStack = ShouldIncludeStackTrace();
+        var exceptionToLog = includeDetails && !_options.RedactSensitiveData && includeStack ? exception : null;
         _logger.Log(level, $"Unhandled exception for {typeof(TRequest).Name}: {logMessage}", exceptionToLog, properties);
     }
 
@@ -239,5 +279,20 @@ public sealed class ExceptionWrappingBehavior<TRequest, TResponse> : IPipelineBe
         }
 
         return exception;
+    }
+
+    private HttpStatusCode? ResolveStatusOverride(string code)
+    {
+        if (string.IsNullOrWhiteSpace(code))
+        {
+            return null;
+        }
+
+        if (_options.StatusCodeOverrides.TryGetValue(code, out var status))
+        {
+            return status;
+        }
+
+        return null;
     }
 }
