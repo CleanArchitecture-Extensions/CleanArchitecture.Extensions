@@ -35,11 +35,8 @@ jobs:
       - name: Test
         run: dotnet test CleanArchitecture.Extensions.sln -c Release --no-build /p:ContinuousIntegrationBuild=true
 
-      - name: Pack Core
-        run: dotnet pack src/CleanArchitecture.Extensions.Core/CleanArchitecture.Extensions.Core.csproj -c Release -o artifacts/packages /p:ContinuousIntegrationBuild=true
-
-      - name: Pack Validation
-        run: dotnet pack src/CleanArchitecture.Extensions.Validation/CleanArchitecture.Extensions.Validation.csproj -c Release -o artifacts/packages /p:ContinuousIntegrationBuild=true
+      - name: Pack all NuGet packages
+        run: dotnet pack CleanArchitecture.Extensions.sln -c Release -o artifacts/packages /p:ContinuousIntegrationBuild=true
 
       - name: Install SourceLink CLI
         run: |
@@ -50,6 +47,7 @@ jobs:
         run: |
           sourcelink test src/CleanArchitecture.Extensions.Core/bin/Release/net10.0/CleanArchitecture.Extensions.Core.pdb
           sourcelink test src/CleanArchitecture.Extensions.Validation/bin/Release/net10.0/CleanArchitecture.Extensions.Validation.pdb
+          sourcelink test src/CleanArchitecture.Extensions.Exceptions/bin/Release/net10.0/CleanArchitecture.Extensions.Exceptions.pdb
 
       - name: Publish packages to NuGet
         env:
