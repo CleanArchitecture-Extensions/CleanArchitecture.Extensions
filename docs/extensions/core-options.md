@@ -23,7 +23,32 @@ The Core extension exposes a single options class—`CoreExtensionsOptions`—to
 - **Guards:** `GuardOptions.FromOptions` maps `GuardStrategy` and `TraceId` into guard calls; you can supply an error sink for accumulation.
 - **Results:** `TraceId` can be propagated to Result/Errors for consistent tracing between logs, domain events, and HTTP responses.
 
-## Configuration via appsettings
+## Registering options in DI
+```csharp
+// Inline defaults for clarity; you can still bind from configuration if you prefer.
+services.AddCleanArchitectureCore(options =>
+{
+    options.CorrelationHeaderName = "X-Correlation-ID";
+    options.GuardStrategy = GuardStrategy.ReturnFailure;
+    options.EnablePerformanceLogging = true;
+    options.PerformanceWarningThreshold = TimeSpan.FromMilliseconds(500);
+});
+```
+If you want to bind from configuration instead, call:
+```csharp
+services.AddCleanArchitectureCore(opts =>
+    configuration.GetSection("Extensions:Core").Bind(opts));
+```
+You can still override programmatically:
+```csharp
+services.PostConfigure<CoreExtensionsOptions>(options =>
+{
+    options.CorrelationIdFactory = () => $"svc-{Guid.NewGuid():N}";
+    options.PerformanceWarningThreshold = TimeSpan.FromMilliseconds(250);
+});
+```
+
+## Configuration via appsettings (optional)
 ```json
 {
   "Extensions": {
@@ -40,19 +65,6 @@ The Core extension exposes a single options class—`CoreExtensionsOptions`—to
 - Strings like `"ReturnFailure"` bind to `GuardStrategy`.
 - TimeSpan format is standard .NET (`hh:mm:ss.fff`).
 - `CorrelationIdFactory` cannot be bound via configuration; set it in code when registering options.
-
-## Registering options in DI
-```csharp
-services.Configure<CoreExtensionsOptions>(configuration.GetSection("Extensions:Core"));
-```
-Override programmatically when needed:
-```csharp
-services.PostConfigure<CoreExtensionsOptions>(options =>
-{
-    options.CorrelationIdFactory = () => $"svc-{Guid.NewGuid():N}";
-    options.PerformanceWarningThreshold = TimeSpan.FromMilliseconds(250);
-});
-```
 
 ## Sample-backed walkthrough (options sample)
 A runnable solution lives at `samples/CleanArchitecture.Extensions.Core.Options.Sample`.
@@ -97,10 +109,16 @@ if (result.IsFailure) return Result.Failure<string>(result.Errors, result.TraceI
 
 ## Using options with pipeline behaviors
 ```csharp
-services.AddScoped(typeof(IPipelineBehavior<,>), typeof(CorrelationBehavior<,>));
-services.AddScoped(typeof(IPipelineBehavior<,>), typeof(PerformanceBehavior<,>));
-services.AddScoped(typeof(IPipelineBehavior<,>), typeof(LoggingBehavior<,>));
-services.Configure<CoreExtensionsOptions>(configuration.GetSection("Extensions:Core"));
+services.AddCleanArchitectureCore(options =>
+    configuration.GetSection("Extensions:Core").Bind(options));
+
+services.AddMediatR(cfg =>
+{
+    cfg.AddCleanArchitectureCorePipeline();
+    cfg.AddOpenBehavior(typeof(UnhandledExceptionBehaviour<,>));
+    cfg.AddOpenBehavior(typeof(AuthorizationBehaviour<,>));
+    cfg.AddOpenBehavior(typeof(ValidationBehaviour<,>));
+});
 ```
 - PerformanceBehavior will skip logging if `EnablePerformanceLogging` is false.
 - CorrelationBehavior will use `CorrelationIdFactory` when no correlation ID is present.
@@ -110,7 +128,7 @@ services.Configure<CoreExtensionsOptions>(configuration.GetSection("Extensions:C
 ### 1) Matching gateway/header expectations
 If your API gateway uses `X-Request-ID`, align it:
 ```csharp
-services.Configure<CoreExtensionsOptions>(options =>
+services.AddCleanArchitectureCore(options =>
 {
     options.CorrelationHeaderName = "X-Request-ID";
     options.CorrelationIdFactory = () => Guid.NewGuid().ToString("N");
@@ -120,7 +138,7 @@ Ensure middleware echoes the same header; `CorrelationBehavior` will reuse IDs s
 
 ### 2) Tightening performance thresholds for hot paths
 ```csharp
-services.Configure<CoreExtensionsOptions>(options =>
+services.AddCleanArchitectureCore(options =>
 {
     options.PerformanceWarningThreshold = TimeSpan.FromMilliseconds(200);
 });
@@ -129,7 +147,7 @@ Use feature-specific options (named options) if some handlers are expected to ru
 
 ### 3) Disabling performance logs for chatty background jobs
 ```csharp
-services.Configure<CoreExtensionsOptions>(options =>
+services.AddCleanArchitectureCore(options =>
 {
     options.EnablePerformanceLogging = false;
 });
@@ -144,7 +162,7 @@ Set `CorrelationIdFactory` accordingly in environment-specific DI modules.
 ### 5) Seeding TraceId for result/guard flows
 For APIs that already have a trace/correlation token (e.g., from a reverse proxy):
 ```csharp
-services.Configure<CoreExtensionsOptions>(options =>
+services.AddCleanArchitectureCore(options =>
 {
     options.TraceId = "injected-from-middleware"; // or set per-request in middleware using IOptionsSnapshot
 });
@@ -197,7 +215,7 @@ public class CorrelationOptionsMiddleware
 - `TraceId`: Applied to guards/results when provided; useful for aligning API trace tokens with internal errors.
 
 ## Adoption checklist
-1) Bind `Extensions:Core` in configuration and call `services.Configure<CoreExtensionsOptions>(...)`.
+1) Register `AddCleanArchitectureCore(...)` (inline options or configuration binding).
 2) Decide on correlation header and ID format; update gateway/middleware accordingly.
 3) Set `GuardStrategy` globally; override per-call with `GuardOptions` when needed.
 4) Tune `PerformanceWarningThreshold` and `EnablePerformanceLogging` per environment.

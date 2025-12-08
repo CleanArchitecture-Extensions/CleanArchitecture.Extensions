@@ -54,8 +54,12 @@ This preserves the template’s order while guaranteeing that correlation and lo
 Use the built-in helpers to mirror template order while turning on correlation, logging, and performance metrics:
 
 ```csharp
-builder.Services.AddCleanArchitectureCore(); // IClock, ILogContext, IAppLogger adapter, DomainEvent dispatcher/tracker
-builder.Services.Configure<CoreExtensionsOptions>(builder.Configuration.GetSection("Extensions:Core"));
+builder.Services.AddCleanArchitectureCore(options =>
+{
+    options.CorrelationHeaderName = "X-Correlation-ID";
+    options.EnablePerformanceLogging = true;
+    options.PerformanceWarningThreshold = TimeSpan.FromMilliseconds(500);
+});
 
 builder.Services.AddMediatR(cfg =>
 {
@@ -93,7 +97,7 @@ await _clock.Delay(TimeSpan.FromMilliseconds(delay), cancellationToken);
 
 _logger.Log(LogLevel.Debug, $"Completed simulated work after {delay} ms");
 ```
-- With `PerformanceWarningThreshold` set to 400 ms in `src/Web/appsettings.json`, `POST /api/Diagnostics/simulate?milliseconds=650` emits a performance warning from `PerformanceBehavior` while returning 202 Accepted.
+- With `PerformanceWarningThreshold` set to 400 ms in DI, `POST /api/Diagnostics/simulate?milliseconds=650` emits a performance warning from `PerformanceBehavior` while returning 202 Accepted.
 
 ### Minimal API endpoints exposing the behaviors
 `src/Web/Endpoints/Diagnostics.cs`:

@@ -28,23 +28,37 @@ dotnet add src/YourProject/YourProject.csproj package CleanArchitecture.Extensio
 ### Register catalog and behavior
 
 ```csharp
-using CleanArchitecture.Extensions.Exceptions.Behaviors;
+using CleanArchitecture.Extensions.Exceptions;
 using CleanArchitecture.Extensions.Exceptions.Options;
 using CleanArchitecture.Extensions.Exceptions.Catalog;
+using CleanArchitecture.Extensions.Exceptions.BaseTypes;
 using MediatR;
 
-services.AddTransient<IExceptionCatalog, ExceptionCatalog>(); // optional: use defaults or configure below
-services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ExceptionWrappingBehavior<,>));
-
-services.Configure<ExceptionHandlingOptions>(options =>
+services.AddCleanArchitectureExceptions(options =>
 {
-    options.ConvertToResult = true; // default: maps to Result/Result<T>/template Result
+    options.ConvertToResult = true; // maps to Result/Result<T>/template Result
     options.IncludeExceptionDetails = false; // prefer catalog messages in prod
     options.RedactSensitiveData = true;
     options.RethrowCancellationExceptions = true; // OperationCanceledException is bypassed by default
     options.EnvironmentName = builder.Environment.EnvironmentName; // auto-enable details/stack in chosen environments
     options.IncludeStackTrace = false; // set true or use IncludeStackTraceEnvironments for dev-only stack traces
     options.StatusCodeOverrides["ERR.DOMAIN.GENERIC"] = HttpStatusCode.UnprocessableEntity;
+});
+
+services.AddMediatR(cfg =>
+{
+    cfg.RegisterServicesFromAssemblyContaining<Program>();
+    cfg.AddCleanArchitectureExceptionsPipeline();
+});
+
+// Optional: catalog overrides
+services.Configure<ExceptionCatalogOptions>(catalog =>
+{
+    catalog.Descriptors.Add(new ExceptionDescriptor(
+        typeof(CustomDomainException),
+        "ERR.DOMAIN.CUSTOM",
+        "Custom domain failure",
+        ExceptionSeverity.Error));
 });
 ```
 

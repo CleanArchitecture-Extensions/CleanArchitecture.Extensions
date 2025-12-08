@@ -44,8 +44,10 @@ Namespace: `CleanArchitecture.Extensions.Core.Logging`
 ## Wiring in DI
 Minimum registration to get logging working with Core behaviors:
 ```csharp
-services.AddCleanArchitectureCore(); // IClock, ILogContext, MelAppLoggerAdapter<T>, DomainEvent dispatcher/tracker
-services.Configure<CoreExtensionsOptions>(configuration.GetSection("Extensions:Core"));
+services.AddCleanArchitectureCore(options =>
+{
+    options.CorrelationHeaderName = "X-Correlation-ID";
+});
 ```
 If you need a different provider, replace `MelAppLoggerAdapter<T>` with your adapter; `ILogContext` can also be swapped for a provider-specific scope wrapper.
 
