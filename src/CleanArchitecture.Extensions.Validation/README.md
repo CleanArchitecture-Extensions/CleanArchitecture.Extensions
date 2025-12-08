@@ -23,15 +23,21 @@ using CleanArchitecture.Extensions.Core.Logging;
 using FluentValidation;
 using MediatR;
 
-services.AddValidatorsFromAssemblyContaining<CreateOrderValidator>();
-services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehaviour<,>));
-
-services.Configure<ValidationOptions>(options =>
+// Configure validation options once
+services.AddCleanArchitectureValidation(options =>
 {
     options.Strategy = ValidationStrategy.ReturnResult;
     options.IncludePropertyName = true;
     options.SeverityLogLevels[Severity.Error] = LogLevel.Warning;
     options.LogValidationFailures = true;
+});
+
+// Register validators and the pipeline behavior
+services.AddValidatorsFromAssemblyContaining<CreateOrderValidator>();
+services.AddMediatR(cfg =>
+{
+    cfg.RegisterServicesFromAssemblyContaining<CreateOrderValidator>();
+    cfg.AddCleanArchitectureValidationPipeline();
 });
 ```
 
