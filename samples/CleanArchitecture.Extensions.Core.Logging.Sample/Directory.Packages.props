@@ -8,23 +8,23 @@
     <MicrosoftExtensionsVersion>10.0.0</MicrosoftExtensionsVersion>
   </PropertyGroup>
   <ItemGroup>
-    <PackageVersion Include="CleanArchitecture.Extensions.Core" Version="0.1.1-preview.1" />
+    <PackageVersion Include="CleanArchitecture.Extensions.Core" Version="0.1.2" />
     <PackageVersion Include="Ardalis.GuardClauses" Version="5.0.0" />
-    <PackageVersion Include="AutoMapper" Version="15.1.0" />
+    <PackageVersion Include="AutoMapper" Version="16.0.0" />
     <PackageVersion Include="Azure.Extensions.AspNetCore.Configuration.Secrets" Version="1.4.0" />
-    <PackageVersion Include="Azure.Identity" Version="1.17.0" />
+    <PackageVersion Include="Azure.Identity" Version="1.17.1" />
     <PackageVersion Include="coverlet.collector" Version="6.0.4" />
     <PackageVersion Include="FluentValidation.AspNetCore" Version="11.3.0" />
-    <PackageVersion Include="FluentValidation.DependencyInjectionExtensions" Version="12.1.0" />
-    <PackageVersion Include="MediatR" Version="13.1.0" />
+    <PackageVersion Include="FluentValidation.DependencyInjectionExtensions" Version="12.1.1" />
+    <PackageVersion Include="MediatR" Version="14.0.0" />
     <PackageVersion Include="MediatR.Contracts" Version="2.0.1" />
     <PackageVersion Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="$(AspnetVersion)" />
     <PackageVersion Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="$(AspnetVersion)" />
     <PackageVersion Include="Microsoft.AspNetCore.Mvc.Testing" Version="$(AspnetVersion)" />
     <PackageVersion Include="Microsoft.AspNetCore.OpenApi" Version="$(AspnetVersion)" />
     <PackageVersion Include="Microsoft.AspNetCore.Identity.UI" Version="$(AspnetVersion)" />
-    <PackageVersion Include="Microsoft.Build.Tasks.Core" Version="17.14.28" />
-    <PackageVersion Include="Microsoft.Build.Utilities.Core" Version="17.14.28" />
+    <PackageVersion Include="Microsoft.Build.Tasks.Core" Version="18.0.2" />
+    <PackageVersion Include="Microsoft.Build.Utilities.Core" Version="18.0.2" />
     <PackageVersion Include="Microsoft.Data.SqlClient" Version="5.2.2" />
     <PackageVersion Include="Microsoft.EntityFrameworkCore" Version="$(EfcoreVersion)" />
     <PackageVersion Include="Microsoft.EntityFrameworkCore.Design" Version="$(EfcoreVersion)" />
@@ -36,8 +36,8 @@
     <PackageVersion Include="Microsoft.Extensions.Hosting" Version="$(MicrosoftExtensionsVersion)" />
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="18.0.1" />
     <PackageVersion Include="Moq" Version="4.20.72" />
-    <PackageVersion Include="NSwag.AspNetCore" Version="14.6.2" />
-    <PackageVersion Include="NSwag.MSBuild" Version="14.6.2" />
+    <PackageVersion Include="NSwag.AspNetCore" Version="14.6.3" />
+    <PackageVersion Include="NSwag.MSBuild" Version="14.6.3" />
     <PackageVersion Include="nunit" Version="4.4.0" />
     <PackageVersion Include="NUnit.Analyzers" Version="4.11.2" />
     <PackageVersion Include="NUnit3TestAdapter" Version="5.2.0" />
@@ -49,4 +49,3 @@
     <PackageVersion Include="Testcontainers.MsSql" Version="4.8.1" />
   </ItemGroup>
 </Project>
-
