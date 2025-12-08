@@ -1,5 +1,6 @@
 using System.Reflection;
-using CleanArchitecture.Extensions.Core.Options;
+using CleanArchitecture.Extensions.Core;
+using CleanArchitecture.Extensions.Core.Guards;
 using CleanArchitecture.Extensions.Core.Time;
 using CleanArchitecture.Extensions.Core.Time.Sample.Application.Common.Behaviours;
 using Microsoft.Extensions.Hosting;
@@ -15,18 +16,21 @@ public static class DependencyInjection
 
         builder.Services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
 
-        builder.Services.Configure<CoreExtensionsOptions>(builder.Configuration.GetSection("Extensions:Core"));
+        builder.Services.AddCleanArchitectureCore(options =>
+        {
+            options.CorrelationHeaderName = "X-Correlation-ID";
+            options.GuardStrategy = GuardStrategy.ReturnFailure;
+        });
 
         builder.Services.AddSingleton<IClock, SystemClock>();
 
         builder.Services.AddMediatR(cfg =>
         {
             cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());
-            cfg.AddOpenRequestPreProcessor(typeof(LoggingBehaviour<>));
+            cfg.AddCleanArchitectureCorePipeline();
             cfg.AddOpenBehavior(typeof(UnhandledExceptionBehaviour<,>));
             cfg.AddOpenBehavior(typeof(AuthorizationBehaviour<,>));
             cfg.AddOpenBehavior(typeof(ValidationBehaviour<,>));
-            cfg.AddOpenBehavior(typeof(PerformanceBehaviour<,>));
         });
     }
 }

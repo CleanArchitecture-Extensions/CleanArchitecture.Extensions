@@ -10,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
+using DispatchDomainEventsInterceptor = CleanArchitecture.Extensions.Core.DomainEvents.Sample.Infrastructure.Data.Interceptors.DispatchDomainEventsInterceptor;
 
 namespace Microsoft.Extensions.DependencyInjection;
 
