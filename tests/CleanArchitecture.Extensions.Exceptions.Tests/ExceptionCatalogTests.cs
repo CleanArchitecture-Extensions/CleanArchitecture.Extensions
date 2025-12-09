@@ -32,12 +32,12 @@ public class ExceptionCatalogTests
     }
 
     [Fact]
-    public void Resolve_UsesApplicationExceptionMessage()
+    public void Resolve_UsesCatalogMessageForApplicationException()
     {
         const string message = "Resource Order with id 7 was not found.";
         var descriptor = _catalog.Resolve(new NotFoundException(message));
 
-        Assert.Equal(message, descriptor.Message);
+        Assert.Equal("The specified resource was not found.", descriptor.Message);
     }
 
     [Fact]
