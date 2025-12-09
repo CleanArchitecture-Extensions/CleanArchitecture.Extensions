@@ -1,3 +1,4 @@
+using CleanArchitecture.Extensions.Core;
 using CleanArchitecture.Extensions.Core.Behaviors;
 using CleanArchitecture.Extensions.Core.Logging;
 using CleanArchitecture.Extensions.Core.Options;
@@ -5,6 +6,7 @@ using CleanArchitecture.Extensions.Core.Time;
 using MediatR;
 using MediatR.Pipeline;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 namespace CleanArchitecture.Extensions.Core.Tests;
 
@@ -48,6 +50,53 @@ public class DependencyInjectionTests
 
         Assert.Equal("hello", result);
         Assert.False(string.IsNullOrWhiteSpace(context.CorrelationId));
+    }
+
+    [Fact]
+    public void AddCleanArchitectureCore_RegistersDefaultsAndAppliesConfiguration()
+    {
+        var services = new ServiceCollection();
+
+        services.AddCleanArchitectureCore(options => options.TraceId = "trace-di");
+        services.AddScoped(typeof(IAppLogger<>), typeof(InMemoryAppLogger<>));
+        using var provider = services.BuildServiceProvider();
+
+        var clock = provider.GetRequiredService<IClock>();
+        var logContext = provider.GetRequiredService<ILogContext>();
+        var options = provider.GetRequiredService<IOptions<CoreExtensionsOptions>>().Value;
+        var tracker = provider.GetRequiredService<DomainEvents.DomainEventTracker>();
+
+        Assert.IsType<SystemClock>(clock);
+        Assert.IsType<InMemoryLogContext>(logContext);
+        Assert.Equal("trace-di", options.TraceId);
+        Assert.NotNull(tracker);
+    }
+
+    [Fact]
+    public void AddCleanArchitectureCorePipeline_HonorsOptionFlags()
+    {
+        var services = new ServiceCollection();
+
+        services.AddCleanArchitectureCore();
+        services.AddScoped(typeof(IAppLogger<>), typeof(InMemoryAppLogger<>));
+        services.AddMediatR(cfg =>
+        {
+            cfg.RegisterServicesFromAssemblyContaining<DependencyInjectionTests>();
+            cfg.AddCleanArchitectureCorePipeline(options =>
+            {
+                options.UsePerformanceBehavior = false;
+                options.UseLoggingPreProcessor = false;
+            });
+        });
+
+        using var provider = services.BuildServiceProvider();
+        var preProcessors = provider.GetServices<IRequestPreProcessor<Echo>>().ToList();
+        var behaviors = provider.GetServices<IPipelineBehavior<Echo, string>>().ToList();
+
+        Assert.Empty(preProcessors);
+        Assert.DoesNotContain(behaviors, behavior => behavior is PerformanceBehavior<Echo, string>);
+        Assert.Contains(behaviors, behavior => behavior is CorrelationBehavior<Echo, string>);
+        Assert.Contains(behaviors, behavior => behavior is LoggingBehavior<Echo, string>);
     }
 
     private sealed record Echo(string Message) : IRequest<string>;
