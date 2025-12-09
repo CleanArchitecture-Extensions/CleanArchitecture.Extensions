@@ -8,7 +8,7 @@
 [![.NET 10.0](https://img.shields.io/badge/.NET-10.0-512BD4?logo=dotnet)](https://dotnet.microsoft.com/)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
-Built for developers who start from [Jason Taylor's Clean Architecture template](https://github.com/jasontaylordev/CleanArchitecture) and refuse to fork it. CleanArchitecture.Extensions is an ecosystem of opt-in NuGet packages that plug into the template without modifying the upstream repo. We keep the original pristine, add opinionated capabilities in layers, and publish a catalog of extensions you can compose. This README is intentionally extensive so that newcomers see the full vision in one place while experts can dive straight into the right sample or doc page.
+Designed for teams who start from [Jason Taylor's Clean Architecture template](https://github.com/jasontaylordev/CleanArchitecture) and want to stay aligned with it—not fork it. CleanArchitecture.Extensions is a curated, opt-in catalog of NuGet packages that drop into the template without altering his codebase, preserving a pristine upstream while adding disciplined, layered capabilities. We aim for Jason-level craftsmanship: predictable behavior, clear docs, runnable samples, and a composable ecosystem you can trust.
 
 Quick links:
 
@@ -405,8 +405,6 @@ The scenario playbooks now live in `docs/getting-started/adoption-playbooks.md`.
 - [Event-driven integration](docs/getting-started/adoption-playbooks.md#event-driven-integration)
 - [Compliance and audit readiness](docs/getting-started/adoption-playbooks.md#compliance-and-audit-readiness)
 - [Developer experience at scale](docs/getting-started/adoption-playbooks.md#developer-experience-at-scale)
-
-
 
 ## Inspiration and gratitude
 
