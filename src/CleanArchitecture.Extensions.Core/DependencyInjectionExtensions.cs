@@ -36,11 +36,9 @@ public static class DependencyInjectionExtensions
         services.TryAddScoped<DomainEvents.DomainEventTracker>();
         services.TryAddScoped<DomainEvents.IDomainEventDispatcher, DomainEvents.MediatRDomainEventDispatcher>();
         services.TryAddScoped<DomainEvents.DispatchDomainEventsInterceptor>();
-        services.AddSingleton(provider =>
-        {
-            DomainEvents.DomainEventTime.SetProvider(() => provider.GetRequiredService<IClock>().UtcNow);
-            return DomainEvents.DomainEventTimeMarker.Instance;
-        });
+        services.AddSingleton<Microsoft.Extensions.Options.IPostConfigureOptions<CoreExtensionsOptions>>(provider =>
+            new DomainEvents.DomainEventTimePostConfigure(provider.GetRequiredService<IClock>()));
+        services.AddSingleton(_ => DomainEvents.DomainEventTimeMarker.Instance);
 
         return services;
     }

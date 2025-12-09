@@ -1,6 +1,10 @@
 using CleanArchitecture.Extensions.Core.DomainEvents;
 using System.Linq;
 using MediatR;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
+using CleanArchitecture.Extensions.Core.Time;
+using CleanArchitecture.Extensions.Core.Options;
 
 namespace CleanArchitecture.Extensions.Core.Tests;
 
@@ -82,6 +86,29 @@ public class DomainEventTests
 
         Assert.Equal(2, mediator.Published.Count);
         Assert.All(mediator.Published, e => Assert.Equal("cid-mediatr", e.CorrelationId));
+    }
+
+    [Fact]
+    public void DomainEventTime_UsesConfiguredClock_WhenOptionsMaterialized()
+    {
+        var services = new ServiceCollection();
+        var frozen = new FrozenClock(new DateTimeOffset(2030, 1, 1, 0, 0, 0, TimeSpan.Zero));
+        services.AddSingleton<IClock>(frozen);
+        services.AddCleanArchitectureCore();
+
+        // Materialize options to trigger post-configure hook.
+        using var provider = services.BuildServiceProvider();
+        _ = provider.GetRequiredService<IOptions<CoreExtensionsOptions>>().Value;
+
+        var before = DomainEventTime.Now;
+        frozen.Advance(TimeSpan.FromMinutes(5));
+        var after = DomainEventTime.Now;
+
+        Assert.Equal(new DateTimeOffset(2030, 1, 1, 0, 0, 0, TimeSpan.Zero), before);
+        Assert.Equal(new DateTimeOffset(2030, 1, 1, 0, 5, 0, TimeSpan.Zero), after);
+
+        // Reset to avoid leaking clock into other tests.
+        DomainEventTime.SetProvider(() => DateTimeOffset.UtcNow);
     }
 
     private sealed record TestEvent(string? CorrelationId = null) : DomainEvent(CorrelationId);
