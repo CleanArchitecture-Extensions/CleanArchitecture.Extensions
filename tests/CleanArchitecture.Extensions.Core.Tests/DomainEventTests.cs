@@ -111,6 +111,12 @@ public class DomainEventTests
         DomainEventTime.SetProvider(() => DateTimeOffset.UtcNow);
     }
 
+    [Fact]
+    public void DomainEventTime_SetProvider_RejectsNull()
+    {
+        Assert.Throws<ArgumentNullException>(() => DomainEventTime.SetProvider(null!));
+    }
+
     private sealed record TestEvent(string? CorrelationId = null) : DomainEvent(CorrelationId);
 
     private sealed class CollectingDispatcher(List<DomainEvent> published) : IDomainEventDispatcher
