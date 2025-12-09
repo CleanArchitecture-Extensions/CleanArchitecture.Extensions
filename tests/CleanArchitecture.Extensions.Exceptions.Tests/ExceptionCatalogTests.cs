@@ -1,6 +1,7 @@
 using System.Net;
 using CleanArchitecture.Extensions.Exceptions.BaseTypes;
 using CleanArchitecture.Extensions.Exceptions.Catalog;
+using CleanArchitecture.Extensions.Exceptions.Options;
 
 namespace CleanArchitecture.Extensions.Exceptions.Tests;
 
@@ -38,6 +39,31 @@ public class ExceptionCatalogTests
         var descriptor = _catalog.Resolve(new NotFoundException(message));
 
         Assert.Equal("The specified resource was not found.", descriptor.Message);
+    }
+
+    [Fact]
+    public void Resolve_UsesCustomDescriptorWhenConfigured()
+    {
+        var options = new ExceptionCatalogOptions();
+        options.Descriptors.Add(new ExceptionDescriptor(typeof(InvalidOperationException), "custom.code", "custom message", ExceptionSeverity.Warning));
+        var catalog = new ExceptionCatalog(Microsoft.Extensions.Options.Options.Create(options));
+
+        var descriptor = catalog.Resolve(new InvalidOperationException("oops"));
+
+        Assert.Equal("custom.code", descriptor.Code);
+        Assert.Equal("custom message", descriptor.Message);
+        Assert.Equal(ExceptionSeverity.Warning, descriptor.Severity);
+    }
+
+    [Fact]
+    public void Resolve_MergesApplicationExceptionMetadata()
+    {
+        var appException = new DomainException("domain.code", "message", metadata: new Dictionary<string, string> { ["meta"] = "value" });
+
+        var descriptor = _catalog.Resolve(appException);
+
+        Assert.Equal("value", descriptor.Metadata["meta"]);
+        Assert.Equal("domain.code", descriptor.Code);
     }
 
     [Fact]

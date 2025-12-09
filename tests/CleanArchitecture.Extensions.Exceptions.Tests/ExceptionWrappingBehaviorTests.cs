@@ -1,11 +1,13 @@
 using System.Linq;
 using CleanArchitecture.Extensions.Core.Logging;
+using CleanArchitecture.Extensions.Core.Options;
 using CleanArchitecture.Extensions.Core.Results;
 using CleanArchitecture.Extensions.Exceptions.BaseTypes;
 using CleanArchitecture.Extensions.Exceptions.Behaviors;
 using CleanArchitecture.Extensions.Exceptions.Catalog;
 using CleanArchitecture.Extensions.Exceptions.Options;
 using CleanArchitecture.Extensions.Exceptions.Redaction;
+using TemplateResult = CleanArchitecture.Extensions.Exceptions.Tests.ExceptionWrappingBehaviorTests.TemplateResultContainer.Result;
 
 namespace CleanArchitecture.Extensions.Exceptions.Tests;
 
@@ -130,6 +132,83 @@ public class ExceptionWrappingBehaviorTests
 
         var error = result.Errors.Single();
         Assert.Equal(message, error.Message);
+    }
+
+    [Fact]
+    public async Task Handle_AppliesStatusOverrideAndTraceResolutionOrder()
+    {
+        var options = new ExceptionHandlingOptions
+        {
+            StatusCodeOverrides = { [ExceptionCodes.NotFound] = System.Net.HttpStatusCode.Gone },
+            TraceId = "options-trace"
+        };
+        var logContext = new InMemoryLogContext { CorrelationId = "context-trace" };
+        var coreOptions = Microsoft.Extensions.Options.Options.Create(new CoreExtensionsOptions { TraceId = "core-trace" });
+        var behavior = new ExceptionWrappingBehavior<TestRequest, Result>(
+            new ExceptionCatalog(),
+            Microsoft.Extensions.Options.Options.Create(options),
+            redactor: new ExceptionRedactor(),
+            logContext: logContext,
+            coreOptions: coreOptions);
+
+        var result = await behavior.Handle(new TestRequest(), _ => throw new NotFoundException(), CancellationToken.None);
+
+        var error = result.Errors.Single();
+        Assert.Equal("options-trace", result.TraceId);
+        Assert.Equal(((int)System.Net.HttpStatusCode.Gone).ToString(), error.Metadata["status"]);
+    }
+
+    [Fact]
+    public async Task Handle_UsesTemplateResultFailureFactory()
+    {
+        var behavior = new ExceptionWrappingBehavior<TestRequest, TemplateResult>(
+            new ExceptionCatalog(),
+            Microsoft.Extensions.Options.Options.Create(new ExceptionHandlingOptions { ConvertToResult = true }));
+
+        var result = await behavior.Handle(new TestRequest(), _ => throw new ConflictException("fail"), CancellationToken.None);
+
+        Assert.False(result.Succeeded);
+        Assert.Contains(result.Errors, e => e.Contains(ExceptionCodes.Conflict, StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task Handle_LogsExceptionAndIncludesExceptionObject_WhenStackTraceEnabled()
+    {
+        var logContext = new InMemoryLogContext { CorrelationId = "cid-log" };
+        var logger = new InMemoryAppLogger<TestRequest>(logContext);
+        var options = new ExceptionHandlingOptions
+        {
+            IncludeExceptionDetails = true,
+            IncludeStackTrace = true,
+            RedactSensitiveData = false
+        };
+        var behavior = new ExceptionWrappingBehavior<TestRequest, Result>(
+            new ExceptionCatalog(),
+            Microsoft.Extensions.Options.Options.Create(options),
+            new ExceptionRedactor(),
+            logger,
+            logContext);
+
+        _ = await behavior.Handle(new TestRequest(), _ => throw new DomainException("domain failure"), CancellationToken.None);
+
+        var entry = Assert.Single(logger.Entries);
+        Assert.NotNull(entry.Exception);
+        Assert.Equal(logContext.CorrelationId, entry.CorrelationId);
+    }
+
+    internal static class TemplateResultContainer
+    {
+        internal sealed class Result
+        {
+            public bool Succeeded { get; private set; }
+            public IReadOnlyList<string> Errors { get; private set; } = Array.Empty<string>();
+
+            public static Result Failure(IEnumerable<string> errors) => new()
+            {
+                Succeeded = false,
+                Errors = errors.ToArray()
+            };
+        }
     }
 
     private sealed record TestRequest;
