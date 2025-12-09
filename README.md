@@ -19,7 +19,7 @@ Quick links:
 1. Why this exists and how it honors Jason's template
 2. Status at a glance (shipped vs work in progress)
 3. Getting started in ten minutes
-4. Implemented packages (Core, Validation) with deep links
+4. Implemented packages (Core, Validation, Exceptions) with deep links
 5. Extended deep dives for shipped packages
 6. Full ecosystem map (summary)
 7. Documentation map
@@ -43,8 +43,8 @@ Quick links:
 
 ## Status at a glance
 
-- Implemented today (preview): `CleanArchitecture.Extensions.Core`, `CleanArchitecture.Extensions.Validation`
-- In design/build-out (documented as work in progress): all remaining packages listed in the roadmap below (Exceptions, Caching, Multitenancy family, Enterprise extensions, SaaS extensions, Infrastructure adapters, Developer Experience toolchain).
+- Implemented today (preview): `CleanArchitecture.Extensions.Core`, `CleanArchitecture.Extensions.Validation`, `CleanArchitecture.Extensions.Exceptions`
+- In design/build-out (documented as work in progress): all remaining packages listed in the roadmap below (Caching, Multitenancy family, Enterprise extensions, SaaS extensions, Infrastructure adapters, Developer Experience toolchain).
 - Target frameworks for shipped packages: `net8.0` and `net10.0`
 - Packaging: SourceLink, XML docs, and snupkg symbols published with each package for debugger-friendly consumption.
 - Documentation: MkDocs-powered site published to GitHub Pages; repo contains all source markdown under `docs/`.
@@ -194,6 +194,33 @@ Planned next steps for Validation:
 - Minimal API and MVC filters as separate adapters so the same validators power both MediatR and HTTP endpoints.
 - Metrics hooks for total validations and duration once the Observability module is online.
 
+### CleanArchitecture.Extensions.Exceptions — predictable exception handling
+
+Status: implemented (preview). Focus: catalog-driven exception mapping, MediatR wrapping behavior, base exception hierarchy, and redaction that keeps correlation/trace metadata intact.
+
+What it solves:
+
+- Ships base types (`NotFoundException`, `ConflictException`, `ForbiddenException`, `UnauthorizedException`, `TransientException`, etc.) plus retry-aware classification helpers.
+- Exception catalog with stable codes, default messages, HTTP hints, and pluggable descriptors for consumer-specific codes.
+- Pipeline behavior (`ExceptionWrappingBehavior`) that logs with correlation IDs, applies redaction, and can translate exceptions into `Result`/template-style Result without changing handler signatures.
+
+Docs and navigation:
+
+- Package README: `src/CleanArchitecture.Extensions.Exceptions/README.md`
+- Design blueprint: `HighLevelDocs/Domain1-CoreArchitectureExtensions/CleanArchitecture.Extensions.Exceptions.md`
+
+Install:
+
+```powershell
+dotnet add package CleanArchitecture.Extensions.Exceptions --version 0.1.1-preview.1
+```
+
+What you get when you adopt it:
+
+- Consistent exception codes and messages across transports, with optional HTTP status metadata.
+- Redaction of sensitive data before logging or surfacing messages.
+- Drop-in MediatR pipeline registration aligned with the template’s unhandled exception slot.
+
 ## Extended deep dives for shipped packages
 
 ### Core component tour (Result, Guards, Behaviors, Logging, Domain Events, Time, Options)
@@ -216,7 +243,7 @@ Planned next steps for Validation:
 
 ## Full ecosystem map (summary)
 
-We are building a plug-in ecosystem in six domains. Only Core and Validation are shipping today; everything else is a documented work in progress. Each item below links to the canonical design notes in `HighLevelDocs/` so contributors can see intent and boundaries before writing code.
+We are building a plug-in ecosystem in six domains. Core, Validation, and Exceptions are shipping today; everything else is a documented work in progress. Each item below links to the canonical design notes in `HighLevelDocs/` so contributors can see intent and boundaries before writing code.
 
 - Domain 1 (Core Architecture): Core, Validation, Exceptions, Caching.
 - Domain 2 (Multitenancy): Multitenancy core plus EFCore, AspNetCore, Identity, Sharding, Provisioning, Storage, Redis adapters.
