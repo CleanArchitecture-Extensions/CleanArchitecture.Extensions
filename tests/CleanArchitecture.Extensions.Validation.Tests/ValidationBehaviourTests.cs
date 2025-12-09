@@ -11,6 +11,7 @@ using CleanArchitecture.Extensions.Validation.Validators;
 using FluentValidation;
 using MediatR;
 using MicrosoftOptions = Microsoft.Extensions.Options.Options;
+using TemplateResult = CleanArchitecture.Extensions.Validation.Tests.TemplateResultContainer.Result;
 using ValidationException = CleanArchitecture.Extensions.Validation.Exceptions.ValidationException;
 
 namespace CleanArchitecture.Extensions.Validation.Tests;
@@ -274,6 +275,54 @@ public class ValidationBehaviourTests
         var entry = Assert.Single(logger.Entries);
         Assert.Equal(LogLevel.Debug, entry.Level);
     }
+
+    [Fact]
+    public async Task Handle_ReturnResultStrategy_WithNonResultResponse_Throws()
+    {
+        var validator = new FakeRequestValidator();
+        var behavior = new ValidationBehaviour<FakeRequest, string>(
+            new[] { validator },
+            MicrosoftOptions.Create(new ValidationOptions { Strategy = ValidationStrategy.ReturnResult }));
+
+        await Assert.ThrowsAsync<ValidationException>(() =>
+            behavior.Handle(new FakeRequest(string.Empty, 0, null), _ => Task.FromResult("ok"), CancellationToken.None));
+    }
+
+    [Fact]
+    public async Task Handle_NotifyWithThrow_PublishesAndThrows()
+    {
+        var validator = new FakeRequestValidator();
+        var publisher = new RecordingPublisher();
+        var behavior = new ValidationBehaviour<FakeRequest, Result>(
+            new[] { validator },
+            MicrosoftOptions.Create(new ValidationOptions
+            {
+                Strategy = ValidationStrategy.Notify,
+                NotifyBehavior = ValidationNotifyBehavior.Throw
+            }),
+            notificationPublisher: publisher);
+
+        await Assert.ThrowsAsync<ValidationException>(() =>
+            behavior.Handle(new FakeRequest(string.Empty, 0, null), _ => Task.FromResult(Result.Success()), CancellationToken.None));
+
+        Assert.Equal(1, publisher.PublishCount);
+        Assert.NotNull(publisher.LastErrors);
+    }
+
+    [Fact]
+    public async Task Handle_TemplateResultType_UsesTemplateFailureFactory()
+    {
+        var validator = new FakeRequestValidator();
+        var behavior = new ValidationBehaviour<FakeRequest, TemplateResult>(
+            new[] { validator },
+            MicrosoftOptions.Create(new ValidationOptions { Strategy = ValidationStrategy.ReturnResult }));
+
+        var result = await behavior.Handle(new FakeRequest(string.Empty, 0, null), _ => Task.FromResult(TemplateResult.Success()), CancellationToken.None);
+
+        Assert.False(result.Succeeded);
+        Assert.NotEmpty(result.Errors);
+        Assert.Contains(result.Errors, message => message.Contains("cannot be empty", StringComparison.OrdinalIgnoreCase));
+    }
 }
 
 internal sealed class FakeRequestValidator : AbstractValidatorBase<FakeRequest>
@@ -323,5 +372,25 @@ internal sealed class RecordingPublisher : IValidationNotificationPublisher
         PublishCount++;
         LastErrors = errors;
         return Task.CompletedTask;
+    }
+}
+
+internal static class TemplateResultContainer
+{
+    /// <summary>
+    /// Template-style result to ensure reflection path is covered.
+    /// </summary>
+    internal sealed class Result
+    {
+        public bool Succeeded { get; private set; }
+        public IReadOnlyList<string> Errors { get; private set; } = Array.Empty<string>();
+
+        public static Result Success() => new() { Succeeded = true };
+
+        public static Result Failure(IEnumerable<string> errors) => new()
+        {
+            Succeeded = false,
+            Errors = errors.ToArray()
+        };
     }
 }
