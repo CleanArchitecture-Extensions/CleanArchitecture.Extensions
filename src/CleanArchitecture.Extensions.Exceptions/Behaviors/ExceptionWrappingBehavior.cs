@@ -67,7 +67,7 @@ public sealed class ExceptionWrappingBehavior<TRequest, TResponse> : IPipelineBe
 
             if (ShouldRethrow(normalized))
             {
-                throw;
+                ExceptionDispatchInfo.Capture(normalized).Throw();
             }
 
             return HandleException(normalized);

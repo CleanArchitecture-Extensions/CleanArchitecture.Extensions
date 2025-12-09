@@ -50,6 +50,17 @@ public class ExceptionWrappingBehaviorTests
     }
 
     [Fact]
+    public async Task Handle_RethrowsNormalizedCancellation_WhenAggregateException()
+    {
+        var behavior = new ExceptionWrappingBehavior<TestRequest, Result>(
+            new ExceptionCatalog(),
+            Microsoft.Extensions.Options.Options.Create(ExceptionHandlingOptions.Default));
+
+        await Assert.ThrowsAsync<OperationCanceledException>(() =>
+            behavior.Handle(new TestRequest(), _ => throw new AggregateException(new OperationCanceledException()), CancellationToken.None));
+    }
+
+    [Fact]
     public async Task Handle_LogsExceptionWithCorrelationMetadata()
     {
         var logContext = new InMemoryLogContext { CorrelationId = "cid-log" };
