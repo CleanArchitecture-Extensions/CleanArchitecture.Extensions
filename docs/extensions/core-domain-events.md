@@ -9,7 +9,7 @@ Domain events in Jason Taylor’s Clean Architecture template are simple: `BaseE
 - **Gaps:** No correlation metadata, no timestamps, no tracking outside EF, and no abstraction to swap the dispatcher (e.g., to an outbox or message bus).
 
 ## What Core adds
-- **Event base:** `DomainEvent` (record, INotification) with `Id`, `OccurredOnUtc`, and optional `CorrelationId`.
+- **Event base:** `DomainEvent` (record, INotification) with `Id`, `OccurredOnUtc`, and optional `CorrelationId`. `OccurredOnUtc` is driven by the registered `IClock`, so using `FrozenClock` in tests gives deterministic timestamps.
 - **Tracking:** `DomainEventTracker` to collect/clear events independent of EF change tracking; useful for aggregates not persisted via EF, or for outbox patterns.
 - **Dispatch abstraction:** `IDomainEventDispatcher` defines `DispatchAsync(DomainEvent)` and `DispatchAsync(IEnumerable<DomainEvent>)`, letting Infrastructure choose how to publish (MediatR, bus, outbox).
 - **Correlation-first:** Events can carry `CorrelationId` so you can tie logs, results, and integration messages together.

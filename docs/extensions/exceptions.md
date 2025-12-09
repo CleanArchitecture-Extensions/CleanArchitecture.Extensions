@@ -77,7 +77,7 @@ services.Configure<ExceptionCatalogOptions>(catalog =>
 
 - When `ConvertToResult` is `true`, exceptions map to `Result`/`Result<T>` errors (or the template `Result.Failure(IEnumerable<string>)` when the response type matches the template shape).
 - Trace/correlation IDs flow into `Error.TraceId` using `ExceptionHandlingOptions.TraceId`, `ILogContext`, or `CoreExtensionsOptions.TraceId`.
-- `IncludeExceptionDetails` toggles whether raw exception messages flow to errors/logs; use `EnvironmentName` + `IncludeExceptionDetailsEnvironments` to enable details in Dev only. Redaction applies when `RedactSensitiveData` is enabled.
+- `IncludeExceptionDetails` toggles whether raw exception messages flow to errors/logs; use `EnvironmentName` + `IncludeExceptionDetailsEnvironments` to enable details in Dev only. When this is `false`, catalog/default messages are used even if your exception has a custom message. Redaction applies when `RedactSensitiveData` is enabled.
 - `IncludeStackTrace`/`IncludeStackTraceEnvironments` control whether stack traces are logged when details are enabled.
 - `RethrowExceptionTypes` defaults to cancellation + validation exceptions; add your own to bypass wrapping.
 - `StatusCodeOverrides` lets you remap catalog codes (e.g., `ERR.DOMAIN.GENERIC` -> 422) without changing descriptors.
@@ -111,7 +111,7 @@ var isTransient = ExceptionClassifier.IsTransient(exception, catalog);
 ## Troubleshooting
 
 - **Exceptions still rethrow**: ensure the type isn’t listed in `ExceptionHandlingOptions.RethrowExceptionTypes` and that `RethrowCancellationExceptions` isn’t forcing a bypass.
-- **Generic messages**: set the exception message on your application/domain exceptions; catalog defaults are used when messages are empty. Enable `IncludeExceptionDetails` for debugging.
+- **Generic messages**: set the exception message on your application/domain exceptions; catalog defaults are used when messages are empty or when `IncludeExceptionDetails` is disabled. Enable `IncludeExceptionDetails` for debugging.
 - **No Result conversion**: return types must be `Result`, `Result<T>`, or the template `Result` with a static `Failure(IEnumerable<string>)` method; otherwise the behavior will rethrow after logging.
 
 ## Samples & Tests
