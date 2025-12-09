@@ -1,18 +1,22 @@
 # CleanArchitecture.Extensions
 
 [![Docs](https://github.com/CleanArchitecture-Extensions/CleanArchitecture.Extensions/actions/workflows/docs.yml/badge.svg?branch=main)](https://cleanarchitecture-extensions.github.io/CleanArchitecture.Extensions)
+[![CI](https://github.com/CleanArchitecture-Extensions/CleanArchitecture.Extensions/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/CleanArchitecture-Extensions/CleanArchitecture.Extensions/actions/workflows/ci.yml)
+[![Release](https://github.com/CleanArchitecture-Extensions/CleanArchitecture.Extensions/actions/workflows/release.yml/badge.svg?branch=main)](https://github.com/CleanArchitecture-Extensions/CleanArchitecture.Extensions/actions/workflows/release.yml)
 [![CodeQL](https://github.com/CleanArchitecture-Extensions/CleanArchitecture.Extensions/actions/workflows/codeql.yml/badge.svg?branch=main)](https://github.com/CleanArchitecture-Extensions/CleanArchitecture.Extensions/actions/workflows/codeql.yml)
+[![NuGet Packages](https://img.shields.io/badge/NuGet-Packages-004880?logo=nuget)](https://www.nuget.org/profiles/CleanArchitecture.Extensions)
+[![.NET 10.0](https://img.shields.io/badge/.NET-10.0-512BD4?logo=dotnet)](https://dotnet.microsoft.com/)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
-Built for developers who start from [Jason Taylor's Clean Architecture template](https://github.com/jasontaylordev/CleanArchitecture) and refuse to fork it. CleanArchitecture.Extensions is an ecosystem of opt-in NuGet packages that plug into the template without modifying the upstream repo. We keep the original pristine, add opinionated capabilities in layers, and publish a catalog of extensions you can compose. This README is intentionally extensive so that newcomers see the full vision in one place while experts can dive straight into the right sample or doc page.
+Designed for teams who start from [Jason Taylor's Clean Architecture template](https://github.com/jasontaylordev/CleanArchitecture) and want to stay aligned with it—not fork it. CleanArchitecture.Extensions is a curated, opt-in catalog of NuGet packages that drop into the template without altering his codebase, preserving a pristine upstream while adding disciplined, layered capabilities. We aim for Jason-level craftsmanship: predictable behavior, clear docs, runnable samples, and a composable ecosystem you can trust.
 
 Quick links:
 
-- Quickstart: https://cleanarchitecture-extensions.github.io/CleanArchitecture.Extensions/getting-started/quickstart/
-- Extensions Catalog: https://cleanarchitecture-extensions.github.io/CleanArchitecture.Extensions/extensions/
-- Samples index: https://cleanarchitecture-extensions.github.io/CleanArchitecture.Extensions/samples/
-- Composition guidance: https://cleanarchitecture-extensions.github.io/CleanArchitecture.Extensions/concepts/composition/
-- Roadmap: https://cleanarchitecture-extensions.github.io/CleanArchitecture.Extensions/roadmap/
+- [Quickstart](https://cleanarchitecture-extensions.github.io/CleanArchitecture.Extensions/getting-started/quickstart/)
+- [Extensions Catalog](https://cleanarchitecture-extensions.github.io/CleanArchitecture.Extensions/extensions/)
+- [Samples index](https://cleanarchitecture-extensions.github.io/CleanArchitecture.Extensions/samples/)
+- [Composition guidance](https://cleanarchitecture-extensions.github.io/CleanArchitecture.Extensions/concepts/composition/)
+- [Roadmap](https://cleanarchitecture-extensions.github.io/CleanArchitecture.Extensions/roadmap/)
 
 ## Table of contents
 
@@ -45,7 +49,7 @@ Quick links:
 
 - Implemented today (preview): `CleanArchitecture.Extensions.Core`, `CleanArchitecture.Extensions.Validation`, `CleanArchitecture.Extensions.Exceptions`
 - In design/build-out (documented as work in progress): all remaining packages listed in the roadmap below (Caching, Multitenancy family, Enterprise extensions, SaaS extensions, Infrastructure adapters, Developer Experience toolchain).
-- Target frameworks for shipped packages: `net8.0` and `net10.0`
+- Target framework for shipped packages: `net10.0`
 - Packaging: SourceLink, XML docs, and snupkg symbols published with each package for debugger-friendly consumption.
 - Documentation: MkDocs-powered site published to GitHub Pages; repo contains all source markdown under `docs/`.
 - Samples: runnable sample projects live under `samples/`, with per-feature coverage for the implemented packages.
@@ -53,7 +57,7 @@ Quick links:
 
 ## Getting started in ten minutes
 
-1. Install the template from Jason Taylor if you have not already: `dotnet new install Clean.Architecture.Solution.Template`. Clone the original repo if you want to compare patterns: https://github.com/jasontaylordev/CleanArchitecture.
+1. Install the template from Jason Taylor if you have not already: `dotnet new install Clean.Architecture.Solution.Template`. Clone the original repo if you want to compare patterns: [CleanArchitecture template](https://github.com/jasontaylordev/CleanArchitecture).
 2. Add our Core extension to your Application project:
    ```powershell
    dotnet add package CleanArchitecture.Extensions.Core --version 0.1.1-preview.1
@@ -75,10 +79,10 @@ Quick links:
    ```
 4. Run the sample projects to see the behaviors in action. The samples are all under `CleanArchitecture.Extensions/samples/`; pick the scenario that matches what you need (pipeline, logging, guards, results, time, options, domain events).
 5. Read the documentation pages that match the features you turned on:
-   - Core overview: https://cleanarchitecture-extensions.github.io/CleanArchitecture.Extensions/extensions/core/
-   - Result primitives: https://cleanarchitecture-extensions.github.io/CleanArchitecture.Extensions/extensions/core-result-primitives/
-   - Pipeline behaviors: https://cleanarchitecture-extensions.github.io/CleanArchitecture.Extensions/extensions/core-pipeline-behaviors/
-   - Validation: https://cleanarchitecture-extensions.github.io/CleanArchitecture.Extensions/extensions/validation/
+   - [Core overview](https://cleanarchitecture-extensions.github.io/CleanArchitecture.Extensions/extensions/core/)
+   - [Result primitives](https://cleanarchitecture-extensions.github.io/CleanArchitecture.Extensions/extensions/core-result-primitives/)
+   - [Pipeline behaviors](https://cleanarchitecture-extensions.github.io/CleanArchitecture.Extensions/extensions/core-pipeline-behaviors/)
+   - [Validation](https://cleanarchitecture-extensions.github.io/CleanArchitecture.Extensions/extensions/validation/)
 6. Decide what to adopt next. The roadmap is below; every package is opt-in and designed to be composable.
 
 ## Implemented packages (ready to use)
@@ -98,14 +102,14 @@ What it solves:
 
 Docs and navigation:
 
-- Core overview: https://cleanarchitecture-extensions.github.io/CleanArchitecture.Extensions/extensions/core/ (source: `docs/extensions/core.md`)
-- Result primitives: https://cleanarchitecture-extensions.github.io/CleanArchitecture.Extensions/extensions/core-result-primitives/ (source: `docs/extensions/core-result-primitives.md`)
-- Guard clauses: https://cleanarchitecture-extensions.github.io/CleanArchitecture.Extensions/extensions/core-guard-clauses/ (source: `docs/extensions/core-guard-clauses.md`)
-- Pipeline behaviors: https://cleanarchitecture-extensions.github.io/CleanArchitecture.Extensions/extensions/core-pipeline-behaviors/ (source: `docs/extensions/core-pipeline-behaviors.md`)
-- Logging abstractions: https://cleanarchitecture-extensions.github.io/CleanArchitecture.Extensions/extensions/core-logging-abstractions/ (source: `docs/extensions/core-logging-abstractions.md`)
-- Domain events: https://cleanarchitecture-extensions.github.io/CleanArchitecture.Extensions/extensions/core-domain-events/ (source: `docs/extensions/core-domain-events.md`)
-- Time abstractions: https://cleanarchitecture-extensions.github.io/CleanArchitecture.Extensions/extensions/core-time/ (source: `docs/extensions/core-time.md`)
-- Options: https://cleanarchitecture-extensions.github.io/CleanArchitecture.Extensions/extensions/core-options/ (source: `docs/extensions/core-options.md`)
+- [Core overview](https://cleanarchitecture-extensions.github.io/CleanArchitecture.Extensions/extensions/core/) (source: `docs/extensions/core.md`)
+- [Result primitives](https://cleanarchitecture-extensions.github.io/CleanArchitecture.Extensions/extensions/core-result-primitives/) (source: `docs/extensions/core-result-primitives.md`)
+- [Guard clauses](https://cleanarchitecture-extensions.github.io/CleanArchitecture.Extensions/extensions/core-guard-clauses/) (source: `docs/extensions/core-guard-clauses.md`)
+- [Pipeline behaviors](https://cleanarchitecture-extensions.github.io/CleanArchitecture.Extensions/extensions/core-pipeline-behaviors/) (source: `docs/extensions/core-pipeline-behaviors.md`)
+- [Logging abstractions](https://cleanarchitecture-extensions.github.io/CleanArchitecture.Extensions/extensions/core-logging-abstractions/) (source: `docs/extensions/core-logging-abstractions.md`)
+- [Domain events](https://cleanarchitecture-extensions.github.io/CleanArchitecture.Extensions/extensions/core-domain-events/) (source: `docs/extensions/core-domain-events.md`)
+- [Time abstractions](https://cleanarchitecture-extensions.github.io/CleanArchitecture.Extensions/extensions/core-time/) (source: `docs/extensions/core-time.md`)
+- [Options](https://cleanarchitecture-extensions.github.io/CleanArchitecture.Extensions/extensions/core-options/) (source: `docs/extensions/core-options.md`)
 - Package README: `src/CleanArchitecture.Extensions.Core/README.md`
 
 Install:
@@ -156,7 +160,7 @@ What it solves:
 
 Docs and navigation:
 
-- Validation overview: https://cleanarchitecture-extensions.github.io/CleanArchitecture.Extensions/extensions/validation/ (source: `docs/extensions/validation.md`)
+- [Validation overview](https://cleanarchitecture-extensions.github.io/CleanArchitecture.Extensions/extensions/validation/) (source: `docs/extensions/validation.md`)
 - Core interplay notes live in the Core docs sections linked above.
 - Package README: `src/CleanArchitecture.Extensions.Validation/README.md`
 
@@ -254,22 +258,22 @@ We are building a plug-in ecosystem in six domains. Core, Validation, and Except
 
 ## Documentation map
 
-- Home page: https://cleanarchitecture-extensions.github.io/CleanArchitecture.Extensions/ (source: `docs/index.md`)
-- Quickstart: https://cleanarchitecture-extensions.github.io/CleanArchitecture.Extensions/getting-started/quickstart/ (source: `docs/getting-started/quickstart.md`)
-- Installation: https://cleanarchitecture-extensions.github.io/CleanArchitecture.Extensions/getting-started/installation/ (source: `docs/getting-started/installation.md`)
-- Concepts (architecture fit): https://cleanarchitecture-extensions.github.io/CleanArchitecture.Extensions/concepts/architecture-fit/ (source: `docs/concepts/architecture-fit.md`)
-- Concepts (composition and invariants): https://cleanarchitecture-extensions.github.io/CleanArchitecture.Extensions/concepts/composition/ (source: `docs/concepts/composition.md`)
-- Extensions catalog landing: https://cleanarchitecture-extensions.github.io/CleanArchitecture.Extensions/extensions/ (source: `docs/extensions/index.md`)
+- [Home page](https://cleanarchitecture-extensions.github.io/CleanArchitecture.Extensions/) (source: `docs/index.md`)
+- [Quickstart](https://cleanarchitecture-extensions.github.io/CleanArchitecture.Extensions/getting-started/quickstart/) (source: `docs/getting-started/quickstart.md`)
+- [Installation](https://cleanarchitecture-extensions.github.io/CleanArchitecture.Extensions/getting-started/installation/) (source: `docs/getting-started/installation.md`)
+- [Concepts (architecture fit)](https://cleanarchitecture-extensions.github.io/CleanArchitecture.Extensions/concepts/architecture-fit/) (source: `docs/concepts/architecture-fit.md`)
+- [Concepts (composition and invariants)](https://cleanarchitecture-extensions.github.io/CleanArchitecture.Extensions/concepts/composition/) (source: `docs/concepts/composition.md`)
+- [Extensions catalog landing](https://cleanarchitecture-extensions.github.io/CleanArchitecture.Extensions/extensions/) (source: `docs/extensions/index.md`)
 - Core extension deep dives: see links under the Core section above for each subpage.
-- Validation deep dive: https://cleanarchitecture-extensions.github.io/CleanArchitecture.Extensions/extensions/validation/ (source: `docs/extensions/validation.md`)
-- Multitenancy core placeholder (design notes now, implementation pending): https://cleanarchitecture-extensions.github.io/CleanArchitecture.Extensions/extensions/multitenancy-core/ (source: `docs/extensions/multitenancy-core.md`)
-- Recipes: https://cleanarchitecture-extensions.github.io/CleanArchitecture.Extensions/recipes/authentication/ and https://cleanarchitecture-extensions.github.io/CleanArchitecture.Extensions/recipes/caching/ (sources under `docs/recipes/`)
-- Samples overview: https://cleanarchitecture-extensions.github.io/CleanArchitecture.Extensions/samples/ (source: `docs/samples/index.md`)
-- Reference configuration: https://cleanarchitecture-extensions.github.io/CleanArchitecture.Extensions/reference/configuration/ (source: `docs/reference/configuration.md`)
-- Troubleshooting: https://cleanarchitecture-extensions.github.io/CleanArchitecture.Extensions/troubleshooting/ (source: `docs/troubleshooting/index.md`)
-- Contributing: https://cleanarchitecture-extensions.github.io/CleanArchitecture.Extensions/contributing/ (source: `docs/contributing/index.md`)
-- Release notes: https://cleanarchitecture-extensions.github.io/CleanArchitecture.Extensions/release-notes/ (source: `docs/release-notes/index.md`)
-- Roadmap: https://cleanarchitecture-extensions.github.io/CleanArchitecture.Extensions/roadmap/ (source: `docs/roadmap.md`)
+- [Validation deep dive](https://cleanarchitecture-extensions.github.io/CleanArchitecture.Extensions/extensions/validation/) (source: `docs/extensions/validation.md`)
+- [Multitenancy core placeholder](https://cleanarchitecture-extensions.github.io/CleanArchitecture.Extensions/extensions/multitenancy-core/) (design notes now, implementation pending; source: `docs/extensions/multitenancy-core.md`)
+- Recipes: [authentication](https://cleanarchitecture-extensions.github.io/CleanArchitecture.Extensions/recipes/authentication/) and [caching](https://cleanarchitecture-extensions.github.io/CleanArchitecture.Extensions/recipes/caching/) (sources under `docs/recipes/`)
+- [Samples overview](https://cleanarchitecture-extensions.github.io/CleanArchitecture.Extensions/samples/) (source: `docs/samples/index.md`)
+- [Reference configuration](https://cleanarchitecture-extensions.github.io/CleanArchitecture.Extensions/reference/configuration/) (source: `docs/reference/configuration.md`)
+- [Troubleshooting](https://cleanarchitecture-extensions.github.io/CleanArchitecture.Extensions/troubleshooting/) (source: `docs/troubleshooting/index.md`)
+- [Contributing](https://cleanarchitecture-extensions.github.io/CleanArchitecture.Extensions/contributing/) (source: `docs/contributing/index.md`)
+- [Release notes](https://cleanarchitecture-extensions.github.io/CleanArchitecture.Extensions/release-notes/) (source: `docs/release-notes/index.md`)
+- [Roadmap](https://cleanarchitecture-extensions.github.io/CleanArchitecture.Extensions/roadmap/) (source: `docs/roadmap.md`)
 
 ## Samples and runnable stories
 
@@ -327,7 +331,7 @@ Brownfield (existing project on Jason's template):
 - Docs pipeline (`.github/workflows/docs.yml`) publishes the MkDocs site to `gh-pages` on changes to main.
 - CodeQL (`.github/workflows/codeql.yml`) runs on pushes, PRs, and a weekly schedule to keep the codebase hardened.
 - NuGet package builds include SourceLink and snupkg symbols; debugger-friendly out of the box.
-- Target frameworks are `net8.0` and `net10.0` for the shipped packages, ensuring modern language/runtime support.
+- Target framework is `net10.0` for the shipped packages, ensuring modern language/runtime support.
 - Tests accompany each feature. If you add a new primitive or behavior, add tests beside it in `tests/`.
 - Documentation-driven: every feature should land with docs in `docs/` and a sample in `samples/`; README links depend on that discipline.
 
@@ -348,7 +352,7 @@ Brownfield (existing project on Jason's template):
 - Why preview versions? We want feedback from real projects before locking APIs. SourceLink and symbols are included to make debugging easy.
 - Where do I find docs for a specific primitive? Start at the Extensions Catalog page (`docs/extensions/index.md`), then open the detailed page such as `core-result-primitives`, `core-guard-clauses`, or `validation`.
 - What about multitenancy? The full multitenancy stack is documented in `HighLevelDocs/Domain2-Multitenancy/*` and on the roadmap; implementation is underway. The catalog already includes a placeholder page to describe intent.
-- Can I use this in .NET 6 or 7? The packages target `net8.0` and `net10.0`. For earlier runtimes, keep an eye on future compatibility notes in release docs.
+- Can I use this in .NET 6 or 7? The packages target `net10.0`. For earlier runtimes, keep an eye on future compatibility notes in release docs.
 - How do I contribute? Read `docs/contributing/index.md`, open the related HighLevelDocs design, and align with solution structure. PRs should include docs and tests where applicable.
 - How do I keep track of updates? Watch the repository and the GitHub Pages site; release notes live in `docs/release-notes/index.md`.
 - Why no massive umbrella package? Composition control belongs to the consumer. Packages stay focused and optional to keep dependency graphs tidy.
@@ -402,11 +406,9 @@ The scenario playbooks now live in `docs/getting-started/adoption-playbooks.md`.
 - [Compliance and audit readiness](docs/getting-started/adoption-playbooks.md#compliance-and-audit-readiness)
 - [Developer experience at scale](docs/getting-started/adoption-playbooks.md#developer-experience-at-scale)
 
-
-
 ## Inspiration and gratitude
 
-This project exists because of Jason Taylor's Clean Architecture template. The template gives teams a clear starting point; this repository gives them an ecosystem to grow without forking. If you are new here, start by reading Jason's repository: https://github.com/jasontaylordev/CleanArchitecture. Then come back and plug in only what you need.
+This project exists because of Jason Taylor's Clean Architecture template. The template gives teams a clear starting point; this repository gives them an ecosystem to grow without forking. If you are new here, start by reading [Jason's repository](https://github.com/jasontaylordev/CleanArchitecture). Then come back and plug in only what you need.
 
 ## Next steps for readers
 

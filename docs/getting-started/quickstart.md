@@ -148,7 +148,7 @@ info: LoggingBehavior[0] Handled Ping
 
 - **Do I need to fork the template?** No. Install packages and register behaviors; the template stays pristine.
 - **Can I remove the extensions later?** Yes. Uninstall the package and remove DI registrations to revert to baseline behavior.
-- **What frameworks are supported?** Shipped packages target `net8.0` and `net10.0`.
+- **What frameworks are supported?** Shipped packages target `net10.0`.
 - **How do I migrate from the template's Result?** Use `LegacyResult`/`LegacyResult<T>` in Core and move handlers over gradually.
 - **Is there a Minimal API/MVC adapter?** Planned for Validation; watch the roadmap for adapter releases.
 
