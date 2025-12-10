@@ -1156,6 +1156,15 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#backlog-next-iteration" class="md-nav__link">
+    <span class="md-ellipsis">
+      Backlog / Next Iteration
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#testing" class="md-nav__link">
     <span class="md-ellipsis">
       Testing
@@ -1540,6 +1549,15 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#backlog-next-iteration" class="md-nav__link">
+    <span class="md-ellipsis">
+      Backlog / Next Iteration
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#testing" class="md-nav__link">
     <span class="md-ellipsis">
       Testing
@@ -1594,20 +1612,21 @@
 <a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="p">},</span><span class="w"> </span><span class="n">queryOptions</span><span class="w"> </span><span class="o">=&gt;</span>
 <a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="p">{</span>
 <a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="w">    </span><span class="n">queryOptions</span><span class="p">.</span><span class="n">DefaultTtl</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">TimeSpan</span><span class="p">.</span><span class="n">FromMinutes</span><span class="p">(</span><span class="mi">5</span><span class="p">);</span>
-<a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a><span class="w">    </span><span class="n">queryOptions</span><span class="p">.</span><span class="n">CachePredicate</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">req</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">req</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">IQueryMarker</span><span class="p">;</span>
-<a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a><span class="p">});</span>
-<a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a>
-<a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a><span class="n">services</span><span class="p">.</span><span class="n">AddMediatR</span><span class="p">(</span><span class="n">cfg</span><span class="w"> </span><span class="o">=&gt;</span>
-<a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a><span class="p">{</span>
-<a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a><span class="w">    </span><span class="n">cfg</span><span class="p">.</span><span class="n">RegisterServicesFromAssemblyContaining</span><span class="o">&lt;</span><span class="n">Program</span><span class="o">&gt;</span><span class="p">();</span>
-<a id="__codelineno-1-18" name="__codelineno-1-18" href="#__codelineno-1-18"></a><span class="w">    </span><span class="n">cfg</span><span class="p">.</span><span class="n">AddCleanArchitectureCachingPipeline</span><span class="p">();</span><span class="w"> </span><span class="c1">// place after Validation</span>
-<a id="__codelineno-1-19" name="__codelineno-1-19" href="#__codelineno-1-19"></a><span class="p">});</span>
+<a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a><span class="w">    </span><span class="c1">// Default predicate caches types whose names end with &quot;Query&quot;; override to use a marker instead:</span>
+<a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a><span class="w">    </span><span class="c1">// queryOptions.CachePredicate = req =&gt; req is IQueryMarker;</span>
+<a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a><span class="p">});</span>
+<a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a>
+<a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a><span class="n">services</span><span class="p">.</span><span class="n">AddMediatR</span><span class="p">(</span><span class="n">cfg</span><span class="w"> </span><span class="o">=&gt;</span>
+<a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a><span class="p">{</span>
+<a id="__codelineno-1-18" name="__codelineno-1-18" href="#__codelineno-1-18"></a><span class="w">    </span><span class="n">cfg</span><span class="p">.</span><span class="n">RegisterServicesFromAssemblyContaining</span><span class="o">&lt;</span><span class="n">Program</span><span class="o">&gt;</span><span class="p">();</span>
+<a id="__codelineno-1-19" name="__codelineno-1-19" href="#__codelineno-1-19"></a><span class="w">    </span><span class="n">cfg</span><span class="p">.</span><span class="n">AddCleanArchitectureCachingPipeline</span><span class="p">();</span><span class="w"> </span><span class="c1">// place after Validation</span>
+<a id="__codelineno-1-20" name="__codelineno-1-20" href="#__codelineno-1-20"></a><span class="p">});</span>
 </code></pre></div>
 <h3 id="configure-cache-keys-and-ttls">Configure cache keys and TTLs<a class="headerlink" href="#configure-cache-keys-and-ttls" title="Permanent link">&para;</a></h3>
 <ul>
 <li>Keys follow <code>{namespace}:{tenant?}:{resource}:{hash}</code> via <code>ICacheKeyFactory</code> and <code>ICacheScope</code>. Override <code>ResourceNameSelector</code>/<code>HashFactory</code> in <code>QueryCachingBehaviorOptions</code> for custom resource naming or hashing (e.g., when parameters should be normalized).</li>
 <li>Default TTL comes from <code>QueryCachingBehaviorOptions.DefaultTtl</code>; override per request type with <code>TtlByRequestType[typeof(MyQuery)] = TimeSpan.FromSeconds(30);</code>.</li>
-<li><code>CachePredicate</code> controls which requests are cacheable. <code>BypassOnError</code> skips caching failed <code>Result&lt;T&gt;</code> responses.</li>
+<li><code>CachePredicate</code> controls which requests are cacheable. By default it caches request types whose names end with "Query"; override to use markers or explicit type checks. <code>BypassOnError</code> skips caching failed <code>Result&lt;T&gt;</code> responses.</li>
 </ul>
 <h3 id="choose-an-adapter">Choose an adapter<a class="headerlink" href="#choose-an-adapter" title="Permanent link">&para;</a></h3>
 <ul>
@@ -1642,11 +1661,17 @@
 <li>Cache-aside pattern: explicit <code>ICache.Remove</code> or <code>ICache.RemoveAsync</code> on command success or domain event handlers.</li>
 <li>Include versioning and tenant segments in keys to avoid collisions; adjust namespace when making breaking DTO changes.</li>
 </ul>
+<h2 id="backlog-next-iteration">Backlog / Next Iteration<a class="headerlink" href="#backlog-next-iteration" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Add PII/classification guardrails so sensitive payloads can be blocked or redirected to encrypted storage.</li>
+<li>Provide an optional encrypting serializer wrapper for distributed caches with guidance for key management.</li>
+<li>Expose instrumentation hooks (hits, misses, latency) without forcing a specific metrics provider.</li>
+<li>Document and/or implement schema-versioned key strategies to support DTO shape changes safely.</li>
+</ul>
 <h2 id="testing">Testing<a class="headerlink" href="#testing" title="Permanent link">&para;</a></h2>
 <ul>
 <li>Use the default memory adapter for Application tests; distributed adapter can use <code>MemoryDistributedCache</code> for deterministic runs.</li>
-<li><code>FrozenClock</code> from Core is used internally in tests for consistent expiry calculations.
-*** End Patch എണ്ണം to=functions.apply_patch অক্টো json to=functions.apply_patch ***!</li>
+<li><code>FrozenClock</code> from Core is used internally in tests for consistent expiry calculations.</li>
 </ul>
 
 
