@@ -3,6 +3,7 @@
 Cache abstractions and MediatR-friendly behaviors for Clean Architecture apps (in progress).
 
 - Provider-agnostic `ICache` and serializer/key abstractions planned for memory and distributed stores.
+- Default MemoryCache adapter is registered by <code>AddCleanArchitectureCaching</code>; distributed adapters will follow.
 - Query caching behavior will plug into the MediatR pipeline without leaking infrastructure into handlers.
 - Tenant-aware key conventions, stampede protection, and safe serialization defaults will align with the design blueprint.
 - Ships with SourceLink, XML docs, and snupkg symbols like the other extensions once complete.

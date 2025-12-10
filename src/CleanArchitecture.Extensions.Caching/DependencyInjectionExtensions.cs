@@ -1,6 +1,11 @@
 using CleanArchitecture.Extensions.Caching.Options;
+using CleanArchitecture.Extensions.Caching.Abstractions;
+using CleanArchitecture.Extensions.Caching.Adapters;
+using CleanArchitecture.Extensions.Caching.Keys;
+using CleanArchitecture.Extensions.Caching.Serialization;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace CleanArchitecture.Extensions.Caching;
 
@@ -25,6 +30,12 @@ public static class DependencyInjectionExtensions
         {
             optionsBuilder.Configure(configure);
         }
+
+        services.AddMemoryCache();
+        services.TryAddSingleton<ICacheSerializer, SystemTextJsonCacheSerializer>();
+        services.TryAddSingleton<ICacheKeyFactory, DefaultCacheKeyFactory>();
+        services.TryAddSingleton<ICacheScope, DefaultCacheScope>();
+        services.TryAddSingleton<ICache, MemoryCacheAdapter>();
 
         return services;
     }
