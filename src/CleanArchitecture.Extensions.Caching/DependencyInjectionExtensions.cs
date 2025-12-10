@@ -19,9 +19,11 @@ public static class DependencyInjectionExtensions
     /// </summary>
     /// <param name="services">Service collection.</param>
     /// <param name="configure">Optional callback to configure <see cref="CachingOptions"/>.</param>
+    /// <param name="configureQueryCaching">Optional callback to configure <see cref="QueryCachingBehaviorOptions"/>.</param>
     public static IServiceCollection AddCleanArchitectureCaching(
         this IServiceCollection services,
-        Action<CachingOptions>? configure = null)
+        Action<CachingOptions>? configure = null,
+        Action<QueryCachingBehaviorOptions>? configureQueryCaching = null)
     {
         ArgumentNullException.ThrowIfNull(services);
 
@@ -31,10 +33,16 @@ public static class DependencyInjectionExtensions
             optionsBuilder.Configure(configure);
         }
 
+        var queryOptionsBuilder = services.AddOptions<QueryCachingBehaviorOptions>();
+        if (configureQueryCaching is not null)
+        {
+            queryOptionsBuilder.Configure(configureQueryCaching);
+        }
+
         services.AddMemoryCache();
         services.TryAddSingleton<ICacheSerializer, SystemTextJsonCacheSerializer>();
         services.TryAddSingleton<ICacheKeyFactory, DefaultCacheKeyFactory>();
-        services.TryAddSingleton<ICacheScope, DefaultCacheScope>();
+        services.TryAddScoped<ICacheScope, DefaultCacheScope>();
         services.TryAddSingleton<ICache, MemoryCacheAdapter>();
 
         return services;
@@ -49,6 +57,7 @@ public static class DependencyInjectionExtensions
     {
         ArgumentNullException.ThrowIfNull(configuration);
 
+        configuration.AddOpenBehavior(typeof(Behaviors.QueryCachingBehavior<,>));
         return configuration;
     }
 }
