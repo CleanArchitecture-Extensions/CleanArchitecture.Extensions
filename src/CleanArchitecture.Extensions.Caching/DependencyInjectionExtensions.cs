@@ -6,6 +6,8 @@ using CleanArchitecture.Extensions.Caching.Serialization;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Caching.Distributed;
 
 namespace CleanArchitecture.Extensions.Caching;
 
@@ -40,10 +42,12 @@ public static class DependencyInjectionExtensions
         }
 
         services.AddMemoryCache();
+        services.AddDistributedMemoryCache();
         services.TryAddSingleton<ICacheSerializer, SystemTextJsonCacheSerializer>();
         services.TryAddSingleton<ICacheKeyFactory, DefaultCacheKeyFactory>();
         services.TryAddScoped<ICacheScope, DefaultCacheScope>();
         services.TryAddSingleton<ICache, MemoryCacheAdapter>();
+        services.TryAddSingleton<DistributedCacheAdapter>();
 
         return services;
     }
