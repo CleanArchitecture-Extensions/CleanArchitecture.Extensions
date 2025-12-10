@@ -28,9 +28,18 @@ services.AddCleanArchitectureCaching(options =>
 services.AddMediatR(cfg =>
 {
     cfg.RegisterServicesFromAssemblyContaining<Program>();
-    cfg.AddCleanArchitectureCachingPipeline();
+    cfg.AddCleanArchitectureCachingPipeline(); // place after Validation, before Performance
 });
+
+// Swap to distributed cache (e.g., Redis) by overriding ICache registration
+services.AddStackExchangeRedisCache(redis => redis.Configuration = "<redis-connection>");
+services.AddSingleton<ICache, DistributedCacheAdapter>();
 ```
+
+### Notes
+- Keys follow `{namespace}:{tenant?}:{resource}:{hash}`; override `ResourceNameSelector`/`HashFactory` to control the resource or hash inputs.
+- `QueryCachingBehaviorOptions` lets you set TTL per request type, cache predicate, and bypass-on-error for `Result<T>` responses.
+- Default adapters: memory (`ICache`) and a distributed adapter (`DistributedCacheAdapter`) for any `IDistributedCache` implementation.
 
 ## Target frameworks
 
