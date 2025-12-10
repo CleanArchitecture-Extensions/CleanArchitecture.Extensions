@@ -144,7 +144,32 @@ public class QueryCachingBehaviorTests
         Assert.Equal(0, callCount);
     }
 
+    [Fact]
+    public async Task Default_predicate_skips_non_query_types()
+    {
+        var cache = CreateCache();
+        var behavior = CreateBehavior<TestCommand, string>(cache);
+        var callCount = 0;
+        var request = new TestCommand(5);
+        RequestHandlerDelegate<string> next = _ =>
+        {
+            callCount++;
+            return Task.FromResult("value");
+        };
+
+        await behavior.Handle(request, next, CancellationToken.None);
+        await behavior.Handle(request, _ =>
+        {
+            callCount++;
+            return Task.FromResult("other");
+        }, CancellationToken.None);
+
+        Assert.Equal(2, callCount);
+    }
+
     private sealed record TestQuery(int Id) : IRequest<string>;
 
     private sealed record TestResultQuery(int Id) : IRequest<Result<string>>;
+
+    private sealed record TestCommand(int Id) : IRequest<string>;
 }

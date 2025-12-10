@@ -37,7 +37,8 @@ services.AddCleanArchitectureCaching(options =>
 }, queryOptions =>
 {
     queryOptions.DefaultTtl = TimeSpan.FromMinutes(5);
-    queryOptions.CachePredicate = req => req is IQueryMarker;
+    // Default predicate caches types whose names end with "Query"; override to use a marker instead:
+    // queryOptions.CachePredicate = req => req is IQueryMarker;
 });
 
 services.AddMediatR(cfg =>
@@ -51,7 +52,7 @@ services.AddMediatR(cfg =>
 
 - Keys follow `{namespace}:{tenant?}:{resource}:{hash}` via `ICacheKeyFactory` and `ICacheScope`. Override `ResourceNameSelector`/`HashFactory` in `QueryCachingBehaviorOptions` for custom resource naming or hashing (e.g., when parameters should be normalized).
 - Default TTL comes from `QueryCachingBehaviorOptions.DefaultTtl`; override per request type with `TtlByRequestType[typeof(MyQuery)] = TimeSpan.FromSeconds(30);`.
-- `CachePredicate` controls which requests are cacheable. `BypassOnError` skips caching failed `Result<T>` responses.
+- `CachePredicate` controls which requests are cacheable. By default it caches request types whose names end with "Query"; override to use markers or explicit type checks. `BypassOnError` skips caching failed `Result<T>` responses.
 
 ### Choose an adapter
 
