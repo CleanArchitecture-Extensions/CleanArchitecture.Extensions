@@ -1,3 +1,5 @@
+using System.Globalization;
+
 namespace CleanArchitecture.Extensions.Caching.Options;
 
 /// <summary>
@@ -8,7 +10,8 @@ public sealed class QueryCachingBehaviorOptions
     /// <summary>
     /// Gets or sets a predicate used to determine whether a request should be cached.
     /// </summary>
-    public Func<object, bool> CachePredicate { get; set; } = _ => true;
+    public Func<object, bool> CachePredicate { get; set; } = request =>
+        request is not null && request.GetType().Name.EndsWith("Query", true, CultureInfo.InvariantCulture);
 
     /// <summary>
     /// Gets or sets a delegate to derive the resource name used in cache keys.

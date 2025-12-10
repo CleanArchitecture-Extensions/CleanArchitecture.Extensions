@@ -4,6 +4,7 @@ using CleanArchitecture.Extensions.Caching.Keys;
 using CleanArchitecture.Extensions.Caching.Options;
 using CleanArchitecture.Extensions.Caching.Serialization;
 using CleanArchitecture.Extensions.Core.Results;
+using CleanArchitecture.Extensions.Core.Time;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -18,6 +19,7 @@ public sealed class DistributedCacheAdapter : ICache
     private readonly IDistributedCache _distributedCache;
     private readonly ICacheSerializer _serializer;
     private readonly ILogger<DistributedCacheAdapter> _logger;
+    private readonly IClock _clock;
     private readonly CachingOptions _options;
     private readonly ConcurrentDictionary<string, SemaphoreSlim> _locks = new();
 
@@ -27,16 +29,19 @@ public sealed class DistributedCacheAdapter : ICache
     /// <param name="distributedCache">Distributed cache instance.</param>
     /// <param name="serializer">Serializer for payloads.</param>
     /// <param name="options">Caching options.</param>
+    /// <param name="clock">Clock used for timestamps.</param>
     /// <param name="logger">Logger.</param>
     public DistributedCacheAdapter(
         IDistributedCache distributedCache,
         ICacheSerializer serializer,
         IOptions<CachingOptions> options,
+        IClock clock,
         ILogger<DistributedCacheAdapter> logger)
     {
         _distributedCache = distributedCache ?? throw new ArgumentNullException(nameof(distributedCache));
         _serializer = serializer ?? throw new ArgumentNullException(nameof(serializer));
         _options = options?.Value ?? throw new ArgumentNullException(nameof(options));
+        _clock = clock ?? throw new ArgumentNullException(nameof(clock));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
@@ -244,25 +249,58 @@ public sealed class DistributedCacheAdapter : ICache
             return cachedResult.Value;
         }
 
-        var cachedValue = Get<T>(key);
-        if (cachedValue is not null)
-        {
-            return Result.Success(cachedValue.Value!);
-        }
-
-        var result = factory();
-
         if (!_options.Enabled)
         {
-            return result;
+            return factory();
         }
 
-        if (result.IsSuccess)
+        var policy = stampedePolicy ?? _options.StampedePolicy ?? CacheStampedePolicy.Default;
+
+        if (policy.EnableLocking)
         {
-            Set(key, result.Value, options);
+            var gate = GetLock(key.FullKey);
+            if (!gate.Wait(policy.LockTimeout))
+            {
+                _logger.LogWarning("Failed to acquire distributed cache lock for {Key} within {Timeout}ms; bypassing cache.", key.FullKey, policy.LockTimeout.TotalMilliseconds);
+                return factory();
+            }
+
+            try
+            {
+                cachedResult = Get<Result<T>>(key);
+                if (cachedResult?.Value is not null)
+                {
+                    return cachedResult.Value;
+                }
+
+                var cachedValue = Get<T>(key);
+                if (cachedValue is not null)
+                {
+                    return Result.Success(cachedValue.Value!);
+                }
+
+                var result = factory();
+
+                if (result.IsSuccess)
+                {
+                    Set(key, result.Value, options);
+                }
+
+                return result;
+            }
+            finally
+            {
+                gate.Release();
+            }
         }
 
-        return result;
+        var uncached = factory();
+        if (uncached.IsSuccess)
+        {
+            Set(key, uncached.Value, options);
+        }
+
+        return uncached;
     }
 
     /// <inheritdoc />
@@ -277,25 +315,58 @@ public sealed class DistributedCacheAdapter : ICache
             return cachedResult.Value;
         }
 
-        var cachedValue = await GetAsync<T>(key, cancellationToken).ConfigureAwait(false);
-        if (cachedValue is not null)
-        {
-            return Result.Success(cachedValue.Value!);
-        }
-
-        var result = await factory(cancellationToken).ConfigureAwait(false);
-
         if (!_options.Enabled)
         {
-            return result;
+            return await factory(cancellationToken).ConfigureAwait(false);
         }
 
-        if (result.IsSuccess)
+        var policy = stampedePolicy ?? _options.StampedePolicy ?? CacheStampedePolicy.Default;
+
+        if (policy.EnableLocking)
         {
-            await SetAsync(key, result.Value, options, cancellationToken).ConfigureAwait(false);
+            var gate = GetLock(key.FullKey);
+            if (!await gate.WaitAsync(policy.LockTimeout, cancellationToken).ConfigureAwait(false))
+            {
+                _logger.LogWarning("Failed to acquire distributed cache lock for {Key} within {Timeout}ms; bypassing cache.", key.FullKey, policy.LockTimeout.TotalMilliseconds);
+                return await factory(cancellationToken).ConfigureAwait(false);
+            }
+
+            try
+            {
+                cachedResult = await GetAsync<Result<T>>(key, cancellationToken).ConfigureAwait(false);
+                if (cachedResult?.Value is not null)
+                {
+                    return cachedResult.Value;
+                }
+
+                var cachedValue = await GetAsync<T>(key, cancellationToken).ConfigureAwait(false);
+                if (cachedValue is not null)
+                {
+                    return Result.Success(cachedValue.Value!);
+                }
+
+                var result = await factory(cancellationToken).ConfigureAwait(false);
+
+                if (result.IsSuccess)
+                {
+                    await SetAsync(key, result.Value, options, cancellationToken).ConfigureAwait(false);
+                }
+
+                return result;
+            }
+            finally
+            {
+                gate.Release();
+            }
         }
 
-        return result;
+        var uncached = await factory(cancellationToken).ConfigureAwait(false);
+        if (uncached.IsSuccess)
+        {
+            await SetAsync(key, uncached.Value, options, cancellationToken).ConfigureAwait(false);
+        }
+
+        return uncached;
     }
 
     /// <inheritdoc />
@@ -315,13 +386,13 @@ public sealed class DistributedCacheAdapter : ICache
     private DistributedCacheEntryOptions ToDistributedOptions(CacheEntryOptions options) => new()
     {
         AbsoluteExpiration = options.AbsoluteExpiration,
-        AbsoluteExpirationRelativeToNow = options.AbsoluteExpirationRelativeToNow,
+        AbsoluteExpirationRelativeToNow = ApplyJitter(options.AbsoluteExpirationRelativeToNow, _options.StampedePolicy?.Jitter),
         SlidingExpiration = options.SlidingExpiration
     };
 
-    private static DistributedStoredEntry<T> CreateEnvelope<T>(T value, CacheEntryOptions options)
+    private DistributedStoredEntry<T> CreateEnvelope<T>(T value, CacheEntryOptions options)
     {
-        var createdAt = DateTimeOffset.UtcNow;
+        var createdAt = _clock.UtcNow;
         DateTimeOffset? expiresAt = null;
         if (options.AbsoluteExpiration.HasValue)
         {
@@ -349,6 +420,23 @@ public sealed class DistributedCacheAdapter : ICache
     }
 
     private SemaphoreSlim GetLock(string key) => _locks.GetOrAdd(key, _ => new SemaphoreSlim(1, 1));
+
+    private static TimeSpan? ApplyJitter(TimeSpan? baseValue, TimeSpan? jitter)
+    {
+        if (!baseValue.HasValue)
+        {
+            return null;
+        }
+
+        if (!jitter.HasValue || jitter.Value <= TimeSpan.Zero)
+        {
+            return baseValue;
+        }
+
+        var jitterMilliseconds = jitter.Value.TotalMilliseconds;
+        var offsetMs = Random.Shared.NextDouble() * jitterMilliseconds;
+        return baseValue.Value + TimeSpan.FromMilliseconds(offsetMs);
+    }
 
     private sealed record DistributedStoredEntry<T>(T? Value, DateTimeOffset CreatedAt, DateTimeOffset? ExpiresAt, CacheEntryOptions Options)
     {

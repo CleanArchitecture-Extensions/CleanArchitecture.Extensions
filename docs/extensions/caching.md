@@ -37,7 +37,8 @@ services.AddCleanArchitectureCaching(options =>
 }, queryOptions =>
 {
     queryOptions.DefaultTtl = TimeSpan.FromMinutes(5);
-    queryOptions.CachePredicate = req => req is IQueryMarker;
+    // Default predicate caches types whose names end with "Query"; override to use a marker instead:
+    // queryOptions.CachePredicate = req => req is IQueryMarker;
 });
 
 services.AddMediatR(cfg =>
@@ -51,7 +52,7 @@ services.AddMediatR(cfg =>
 
 - Keys follow `{namespace}:{tenant?}:{resource}:{hash}` via `ICacheKeyFactory` and `ICacheScope`. Override `ResourceNameSelector`/`HashFactory` in `QueryCachingBehaviorOptions` for custom resource naming or hashing (e.g., when parameters should be normalized).
 - Default TTL comes from `QueryCachingBehaviorOptions.DefaultTtl`; override per request type with `TtlByRequestType[typeof(MyQuery)] = TimeSpan.FromSeconds(30);`.
-- `CachePredicate` controls which requests are cacheable. `BypassOnError` skips caching failed `Result<T>` responses.
+- `CachePredicate` controls which requests are cacheable. By default it caches request types whose names end with "Query"; override to use markers or explicit type checks. `BypassOnError` skips caching failed `Result<T>` responses.
 
 ### Choose an adapter
 
@@ -90,7 +91,14 @@ services.AddSingleton<ICache, DistributedCacheAdapter>(); // override default
 - Cache-aside pattern: explicit `ICache.Remove` or `ICache.RemoveAsync` on command success or domain event handlers.
 - Include versioning and tenant segments in keys to avoid collisions; adjust namespace when making breaking DTO changes.
 
+## Backlog / Next Iteration
+
+- Add PII/classification guardrails so sensitive payloads can be blocked or redirected to encrypted storage.
+- Provide an optional encrypting serializer wrapper for distributed caches with guidance for key management.
+- Expose instrumentation hooks (hits, misses, latency) without forcing a specific metrics provider.
+- Document and/or implement schema-versioned key strategies to support DTO shape changes safely.
+
 ## Testing
 
 - Use the default memory adapter for Application tests; distributed adapter can use `MemoryDistributedCache` for deterministic runs.
-- `FrozenClock` from Core is used internally in tests for consistent expiry calculations.*** End Patch എണ്ണം to=functions.apply_patch অক্টো json to=functions.apply_patch ***!
+- `FrozenClock` from Core is used internally in tests for consistent expiry calculations.

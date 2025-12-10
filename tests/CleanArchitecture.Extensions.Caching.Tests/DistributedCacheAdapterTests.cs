@@ -4,6 +4,7 @@ using CleanArchitecture.Extensions.Caching.Keys;
 using CleanArchitecture.Extensions.Caching.Options;
 using CleanArchitecture.Extensions.Caching.Serialization;
 using CleanArchitecture.Extensions.Core.Results;
+using CleanArchitecture.Extensions.Core.Time;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -19,10 +20,12 @@ public class DistributedCacheAdapterTests
         var serializer = new SystemTextJsonCacheSerializer();
         var distributed = new MemoryDistributedCache(MOptions.Create(new MemoryDistributedCacheOptions()));
         var cachingOptions = options ?? CachingOptions.Default;
+        var clock = new FrozenClock(new DateTimeOffset(2024, 1, 1, 0, 0, 0, TimeSpan.Zero));
         return new DistributedCacheAdapter(
             distributed,
             serializer,
             MOptions.Create(cachingOptions),
+            clock,
             NullLogger<DistributedCacheAdapter>.Instance);
     }
 
