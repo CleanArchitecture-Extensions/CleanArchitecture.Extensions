@@ -91,6 +91,13 @@ services.AddSingleton<ICache, DistributedCacheAdapter>(); // override default
 - Cache-aside pattern: explicit `ICache.Remove` or `ICache.RemoveAsync` on command success or domain event handlers.
 - Include versioning and tenant segments in keys to avoid collisions; adjust namespace when making breaking DTO changes.
 
+## Backlog / Next Iteration
+
+- Add PII/classification guardrails so sensitive payloads can be blocked or redirected to encrypted storage.
+- Provide an optional encrypting serializer wrapper for distributed caches with guidance for key management.
+- Expose instrumentation hooks (hits, misses, latency) without forcing a specific metrics provider.
+- Document and/or implement schema-versioned key strategies to support DTO shape changes safely.
+
 ## Testing
 
 - Use the default memory adapter for Application tests; distributed adapter can use `MemoryDistributedCache` for deterministic runs.
