@@ -16,6 +16,26 @@ public sealed class CachingOptions
     public string DefaultNamespace { get; set; } = "CleanArchitectureExtensions";
 
     /// <summary>
+    /// Gets or sets the default entry options applied when callers do not specify overrides.
+    /// </summary>
+    public CacheEntryOptions DefaultEntryOptions { get; set; } = CacheEntryOptions.Default;
+
+    /// <summary>
+    /// Gets or sets the default stampede mitigation policy.
+    /// </summary>
+    public CacheStampedePolicy StampedePolicy { get; set; } = CacheStampedePolicy.Default;
+
+    /// <summary>
+    /// Gets or sets the maximum allowed size for cache entries (in bytes) when providers support enforcement.
+    /// </summary>
+    public long? MaxEntrySizeBytes { get; set; }
+
+    /// <summary>
+    /// Gets or sets the preferred serializer name/content type to use when multiple serializers are registered.
+    /// </summary>
+    public string? PreferredSerializer { get; set; }
+
+    /// <summary>
     /// Gets the default options instance.
     /// </summary>
     public static CachingOptions Default => new();
