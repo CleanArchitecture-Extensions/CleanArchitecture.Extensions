@@ -47,6 +47,7 @@ public static class DependencyInjectionExtensions
         services.TryAddSingleton<IClock, SystemClock>();
         services.TryAddSingleton<ICacheSerializer, SystemTextJsonCacheSerializer>();
         services.TryAddSingleton<ICacheKeyFactory, DefaultCacheKeyFactory>();
+        // TODO: Bridge tenant context (ICurrentTenant) into DefaultCacheScope when multitenancy extension is available.
         services.TryAddScoped<ICacheScope, DefaultCacheScope>();
         services.TryAddSingleton<ICache, MemoryCacheAdapter>();
         services.TryAddSingleton<DistributedCacheAdapter>();
