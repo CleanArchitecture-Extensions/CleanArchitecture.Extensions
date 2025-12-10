@@ -1,0 +1,36 @@
+# CleanArchitecture.Extensions.Caching
+
+Cache abstractions and MediatR-friendly behaviors for Clean Architecture apps (in progress).
+
+- Provider-agnostic `ICache` and serializer/key abstractions planned for memory and distributed stores.
+- Query caching behavior will plug into the MediatR pipeline without leaking infrastructure into handlers.
+- Tenant-aware key conventions, stampede protection, and safe serialization defaults will align with the design blueprint.
+- Ships with SourceLink, XML docs, and snupkg symbols like the other extensions once complete.
+
+> Status: design staged; implementation is being built incrementally. API surface may change before the first preview.
+
+## Planned usage
+
+```csharp
+using CleanArchitecture.Extensions.Caching;
+using CleanArchitecture.Extensions.Caching.Options;
+using MediatR;
+
+// Register caching services and options
+services.AddCleanArchitectureCaching(options =>
+{
+    options.Enabled = true;
+    options.DefaultNamespace = "MyApp";
+});
+
+// Wire the query caching behavior (ordering finalized in later steps)
+services.AddMediatR(cfg =>
+{
+    cfg.RegisterServicesFromAssemblyContaining<Program>();
+    cfg.AddCleanArchitectureCachingPipeline();
+});
+```
+
+## Target frameworks
+
+- net10.0
