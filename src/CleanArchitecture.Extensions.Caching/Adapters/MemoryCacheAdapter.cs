@@ -218,19 +218,51 @@ public sealed class MemoryCacheAdapter : ICache
             return cached.Value;
         }
 
-        var result = factory();
-
         if (!_options.Enabled)
         {
-            return result;
+            return factory();
         }
 
-        if (result.IsSuccess)
+        var policy = stampedePolicy ?? _options.StampedePolicy ?? CacheStampedePolicy.Default;
+
+        if (policy.EnableLocking)
         {
-            Set(key, result, options);
+            var gate = GetLock(key.FullKey);
+            if (!gate.Wait(policy.LockTimeout))
+            {
+                _logger.LogWarning("Failed to acquire cache lock for {Key} within {Timeout}ms; bypassing cache.", key.FullKey, policy.LockTimeout.TotalMilliseconds);
+                return factory();
+            }
+
+            try
+            {
+                cached = Get<Result<T>>(key);
+                if (cached?.Value is not null)
+                {
+                    return cached.Value;
+                }
+
+                var result = factory();
+                if (result.IsSuccess)
+                {
+                    Set(key, result, options);
+                }
+
+                return result;
+            }
+            finally
+            {
+                gate.Release();
+            }
         }
 
-        return result;
+        var value = factory();
+        if (value.IsSuccess)
+        {
+            Set(key, value, options);
+        }
+
+        return value;
     }
 
     /// <inheritdoc />
@@ -245,19 +277,51 @@ public sealed class MemoryCacheAdapter : ICache
             return cached.Value;
         }
 
-        var result = await factory(cancellationToken).ConfigureAwait(false);
-
         if (!_options.Enabled)
         {
-            return result;
+            return await factory(cancellationToken).ConfigureAwait(false);
         }
 
-        if (result.IsSuccess)
+        var policy = stampedePolicy ?? _options.StampedePolicy ?? CacheStampedePolicy.Default;
+
+        if (policy.EnableLocking)
         {
-            await SetAsync(key, result, options, cancellationToken).ConfigureAwait(false);
+            var gate = GetLock(key.FullKey);
+            if (!await gate.WaitAsync(policy.LockTimeout, cancellationToken).ConfigureAwait(false))
+            {
+                _logger.LogWarning("Failed to acquire cache lock for {Key} within {Timeout}ms; bypassing cache.", key.FullKey, policy.LockTimeout.TotalMilliseconds);
+                return await factory(cancellationToken).ConfigureAwait(false);
+            }
+
+            try
+            {
+                cached = await GetAsync<Result<T>>(key, cancellationToken).ConfigureAwait(false);
+                if (cached?.Value is not null)
+                {
+                    return cached.Value;
+                }
+
+                var result = await factory(cancellationToken).ConfigureAwait(false);
+                if (result.IsSuccess)
+                {
+                    await SetAsync(key, result, options, cancellationToken).ConfigureAwait(false);
+                }
+
+                return result;
+            }
+            finally
+            {
+                gate.Release();
+            }
         }
 
-        return result;
+        var value = await factory(cancellationToken).ConfigureAwait(false);
+        if (value.IsSuccess)
+        {
+            await SetAsync(key, value, options, cancellationToken).ConfigureAwait(false);
+        }
+
+        return value;
     }
 
     /// <inheritdoc />
