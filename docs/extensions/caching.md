@@ -94,4 +94,4 @@ services.AddSingleton<ICache, DistributedCacheAdapter>(); // override default
 ## Testing
 
 - Use the default memory adapter for Application tests; distributed adapter can use `MemoryDistributedCache` for deterministic runs.
-- `FrozenClock` from Core is used internally in tests for consistent expiry calculations.*** End Patch എണ്ണം to=functions.apply_patch অক্টো json to=functions.apply_patch ***!
+- `FrozenClock` from Core is used internally in tests for consistent expiry calculations.
