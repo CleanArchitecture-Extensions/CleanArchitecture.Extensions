@@ -40,6 +40,7 @@ nav:
       - Core Guard Clauses: extensions/core-guard-clauses.md
       - Core Result Primitives: extensions/core-result-primitives.md
       - Validation: extensions/validation.md
+      - Caching: extensions/caching.md
       - Multitenancy Core: extensions/multitenancy-core.md
   - Recipes:
       - Authentication: recipes/authentication.md

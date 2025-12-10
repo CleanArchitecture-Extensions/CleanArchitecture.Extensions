@@ -8,13 +8,16 @@ Add caching with clear cache key conventions and opt-in behaviors.
 - Choose cache store (in-memory, distributed) — adapters TBD.
 
 ## Steps
-1. Add the cache adapter package (TBD).
-2. Register cache services and behaviors.
-3. Apply caching to queries/handlers where appropriate; define cache durations and invalidation rules.
+1. Add the caching package: `dotnet add package CleanArchitecture.Extensions.Caching`.
+2. Register caching services and the query caching pipeline behavior (after Validation, before Performance).
+3. Configure cacheability predicate and TTLs per query type; choose memory (default) or distributed adapter.
+4. Apply invalidation on command success/domain events where needed (`ICache.Remove`).
 
 ## Verify
-- First call hits data source; subsequent call hits cache (check logs/metrics).
+- First call hits data source; subsequent call hits cache (check logs or set a breakpoint).
+- Change input parameters and confirm a different cache key/hash is used.
 
 ## Pitfalls
 - Cache stampede: add locking or jitter where needed.
 - Tenant-aware caching: ensure keys include tenant context when multitenancy is enabled.
+- Do not cache failed `Result<T>` responses if they represent transient errors; leave `BypassOnError` enabled.
