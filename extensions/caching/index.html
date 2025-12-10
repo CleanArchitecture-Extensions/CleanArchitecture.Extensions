@@ -10,13 +10,13 @@
       
       
       
-        <link rel="canonical" href="https://cleanarchitecture-extensions.github.io/CleanArchitecture.Extensions/concepts/composition/">
+        <link rel="canonical" href="https://cleanarchitecture-extensions.github.io/CleanArchitecture.Extensions/extensions/caching/">
       
       
-        <link rel="prev" href="../architecture-fit/">
+        <link rel="prev" href="../validation/">
       
       
-        <link rel="next" href="../../extensions/">
+        <link rel="next" href="../multitenancy-core/">
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
@@ -24,7 +24,7 @@
     
     
       
-        <title>Composition & Invariants - CleanArchitecture.Extensions</title>
+        <title>Caching - CleanArchitecture.Extensions</title>
       
     
     
@@ -66,7 +66,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#composition-invariants" class="md-skip">
+        <a href="#extension-caching" class="md-skip">
           Skip to content
         </a>
       
@@ -100,7 +100,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Composition & Invariants
+              Caching
             
           </span>
         </div>
@@ -234,13 +234,11 @@
         
   
   
-    
-  
   
     
     
-      <li class="md-tabs__item md-tabs__item--active">
-        <a href="../architecture-fit/" class="md-tabs__link">
+      <li class="md-tabs__item">
+        <a href="../../concepts/architecture-fit/" class="md-tabs__link">
           
   
   Concepts
@@ -254,11 +252,13 @@
         
   
   
+    
+  
   
     
     
-      <li class="md-tabs__item">
-        <a href="../../extensions/" class="md-tabs__link">
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../" class="md-tabs__link">
           
   
   Extensions Catalog
@@ -640,6 +640,95 @@
       
   
   
+  
+  
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Concepts
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            Concepts
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../concepts/architecture-fit/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Architecture Fit
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../concepts/composition/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Composition & Invariants
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
     
   
   
@@ -660,24 +749,24 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" checked>
         
           
-          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
             
   
   <span class="md-ellipsis">
-    Concepts
+    Extensions Catalog
   </span>
   
 
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
-          <label class="md-nav__title" for="__nav_4">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_5">
             <span class="md-nav__icon md-icon"></span>
-            Concepts
+            Extensions Catalog
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
             
@@ -688,11 +777,200 @@
   
   
     <li class="md-nav__item">
-      <a href="../architecture-fit/" class="md-nav__link">
+      <a href="../" class="md-nav__link">
         
   
   <span class="md-ellipsis">
-    Architecture Fit
+    Overview
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../core/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Core
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../core-options/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Core Options
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../core-time/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Core Time
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../core-domain-events/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Core Domain Events
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../core-logging-abstractions/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Core Logging Abstractions
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../core-pipeline-behaviors/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Core Pipeline Behaviors
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../core-guard-clauses/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Core Guard Clauses
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../core-result-primitives/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Core Result Primitives
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../validation/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Validation
   </span>
   
 
@@ -718,286 +996,18 @@
         
       
       
-      <a href="./" class="md-nav__link md-nav__link--active">
-        
-  
-  <span class="md-ellipsis">
-    Composition & Invariants
-  </span>
-  
-
-      </a>
-      
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    
-    
-    
-      
-      
-        
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
-        
+        <label class="md-nav__link md-nav__link--active" for="__toc">
           
-          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
-            
   
   <span class="md-ellipsis">
-    Extensions Catalog
+    Caching
   </span>
   
 
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_5">
-            <span class="md-nav__icon md-icon"></span>
-            Extensions Catalog
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../extensions/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Overview
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../extensions/core/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Core
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../extensions/core-options/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Core Options
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../extensions/core-time/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Core Time
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../extensions/core-domain-events/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Core Domain Events
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../extensions/core-logging-abstractions/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Core Logging Abstractions
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../extensions/core-pipeline-behaviors/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Core Pipeline Behaviors
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../extensions/core-guard-clauses/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Core Guard Clauses
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../extensions/core-result-primitives/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Core Result Primitives
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../extensions/validation/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Validation
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../extensions/caching/" class="md-nav__link">
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   <span class="md-ellipsis">
@@ -1006,6 +1016,158 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      Overview
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#when-to-use" class="md-nav__link">
+    <span class="md-ellipsis">
+      When to use
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#prereqs-compatibility" class="md-nav__link">
+    <span class="md-ellipsis">
+      Prereqs &amp; Compatibility
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#install" class="md-nav__link">
+    <span class="md-ellipsis">
+      Install
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#usage" class="md-nav__link">
+    <span class="md-ellipsis">
+      Usage
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Usage">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#register-caching-and-pipeline-behavior" class="md-nav__link">
+    <span class="md-ellipsis">
+      Register caching and pipeline behavior
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#configure-cache-keys-and-ttls" class="md-nav__link">
+    <span class="md-ellipsis">
+      Configure cache keys and TTLs
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#choose-an-adapter" class="md-nav__link">
+    <span class="md-ellipsis">
+      Choose an adapter
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#entry-options-and-stampede-settings" class="md-nav__link">
+    <span class="md-ellipsis">
+      Entry options and stampede settings
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#result-aware-caching" class="md-nav__link">
+    <span class="md-ellipsis">
+      Result-aware caching
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#key-components" class="md-nav__link">
+    <span class="md-ellipsis">
+      Key components
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pipeline-ordering" class="md-nav__link">
+    <span class="md-ellipsis">
+      Pipeline ordering
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#invalidation-guidance" class="md-nav__link">
+    <span class="md-ellipsis">
+      Invalidation guidance
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#testing" class="md-nav__link">
+    <span class="md-ellipsis">
+      Testing
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -1018,7 +1180,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../extensions/multitenancy-core/" class="md-nav__link">
+      <a href="../multitenancy-core/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1248,6 +1410,146 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      Overview
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#when-to-use" class="md-nav__link">
+    <span class="md-ellipsis">
+      When to use
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#prereqs-compatibility" class="md-nav__link">
+    <span class="md-ellipsis">
+      Prereqs &amp; Compatibility
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#install" class="md-nav__link">
+    <span class="md-ellipsis">
+      Install
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#usage" class="md-nav__link">
+    <span class="md-ellipsis">
+      Usage
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Usage">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#register-caching-and-pipeline-behavior" class="md-nav__link">
+    <span class="md-ellipsis">
+      Register caching and pipeline behavior
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#configure-cache-keys-and-ttls" class="md-nav__link">
+    <span class="md-ellipsis">
+      Configure cache keys and TTLs
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#choose-an-adapter" class="md-nav__link">
+    <span class="md-ellipsis">
+      Choose an adapter
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#entry-options-and-stampede-settings" class="md-nav__link">
+    <span class="md-ellipsis">
+      Entry options and stampede settings
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#result-aware-caching" class="md-nav__link">
+    <span class="md-ellipsis">
+      Result-aware caching
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#key-components" class="md-nav__link">
+    <span class="md-ellipsis">
+      Key components
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pipeline-ordering" class="md-nav__link">
+    <span class="md-ellipsis">
+      Pipeline ordering
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#invalidation-guidance" class="md-nav__link">
+    <span class="md-ellipsis">
+      Invalidation guidance
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#testing" class="md-nav__link">
+    <span class="md-ellipsis">
+      Testing
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -1261,15 +1563,90 @@
                   
 
 
-<h1 id="composition-invariants">Composition &amp; Invariants<a class="headerlink" href="#composition-invariants" title="Permanent link">&para;</a></h1>
-<p>Principles for combining extensions safely.</p>
+<h1 id="extension-caching">Extension: Caching<a class="headerlink" href="#extension-caching" title="Permanent link">&para;</a></h1>
+<h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">&para;</a></h2>
+<p>Cache abstractions, key conventions, and a MediatR query caching behavior for Clean Architecture applications. Ships memory and distributed adapters, deterministic key generation, and options for stampede protection and TTL tuning without leaking infrastructure into handlers.</p>
+<h2 id="when-to-use">When to use<a class="headerlink" href="#when-to-use" title="Permanent link">&para;</a></h2>
 <ul>
-<li>Isolation: each extension should have clear dependencies and avoid implicit cross-talk.</li>
-<li>Pipelines first: prefer mediatr behaviors, filters, and decorators to hook in cross-cutting concerns.</li>
-<li>Config clarity: document required settings, defaults, and compat matrices; fail fast on invalid configs.</li>
-<li>Observability: emit structured logs/events for extension lifecycle (init, errors, important decisions).</li>
-<li>Compatibility: declare supported .NET versions and CleanArchitecture template versions per extension page.</li>
-<li>Exit strategy: provide guidance for disabling/removing an extension cleanly.</li>
+<li>You want query read-through caching without embedding cache calls in handlers.</li>
+<li>You need deterministic, namespace/tenant-aware cache keys and provider-agnostic entry options.</li>
+<li>You plan to start with in-memory caching for dev/test and swap to distributed stores (Redis via <code>IDistributedCache</code>) later.</li>
+</ul>
+<h2 id="prereqs-compatibility">Prereqs &amp; Compatibility<a class="headerlink" href="#prereqs-compatibility" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Target frameworks: <code>net10.0</code>.</li>
+<li>Dependencies: MediatR <code>14.0.0</code>, <code>Microsoft.Extensions.Caching.Abstractions</code>, <code>Microsoft.Extensions.Caching.Memory</code> (defaults); distributed adapter uses <code>IDistributedCache</code> (MemoryDistributedCache by default).</li>
+<li>Pipeline fit: register <code>QueryCachingBehavior&lt;,&gt;</code> after Authorization/Validation and before Performance to avoid skewing timing warnings.</li>
+</ul>
+<h2 id="install">Install<a class="headerlink" href="#install" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>dotnet<span class="w"> </span>add<span class="w"> </span>src/YourProject/YourProject.csproj<span class="w"> </span>package<span class="w"> </span>CleanArchitecture.Extensions.Caching
+</code></pre></div>
+<h2 id="usage">Usage<a class="headerlink" href="#usage" title="Permanent link">&para;</a></h2>
+<h3 id="register-caching-and-pipeline-behavior">Register caching and pipeline behavior<a class="headerlink" href="#register-caching-and-pipeline-behavior" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="k">using</span><span class="w"> </span><span class="nn">CleanArchitecture.Extensions.Caching</span><span class="p">;</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="k">using</span><span class="w"> </span><span class="nn">CleanArchitecture.Extensions.Caching.Options</span><span class="p">;</span>
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="k">using</span><span class="w"> </span><span class="nn">MediatR</span><span class="p">;</span>
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="n">services</span><span class="p">.</span><span class="n">AddCleanArchitectureCaching</span><span class="p">(</span><span class="n">options</span><span class="w"> </span><span class="o">=&gt;</span>
+<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="p">{</span>
+<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="w">    </span><span class="n">options</span><span class="p">.</span><span class="n">DefaultNamespace</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;MyApp&quot;</span><span class="p">;</span>
+<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="w">    </span><span class="n">options</span><span class="p">.</span><span class="n">MaxEntrySizeBytes</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">256</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">1024</span><span class="p">;</span><span class="w"> </span><span class="c1">// optional</span>
+<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="p">},</span><span class="w"> </span><span class="n">queryOptions</span><span class="w"> </span><span class="o">=&gt;</span>
+<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="p">{</span>
+<a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="w">    </span><span class="n">queryOptions</span><span class="p">.</span><span class="n">DefaultTtl</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">TimeSpan</span><span class="p">.</span><span class="n">FromMinutes</span><span class="p">(</span><span class="mi">5</span><span class="p">);</span>
+<a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a><span class="w">    </span><span class="n">queryOptions</span><span class="p">.</span><span class="n">CachePredicate</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">req</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">req</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">IQueryMarker</span><span class="p">;</span>
+<a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a><span class="p">});</span>
+<a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a>
+<a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a><span class="n">services</span><span class="p">.</span><span class="n">AddMediatR</span><span class="p">(</span><span class="n">cfg</span><span class="w"> </span><span class="o">=&gt;</span>
+<a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a><span class="p">{</span>
+<a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a><span class="w">    </span><span class="n">cfg</span><span class="p">.</span><span class="n">RegisterServicesFromAssemblyContaining</span><span class="o">&lt;</span><span class="n">Program</span><span class="o">&gt;</span><span class="p">();</span>
+<a id="__codelineno-1-18" name="__codelineno-1-18" href="#__codelineno-1-18"></a><span class="w">    </span><span class="n">cfg</span><span class="p">.</span><span class="n">AddCleanArchitectureCachingPipeline</span><span class="p">();</span><span class="w"> </span><span class="c1">// place after Validation</span>
+<a id="__codelineno-1-19" name="__codelineno-1-19" href="#__codelineno-1-19"></a><span class="p">});</span>
+</code></pre></div>
+<h3 id="configure-cache-keys-and-ttls">Configure cache keys and TTLs<a class="headerlink" href="#configure-cache-keys-and-ttls" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Keys follow <code>{namespace}:{tenant?}:{resource}:{hash}</code> via <code>ICacheKeyFactory</code> and <code>ICacheScope</code>. Override <code>ResourceNameSelector</code>/<code>HashFactory</code> in <code>QueryCachingBehaviorOptions</code> for custom resource naming or hashing (e.g., when parameters should be normalized).</li>
+<li>Default TTL comes from <code>QueryCachingBehaviorOptions.DefaultTtl</code>; override per request type with <code>TtlByRequestType[typeof(MyQuery)] = TimeSpan.FromSeconds(30);</code>.</li>
+<li><code>CachePredicate</code> controls which requests are cacheable. <code>BypassOnError</code> skips caching failed <code>Result&lt;T&gt;</code> responses.</li>
+</ul>
+<h3 id="choose-an-adapter">Choose an adapter<a class="headerlink" href="#choose-an-adapter" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Memory (default): registered as <code>ICache</code> by <code>AddCleanArchitectureCaching</code>, uses <code>MemoryCacheAdapter</code> with stampede locking and jitter.</li>
+<li>Distributed: resolve <code>DistributedCacheAdapter</code> or replace <code>ICache</code> registration:</li>
+</ul>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="n">services</span><span class="p">.</span><span class="n">AddCleanArchitectureCaching</span><span class="p">();</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="n">services</span><span class="p">.</span><span class="n">AddStackExchangeRedisCache</span><span class="p">(</span><span class="n">opts</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">opts</span><span class="p">.</span><span class="n">Configuration</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;...&quot;</span><span class="p">);</span><span class="w"> </span><span class="c1">// or other IDistributedCache</span>
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="n">services</span><span class="p">.</span><span class="n">AddSingleton</span><span class="o">&lt;</span><span class="n">ICache</span><span class="p">,</span><span class="w"> </span><span class="n">DistributedCacheAdapter</span><span class="o">&gt;</span><span class="p">();</span><span class="w"> </span><span class="c1">// override default</span>
+</code></pre></div>
+<h3 id="entry-options-and-stampede-settings">Entry options and stampede settings<a class="headerlink" href="#entry-options-and-stampede-settings" title="Permanent link">&para;</a></h3>
+<ul>
+<li><code>CachingOptions.DefaultEntryOptions</code> sets absolute/sliding expiration, priority, and size hints.</li>
+<li><code>CachingOptions.StampedePolicy</code> controls locking timeout and jitter for both adapters.</li>
+<li><code>CacheEntryOptions</code> can be passed per call or mapped by request type inside the behavior.</li>
+</ul>
+<h3 id="result-aware-caching">Result-aware caching<a class="headerlink" href="#result-aware-caching" title="Permanent link">&para;</a></h3>
+<p><code>ICache.GetOrAddResult</code>/<code>GetOrAddResultAsync</code> cache only successful results, avoiding stale failures. Queries returning <code>Result&lt;T&gt;</code> work seamlessly with the behavior when <code>BypassOnError</code> remains true.</p>
+<h2 id="key-components">Key components<a class="headerlink" href="#key-components" title="Permanent link">&para;</a></h2>
+<ul>
+<li><code>ICache</code>, <code>CacheEntryOptions</code>, <code>CacheStampedePolicy</code>, <code>CacheKey</code>, <code>ICacheKeyFactory</code>, <code>ICacheScope</code>, <code>ICacheSerializer</code>.</li>
+<li><code>MemoryCacheAdapter</code>, <code>DistributedCacheAdapter</code> (for <code>IDistributedCache</code>).</li>
+<li><code>QueryCachingBehavior&lt;TRequest,TResponse&gt;</code> with configurable TTLs, hash selection, predicate, and error bypass.</li>
+</ul>
+<h2 id="pipeline-ordering">Pipeline ordering<a class="headerlink" href="#pipeline-ordering" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Recommended: Correlation → Authorization → Validation → <strong>QueryCachingBehavior</strong> → Exceptions → Performance/Logging → Handlers.</li>
+<li>Place caching after validation to avoid caching invalid requests and before performance to exclude cache hits from handler timing warnings.</li>
+</ul>
+<h2 id="invalidation-guidance">Invalidation guidance<a class="headerlink" href="#invalidation-guidance" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Cache-aside pattern: explicit <code>ICache.Remove</code> or <code>ICache.RemoveAsync</code> on command success or domain event handlers.</li>
+<li>Include versioning and tenant segments in keys to avoid collisions; adjust namespace when making breaking DTO changes.</li>
+</ul>
+<h2 id="testing">Testing<a class="headerlink" href="#testing" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Use the default memory adapter for Application tests; distributed adapter can use <code>MemoryDistributedCache</code> for deterministic runs.</li>
+<li><code>FrozenClock</code> from Core is used internally in tests for consistent expiry calculations.
+*** End Patch എണ്ണം to=functions.apply_patch অক্টো json to=functions.apply_patch ***!</li>
 </ul>
 
 
@@ -1291,7 +1668,7 @@
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1-2.1-2M12.5 7v5.2l4 2.4-1 1L11 13V7h1.5M11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2v1.8Z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">December 2, 2025</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">December 10, 2025</span>
   </span>
 
     
