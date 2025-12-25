@@ -1,5 +1,7 @@
 # Extension: Validation
 
+> Deprecated. Use the template's FluentValidation pipeline directly.
+
 ## Overview
 
 Validation pipeline and helpers built on FluentValidation for Clean Architecture solutions. Ships a configurable MediatR behaviour, a template-shaped `ValidationException`, rule helpers, and a base validator that applies common conventions. Designed to be drop-in compatible with Jason Taylor’s template while enabling Result-based short-circuiting when desired.

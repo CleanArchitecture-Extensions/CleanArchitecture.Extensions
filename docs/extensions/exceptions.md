@@ -1,5 +1,7 @@
 # Extension: Exceptions
 
+> Deprecated. Use the template's built-in exception handling instead.
+
 ## Overview
 
 Exception catalog, base exception types, redaction helpers, and a MediatR pipeline behavior that standardize how Clean Architecture solutions translate and log failures. Exceptions resolve to stable codes and severities, can be converted into `Result`/`Result<T>` (and the template’s static `Result.Failure(IEnumerable<string>)`), and flow correlation/trace IDs into logs and error metadata.

@@ -12,7 +12,7 @@ Cache abstractions, key conventions, and a MediatR query caching behavior for Cl
 ## Prereqs & Compatibility
 
 - Target frameworks: `net10.0`.
-- Dependencies: MediatR `14.0.0`, `Microsoft.Extensions.Caching.Abstractions`, `Microsoft.Extensions.Caching.Memory` (defaults); distributed adapter uses `IDistributedCache` (MemoryDistributedCache by default).
+- Dependencies: MediatR `13.1.0`, `Microsoft.Extensions.Caching.Abstractions`, `Microsoft.Extensions.Caching.Memory` (defaults); distributed adapter uses `IDistributedCache` (MemoryDistributedCache by default).
 - Pipeline fit: register `QueryCachingBehavior<,>` after Authorization/Validation and before Performance to avoid skewing timing warnings.
 
 ## Install
@@ -52,7 +52,7 @@ services.AddMediatR(cfg =>
 
 - Keys follow `{namespace}:{tenant?}:{resource}:{hash}` via `ICacheKeyFactory` and `ICacheScope`. Override `ResourceNameSelector`/`HashFactory` in `QueryCachingBehaviorOptions` for custom resource naming or hashing (e.g., when parameters should be normalized).
 - Default TTL comes from `QueryCachingBehaviorOptions.DefaultTtl`; override per request type with `TtlByRequestType[typeof(MyQuery)] = TimeSpan.FromSeconds(30);`.
-- `CachePredicate` controls which requests are cacheable. By default it caches request types whose names end with "Query"; override to use markers or explicit type checks. `BypassOnError` skips caching failed `Result<T>` responses.
+- `CachePredicate` controls which requests are cacheable. By default it caches request types whose names end with "Query"; override to use markers or explicit type checks. `ResponseCachePredicate` can skip caching for responses you do not want stored.
 
 ### Choose an adapter
 
@@ -71,19 +71,19 @@ services.AddSingleton<ICache, DistributedCacheAdapter>(); // override default
 - `CachingOptions.StampedePolicy` controls locking timeout and jitter for both adapters.
 - `CacheEntryOptions` can be passed per call or mapped by request type inside the behavior.
 
-### Result-aware caching
+### Response-aware caching
 
-`ICache.GetOrAddResult`/`GetOrAddResultAsync` cache only successful results, avoiding stale failures. Queries returning `Result<T>` work seamlessly with the behavior when `BypassOnError` remains true.
+Use `QueryCachingBehaviorOptions.ResponseCachePredicate` to skip caching responses you want to exclude (for example, error payloads or partial results).
 
 ## Key components
 
 - `ICache`, `CacheEntryOptions`, `CacheStampedePolicy`, `CacheKey`, `ICacheKeyFactory`, `ICacheScope`, `ICacheSerializer`.
 - `MemoryCacheAdapter`, `DistributedCacheAdapter` (for `IDistributedCache`).
-- `QueryCachingBehavior<TRequest,TResponse>` with configurable TTLs, hash selection, predicate, and error bypass.
+- `QueryCachingBehavior<TRequest,TResponse>` with configurable TTLs, hash selection, predicate, and response filtering.
 
 ## Pipeline ordering
 
-- Recommended: Correlation → Authorization → Validation → **QueryCachingBehavior** → Exceptions → Performance/Logging → Handlers.
+- Recommended: Authorization → Validation → **QueryCachingBehavior** → Performance/Logging → Handlers (align with the template order you already use).
 - Place caching after validation to avoid caching invalid requests and before performance to exclude cache hits from handler timing warnings.
 
 ## Invalidation guidance
@@ -101,4 +101,3 @@ services.AddSingleton<ICache, DistributedCacheAdapter>(); // override default
 ## Testing
 
 - Use the default memory adapter for Application tests; distributed adapter can use `MemoryDistributedCache` for deterministic runs.
-- `FrozenClock` from Core is used internally in tests for consistent expiry calculations.

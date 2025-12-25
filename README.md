@@ -10,6 +10,8 @@
 
 Designed for teams who start from [Jason Taylor's Clean Architecture template](https://github.com/jasontaylordev/CleanArchitecture) and want to stay aligned with it—not fork it. CleanArchitecture.Extensions is a curated, opt-in catalog of NuGet packages that drop into the template without altering his codebase, preserving a pristine upstream while adding disciplined, layered capabilities. We aim for Jason-level craftsmanship: predictable behavior, clear docs, runnable samples, and a composable ecosystem you can trust.
 
+> Status update: CleanArchitecture.Extensions.Core, .Validation, and .Exceptions are deprecated and will not be expanded. Use the template defaults for results, guards, logging, validation, and exception handling. The active focus is Caching and Multitenancy.
+
 Quick links:
 
 - [Quickstart](https://cleanarchitecture-extensions.github.io/CleanArchitecture.Extensions/getting-started/quickstart/)
@@ -23,7 +25,7 @@ Quick links:
 1. Why this exists and how it honors Jason's template
 2. Status at a glance (shipped vs work in progress)
 3. Getting started in ten minutes
-4. Implemented packages (Core, Validation, Exceptions) with deep links
+4. Implemented packages (Caching) and deprecated packages
 5. Extended deep dives for shipped packages
 6. Full ecosystem map (summary)
 7. Documentation map
@@ -47,8 +49,9 @@ Quick links:
 
 ## Status at a glance
 
-- Implemented today (preview): `CleanArchitecture.Extensions.Core`, `CleanArchitecture.Extensions.Validation`, `CleanArchitecture.Extensions.Exceptions`
-- In design/build-out (documented as work in progress): all remaining packages listed in the roadmap below (Caching, Multitenancy family, Enterprise extensions, SaaS extensions, Infrastructure adapters, Developer Experience toolchain).
+- Active focus: `CleanArchitecture.Extensions.Caching` and the Multitenancy family (planned).
+- Deprecated packages: `CleanArchitecture.Extensions.Core`, `CleanArchitecture.Extensions.Validation`, `CleanArchitecture.Extensions.Exceptions` (legacy reference only).
+- In design/build-out: remaining packages listed in the roadmap below (Multitenancy adapters, Enterprise extensions, SaaS extensions, Infrastructure adapters, Developer Experience toolchain).
 - Target framework for shipped packages: `net10.0`
 - Packaging: SourceLink, XML docs, and snupkg symbols published with each package for debugger-friendly consumption.
 - Documentation: MkDocs-powered site published to GitHub Pages; repo contains all source markdown under `docs/`.
@@ -58,34 +61,23 @@ Quick links:
 ## Getting started in ten minutes
 
 1. Install the template from Jason Taylor if you have not already: `dotnet new install Clean.Architecture.Solution.Template`. Clone the original repo if you want to compare patterns: [CleanArchitecture template](https://github.com/jasontaylordev/CleanArchitecture).
-2. Add our Core extension to your Application project:
+2. If you need caching, add the caching package:
    ```powershell
-   dotnet add package CleanArchitecture.Extensions.Core --version 0.1.1-preview.1
+   dotnet add package CleanArchitecture.Extensions.Caching
    ```
-   Register the behaviors you want:
+   Register caching and (optionally) the pipeline behavior:
    ```csharp
-   services.AddTransient(typeof(IPipelineBehavior<,>), typeof(CorrelationBehavior<,>));
-   services.AddTransient(typeof(IPipelineBehavior<,>), typeof(LoggingBehavior<,>));
-   services.AddTransient(typeof(IPipelineBehavior<,>), typeof(PerformanceBehavior<,>));
+   services.AddCleanArchitectureCaching();
+   services.AddMediatR(cfg => cfg.AddCleanArchitectureCachingPipeline());
    ```
-3. Add Validation if you rely on FluentValidation in the pipeline:
-   ```powershell
-   dotnet add package CleanArchitecture.Extensions.Validation --version 0.1.1-preview.1
-   ```
-   Register validators and the behavior:
-   ```csharp
-   services.AddValidatorsFromAssemblyContaining<CreateOrderValidator>();
-   services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehaviour<,>));
-   ```
-4. Run the sample projects to see the behaviors in action. The samples are all under `CleanArchitecture.Extensions/samples/`; pick the scenario that matches what you need (pipeline, logging, guards, results, time, options, domain events).
-5. Read the documentation pages that match the features you turned on:
-   - [Core overview](https://cleanarchitecture-extensions.github.io/CleanArchitecture.Extensions/extensions/core/)
-   - [Result primitives](https://cleanarchitecture-extensions.github.io/CleanArchitecture.Extensions/extensions/core-result-primitives/)
-   - [Pipeline behaviors](https://cleanarchitecture-extensions.github.io/CleanArchitecture.Extensions/extensions/core-pipeline-behaviors/)
-   - [Validation](https://cleanarchitecture-extensions.github.io/CleanArchitecture.Extensions/extensions/validation/)
+3. Use the template's default Validation and exception handling (deprecated packages below are retained for legacy reference only).
+4. Run the sample projects to see the behaviors in action. The samples are all under `CleanArchitecture.Extensions/samples/`; pick the scenario that matches what you need.
+5. Read the documentation pages that match the features you turned on (start with [Caching](https://cleanarchitecture-extensions.github.io/CleanArchitecture.Extensions/extensions/caching/)).
 6. Decide what to adopt next. The roadmap is below; every package is opt-in and designed to be composable.
 
-## Implemented packages (ready to use)
+## Deprecated packages (legacy reference)
+
+These packages are deprecated and are no longer recommended for new projects. The sections below are retained for historical reference only.
 
 ### CleanArchitecture.Extensions.Core — foundation primitives
 

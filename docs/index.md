@@ -2,10 +2,12 @@
 
 Built for developers who start from [Jason Taylor's Clean Architecture template](https://github.com/jasontaylordev/CleanArchitecture) and refuse to fork it. This site is the narrative version of the long-form README: it explains what the ecosystem is, what ships today, how to install it in minutes, and what is coming next. Everything here is Markdown-first, wired to MkDocs, and backed by runnable samples so you can copy/paste with confidence.
 
+> Status update: Core, Validation, and Exceptions are deprecated. Use the template defaults for results, guards, logging, validation, and exception handling. Active focus is Caching and Multitenancy.
+
 ## What this page gives you
 
 - Understand how CleanArchitecture.Extensions stays aligned with Jason Taylor's template while adding opt-in capabilities.
-- See the current catalog (Core, Validation, Exceptions) plus the roadmap across multitenancy, enterprise, SaaS, infrastructure, and developer experience.
+- See the current catalog (Caching) plus deprecated packages and the roadmap across multitenancy, enterprise, SaaS, infrastructure, and developer experience.
 - Install the preview packages in under ten minutes with copy-ready commands and pipeline wiring.
 - Navigate docs, samples, recipes, and tests without guessing where things live.
 - Pick an adoption path that matches your project (greenfield, migration, observability-first, SaaS, compliance-ready).
@@ -26,18 +28,17 @@ Built for developers who start from [Jason Taylor's Clean Architecture template]
 dotnet new install Clean.Architecture.Solution.Template
 ```
 
-2) Add the Core extension to your Application project to get correlation, logging, performance, results, guards, domain events, and time abstractions:
+2) Add caching if you need read-through query caching:
 
 ```powershell
-dotnet add package CleanArchitecture.Extensions.Core --version 0.1.1-preview.1
+dotnet add package CleanArchitecture.Extensions.Caching
 ```
 
-Wire pipeline behaviors (ordering matches the template):
+Register caching and the optional pipeline behavior:
 
 ```csharp
-services.AddTransient(typeof(IPipelineBehavior<,>), typeof(CorrelationBehavior<,>));
-services.AddTransient(typeof(IPipelineBehavior<,>), typeof(LoggingBehavior<,>));
-services.AddTransient(typeof(IPipelineBehavior<,>), typeof(PerformanceBehavior<,>));
+services.AddCleanArchitectureCaching();
+services.AddMediatR(cfg => cfg.AddCleanArchitectureCachingPipeline());
 ```
 
 3) Add Validation if you rely on FluentValidation in the pipeline:

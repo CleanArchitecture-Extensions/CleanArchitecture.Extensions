@@ -1,5 +1,7 @@
 # Core Logging Abstractions
 
+> Deprecated. This content is retained for reference only.
+
 Logging in Clean Architecture is intentionally minimal in Jason Taylor’s template: it relies on `ILogger<T>` plus user/context services inside MediatR behaviors. The Core extension adds provider-agnostic logging and context abstractions so you can swap providers, capture correlation, and test without mocking concrete logging frameworks. This page explains the template baseline, what the Core abstractions add, how to wire them, and how to adapt them to providers like Microsoft.Extensions.Logging (MEL) or Serilog. It also shows how correlation and Results fit together so logs, errors, and responses share identifiers.
 
 ## What the template already covers

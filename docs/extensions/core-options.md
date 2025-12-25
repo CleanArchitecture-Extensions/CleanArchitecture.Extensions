@@ -1,5 +1,7 @@
 # Core Options
 
+> Deprecated. This content is retained for reference only.
+
 The Core extension exposes a single options class—`CoreExtensionsOptions`—to configure correlation, guard behavior, and performance logging. While Jason Taylor’s Clean Architecture template wires MediatR behaviors without centralized options, the Core package adds a cohesive configuration surface so you can control cross-cutting behavior from appsettings or DI. This page explains the template baseline, what options exist, how they affect guards, logging, pipeline behaviors, and how to use them in different environments (dev, test, prod).
 
 ## Template baseline

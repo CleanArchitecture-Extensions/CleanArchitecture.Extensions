@@ -20,4 +20,4 @@ Add caching with clear cache key conventions and opt-in behaviors.
 ## Pitfalls
 - Cache stampede: add locking or jitter where needed.
 - Tenant-aware caching: ensure keys include tenant context when multitenancy is enabled.
-- Do not cache failed `Result<T>` responses if they represent transient errors; leave `BypassOnError` enabled.
+- Avoid caching error or transient responses; use `ResponseCachePredicate` to skip them.

@@ -1,5 +1,7 @@
 # Core Pipeline Behaviors
 
+> Deprecated. This content is retained for reference only.
+
 The Core extension ships MediatR behaviors that drop into Jason Taylor’s Clean Architecture pipeline without breaking existing registrations. This page explains what the template already includes, why the Core behaviors add correlation- and telemetry-friendly enhancements, and how to wire, order, and use them in real projects. Examples show both the pre-processor signature (`IRequestPreProcessor<TRequest>`) and the standard `IPipelineBehavior<TRequest, TResponse>` pattern so you can stay compatible with the template’s DI setup.
 
 ## What the template already covers

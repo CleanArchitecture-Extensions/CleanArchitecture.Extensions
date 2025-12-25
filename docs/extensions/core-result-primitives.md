@@ -1,5 +1,7 @@
 # Core Result Primitives
 
+> Deprecated. This content is retained for reference only.
+
 The Core extension ships a richer `Result` model than the one inside Jason Taylor’s Clean Architecture template. This page explains what the template provides today, why the extension adds more, how to use the upgraded primitives, and how to adopt them incrementally without fighting the template’s MediatR-centric structure.
 
 ## What the template already covers

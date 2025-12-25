@@ -1,6 +1,8 @@
 # Core Domain Events
 
-Domain events in Jason Taylor’s Clean Architecture template are simple: `BaseEvent` is an empty `INotification`, `BaseEntity` holds a list of events, and an EF Core `DispatchDomainEventsInterceptor` publishes them via MediatR on `SaveChanges`. The Core extension adds richer metadata, a tracker, and an abstraction for dispatch so you can route events beyond EF, attach correlation IDs, and test event flows without EF or MediatR plumbing. This guide explains the template baseline, what Core adds, how to wire it, and real-world patterns for handlers, integration, and testing.
+> Deprecated. This content is retained for reference only.
+
+Domain events in Jason Taylor's Clean Architecture template are simple: `BaseEvent` is an empty `INotification`, `BaseEntity` holds a list of events, and an EF Core `DispatchDomainEventsInterceptor` publishes them via MediatR on `SaveChanges`. The Core extension adds richer metadata, a tracker, and an abstraction for dispatch so you can route events beyond EF, attach correlation IDs, and test event flows without EF or MediatR plumbing. The EF Core interceptor now ships in `CleanArchitecture.Extensions.Core.EFCore` so Domain can consume Core without pulling EF packages. This guide explains the template baseline, what Core adds, how to wire it, and real-world patterns for handlers, integration, and testing.
 
 ## What the template already covers
 - **Types:** `BaseEvent : INotification` (no properties) and `BaseEntity` keeps `List<BaseEvent> DomainEvents`.
@@ -21,6 +23,7 @@ Namespace: `CleanArchitecture.Extensions.Core.DomainEvents`
 - `abstract record DomainEvent(string? correlationId = null)` : `Guid Id`, `DateTimeOffset OccurredOnUtc`, `string? CorrelationId`.
 - `DomainEventTracker` : `Add(DomainEvent)`, `HasEvents`, `Drain()`, `Clear()`, `Events` (read-only snapshot).
 - `IDomainEventDispatcher` : `DispatchAsync(DomainEvent, CancellationToken)`, `DispatchAsync(IEnumerable<DomainEvent>, CancellationToken)`.
+- EF Core adapter: `DispatchDomainEventsInterceptor` (in `CleanArchitecture.Extensions.Core.EFCore`).
 
 ## Why use the Core approach
 - **Correlation:** Attach `CorrelationId` from `ILogContext` or incoming HTTP headers so downstream handlers/logs share the same ID.
@@ -29,9 +32,11 @@ Namespace: `CleanArchitecture.Extensions.Core.DomainEvents`
 - **Consistency:** Aligns with Core logging and Result primitives—errors and events can share the same correlation token for observability.
 
 ## Wiring in DI (typical setups)
+Install `CleanArchitecture.Extensions.Core.EFCore` when you need the EF Core interceptor.
 MediatR in-process dispatch + EF interceptor:
 ```csharp
 builder.Services.AddCleanArchitectureCore(); // registers DomainEventTracker + MediatRDomainEventDispatcher
+builder.Services.AddCleanArchitectureCoreEfCore(); // registers EF Core interceptor
 
 builder.Services.AddDbContext<ApplicationDbContext>((sp, options) =>
 {
@@ -44,7 +49,7 @@ builder.Services.AddMediatR(cfg =>
     // pipeline behaviors go here
 });
 ```
-- `DispatchDomainEventsInterceptor` (shipped in Core) drains `IHasDomainEvents` aggregates from the EF change tracker, correlates events via `ILogContext`/`CoreExtensionsOptions`, and publishes through `IDomainEventDispatcher`.
+- `DispatchDomainEventsInterceptor` (shipped in `CleanArchitecture.Extensions.Core.EFCore`) drains `IHasDomainEvents` aggregates from the EF change tracker, correlates events via `ILogContext`/`CoreExtensionsOptions`, and publishes through `IDomainEventDispatcher`.
 - If you use an outbox or bus, replace `IDomainEventDispatcher` with your implementation; the interceptor still gathers and correlates events before dispatch.
 
 ## Sample-backed walkthrough (domain events sample)

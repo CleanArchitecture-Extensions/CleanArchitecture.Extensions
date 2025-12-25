@@ -1,5 +1,7 @@
 # CleanArchitecture.Extensions.Core
 
+> Deprecated. Use the template primitives (Result, Ardalis GuardClauses, ILogger, TimeProvider) instead.
+
 Core primitives for Clean Architecture apps built on MediatR.
 
 - Pipeline behaviors for logging, performance timing, and correlation IDs.
