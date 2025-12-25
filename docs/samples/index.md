@@ -1,12 +1,7 @@
 # Samples
 
-Runnable samples to demonstrate extensions in real projects.
+There are no runnable samples in the repo right now.
 
-- Located under samples/ in the repo.
-- Each sample should include setup instructions and expected output.
-- Use scripts to reset/run samples for consistent results.
-
-## Planned samples
-- Minimal API with one extension enabled.
-- Multitenant API with tenant resolution strategies.
-- Observability-enabled API (metrics/tracing/logging) once adapters are added.
+Planned samples:
+- Caching query behavior with invalidation on command success.
+- Multitenancy core resolution (header/route) with enforcement.
