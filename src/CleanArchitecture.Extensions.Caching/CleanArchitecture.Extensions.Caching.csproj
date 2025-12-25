@@ -9,7 +9,7 @@
   <PropertyGroup>
     <PackageId>CleanArchitecture.Extensions.Caching</PackageId>
     <Description>Caching abstractions, adapters, and MediatR behaviors for Clean Architecture applications.</Description>
-    <PackageTags>clean-architecture;mediatr;caching;memory;distributed;pipeline;result</PackageTags>
+    <PackageTags>clean-architecture;mediatr;caching;memory;distributed;pipeline</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>
@@ -18,10 +18,6 @@
     <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="10.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging" Version="10.0.0" />
     <PackageReference Include="Microsoft.Extensions.Options" Version="10.0.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\\CleanArchitecture.Extensions.Core\\CleanArchitecture.Extensions.Core.csproj" />
   </ItemGroup>
 
   <ItemGroup>

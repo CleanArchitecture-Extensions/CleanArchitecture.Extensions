@@ -4,8 +4,6 @@ using CleanArchitecture.Extensions.Caching.Adapters;
 using CleanArchitecture.Extensions.Caching.Keys;
 using CleanArchitecture.Extensions.Caching.Options;
 using CleanArchitecture.Extensions.Caching.Serialization;
-using CleanArchitecture.Extensions.Core.Results;
-using CleanArchitecture.Extensions.Core.Time;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -24,7 +22,6 @@ public class MemoryCacheAdapterTests
             options.DefaultNamespace = "Tests";
             configure?.Invoke(options);
         });
-        services.AddSingleton<IClock>(_ => new FrozenClock(new DateTimeOffset(2024, 1, 1, 0, 0, 0, TimeSpan.Zero)));
         configureServices?.Invoke(services);
         return services.BuildServiceProvider();
     }
@@ -69,30 +66,6 @@ public class MemoryCacheAdapterTests
         Assert.Equal("computed", first);
         Assert.Equal("computed", second);
         Assert.Equal(1, callCount);
-    }
-
-    [Fact]
-    public async Task GetOrAddResult_caches_only_successful_results()
-    {
-        using var provider = BuildProvider();
-        var cache = provider.GetRequiredService<ICache>();
-        var keyFactory = provider.GetRequiredService<ICacheKeyFactory>();
-        var successKey = keyFactory.Create("Resource", keyFactory.CreateHash(new { id = 3 }));
-        var failureKey = keyFactory.Create("Resource", keyFactory.CreateHash(new { id = 4 }));
-
-        var successResult = cache.GetOrAddResult<string>(successKey, () => Result.Success<string>("ok"));
-        var failureResult = cache.GetOrAddResult<string>(failureKey, () => Result.Failure<string>(new Error("error", "error")));
-
-        var successCached = cache.GetOrAddResult<string>(successKey, () => throw new InvalidOperationException("should not run"));
-        var failureCached = cache.GetOrAddResult<string>(failureKey, () => Result.Failure<string>(new Error("another", "another")));
-
-        Assert.True(successResult.IsSuccess);
-        Assert.True(successCached.IsSuccess);
-        Assert.Equal("ok", successCached.Value);
-
-        Assert.True(failureResult.IsFailure);
-        Assert.True(failureCached.IsFailure);
-        Assert.Equal("another", failureCached.Errors.Single().Code);
     }
 
     [Fact]

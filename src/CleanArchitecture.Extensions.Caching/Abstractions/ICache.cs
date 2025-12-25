@@ -1,6 +1,5 @@
 using CleanArchitecture.Extensions.Caching.Keys;
 using CleanArchitecture.Extensions.Caching.Options;
-using CleanArchitecture.Extensions.Core.Results;
 
 namespace CleanArchitecture.Extensions.Caching.Abstractions;
 
@@ -38,16 +37,6 @@ public interface ICache
     /// Returns a cached item if present; otherwise computes and stores a value asynchronously.
     /// </summary>
     Task<T?> GetOrAddAsync<T>(CacheKey key, Func<CancellationToken, Task<T>> factory, CacheEntryOptions? options = null, CacheStampedePolicy? stampedePolicy = null, CancellationToken cancellationToken = default);
-
-    /// <summary>
-    /// Returns a cached <see cref="Result{T}"/> if present; otherwise computes and stores the result.
-    /// </summary>
-    Result<T> GetOrAddResult<T>(CacheKey key, Func<Result<T>> factory, CacheEntryOptions? options = null, CacheStampedePolicy? stampedePolicy = null);
-
-    /// <summary>
-    /// Returns a cached <see cref="Result{T}"/> if present; otherwise computes and stores the result asynchronously.
-    /// </summary>
-    Task<Result<T>> GetOrAddResultAsync<T>(CacheKey key, Func<CancellationToken, Task<Result<T>>> factory, CacheEntryOptions? options = null, CacheStampedePolicy? stampedePolicy = null, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Removes a cached item if present.

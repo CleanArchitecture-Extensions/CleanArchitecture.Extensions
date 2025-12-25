@@ -3,8 +3,6 @@ using CleanArchitecture.Extensions.Caching.Adapters;
 using CleanArchitecture.Extensions.Caching.Keys;
 using CleanArchitecture.Extensions.Caching.Options;
 using CleanArchitecture.Extensions.Caching.Serialization;
-using CleanArchitecture.Extensions.Core.Results;
-using CleanArchitecture.Extensions.Core.Time;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -20,12 +18,11 @@ public class DistributedCacheAdapterTests
         var serializer = new SystemTextJsonCacheSerializer();
         var distributed = new MemoryDistributedCache(MOptions.Create(new MemoryDistributedCacheOptions()));
         var cachingOptions = options ?? CachingOptions.Default;
-        var clock = new FrozenClock(new DateTimeOffset(2024, 1, 1, 0, 0, 0, TimeSpan.Zero));
         return new DistributedCacheAdapter(
             distributed,
             serializer,
             MOptions.Create(cachingOptions),
-            clock,
+            TimeProvider.System,
             NullLogger<DistributedCacheAdapter>.Instance);
     }
 
@@ -64,46 +61,6 @@ public class DistributedCacheAdapterTests
         Assert.Equal("computed", first);
         Assert.Equal("computed", second);
         Assert.Equal(1, callCount);
-    }
-
-    [Fact]
-    public void GetOrAddResult_caches_success_only()
-    {
-        var adapter = CreateAdapter();
-        var successKey = new CacheKey("ns", "Resource", "success");
-        var failureKey = new CacheKey("ns", "Resource", "fail");
-        var successCalled = 0;
-        var failureCalled = 0;
-
-        var success = adapter.GetOrAddResult<string>(successKey, () =>
-        {
-            successCalled++;
-            return Result.Success<string>("ok");
-        });
-        var failure = adapter.GetOrAddResult<string>(failureKey, () =>
-        {
-            failureCalled++;
-            return Result.Failure<string>(new Error("err", "failed"));
-        });
-
-        var successCached = adapter.GetOrAddResult<string>(successKey, () =>
-        {
-            successCalled++;
-            return Result.Success<string>("should-not-run");
-        });
-        var failureCached = adapter.GetOrAddResult<string>(failureKey, () =>
-        {
-            failureCalled++;
-            return Result.Failure<string>(new Error("err2", "failed again"));
-        });
-
-        Assert.True(success.IsSuccess);
-        Assert.Equal("ok", successCached.Value);
-        Assert.True(failure.IsFailure);
-        Assert.True(failureCached.IsFailure);
-        Assert.Equal("err2", failureCached.Errors.Single().Code);
-        Assert.Equal(1, successCalled);
-        Assert.Equal(2, failureCalled);
     }
 
     [Fact]
