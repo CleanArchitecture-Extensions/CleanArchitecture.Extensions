@@ -10,11 +10,13 @@
     <PackageId>CleanArchitecture.Extensions.Core</PackageId>
     <Description>Core primitives for Clean Architecture: Results, guards, pipeline behaviors, logging abstractions, domain events, and clocks.</Description>
     <PackageTags>clean-architecture;mediatr;pipeline;result;guards;logging;domain-events;clock</PackageTags>
+    <PackageDeprecated>true</PackageDeprecated>
+    <PackageDeprecationReason>Legacy</PackageDeprecationReason>
+    <PackageDeprecationMessage>Deprecated. Use Jason Taylor's template primitives (Result, Ardalis GuardClauses, ILogger, TimeProvider, built-in behaviors) instead.</PackageDeprecationMessage>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="MediatR" Version="13.1.0" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="10.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging" Version="10.0.0" />
     <PackageReference Include="Microsoft.Extensions.Options" Version="10.0.0" />
   </ItemGroup>
