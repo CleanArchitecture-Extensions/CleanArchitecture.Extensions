@@ -3,8 +3,6 @@ using CleanArchitecture.Extensions.Caching.Behaviors;
 using CleanArchitecture.Extensions.Caching.Keys;
 using CleanArchitecture.Extensions.Caching.Options;
 using CleanArchitecture.Extensions.Caching.Serialization;
-using CleanArchitecture.Extensions.Core.Results;
-using CleanArchitecture.Extensions.Core.Time;
 using MediatR;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -37,11 +35,10 @@ public class QueryCachingBehaviorTests
     {
         var serializer = new SystemTextJsonCacheSerializer();
         var memoryCache = new MemoryCache(new MemoryCacheOptions());
-        var clock = new FrozenClock(new DateTimeOffset(2024, 1, 1, 0, 0, 0, TimeSpan.Zero));
         return new Adapters.MemoryCacheAdapter(
             memoryCache,
             serializer,
-            clock,
+            TimeProvider.System,
             MOptions.Create(options ?? CachingOptions.Default),
             NullLogger<Adapters.MemoryCacheAdapter>.Instance);
     }
@@ -101,16 +98,20 @@ public class QueryCachingBehaviorTests
     }
 
     [Fact]
-    public async Task Does_not_cache_failed_results_when_bypass_on_error_enabled()
+    public async Task Respects_response_cache_predicate()
     {
         var cache = CreateCache();
-        var behavior = CreateBehavior<TestResultQuery, Result<string>>(cache);
+        var behaviorOptions = new QueryCachingBehaviorOptions
+        {
+            ResponseCachePredicate = (_, response) => response is not "skip"
+        };
+        var behavior = CreateBehavior<TestQuery, string>(cache, behaviorOptions);
         var callCount = 0;
-        var request = new TestResultQuery(3);
-        RequestHandlerDelegate<Result<string>> failingNext = _ =>
+        var request = new TestQuery(3);
+        RequestHandlerDelegate<string> failingNext = _ =>
         {
             callCount++;
-            return Task.FromResult(Result.Failure<string>(new Error("error", "fail")));
+            return Task.FromResult("skip");
         };
 
         await behavior.Handle(request, failingNext, CancellationToken.None);
@@ -118,7 +119,7 @@ public class QueryCachingBehaviorTests
         await behavior.Handle(request, _ =>
         {
             callCount++;
-            return Task.FromResult(Result.Failure<string>(new Error("error", "fail again")));
+            return Task.FromResult("skip");
         }, CancellationToken.None);
 
         Assert.Equal(2, callCount);
@@ -168,8 +169,6 @@ public class QueryCachingBehaviorTests
     }
 
     private sealed record TestQuery(int Id) : IRequest<string>;
-
-    private sealed record TestResultQuery(int Id) : IRequest<Result<string>>;
 
     private sealed record TestCommand(int Id) : IRequest<string>;
 }

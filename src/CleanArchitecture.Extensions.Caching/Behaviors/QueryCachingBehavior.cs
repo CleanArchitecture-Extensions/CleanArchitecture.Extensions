@@ -1,7 +1,6 @@
 using CleanArchitecture.Extensions.Caching.Abstractions;
 using CleanArchitecture.Extensions.Caching.Keys;
 using CleanArchitecture.Extensions.Caching.Options;
-using CleanArchitecture.Extensions.Core.Results;
 using MediatR;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -61,7 +60,7 @@ public sealed class QueryCachingBehavior<TRequest, TResponse> : IPipelineBehavio
         _logger.LogDebug("Cache miss for {Request} ({Key})", typeof(TRequest).Name, key.FullKey);
         var response = await next().ConfigureAwait(false);
 
-        if (!ShouldStore(response))
+        if (!ShouldStore(request, response))
         {
             return response;
         }
@@ -111,18 +110,6 @@ public sealed class QueryCachingBehavior<TRequest, TResponse> : IPipelineBehavio
         };
     }
 
-    private bool ShouldStore(TResponse response)
-    {
-        if (!_behaviorOptions.CacheNullValues && response is null)
-        {
-            return false;
-        }
-
-        if (_behaviorOptions.BypassOnError && response is Result result && result.IsFailure)
-        {
-            return false;
-        }
-
-        return true;
-    }
+    private bool ShouldStore(TRequest request, TResponse response) =>
+        _behaviorOptions.ShouldCacheResponse(request, response);
 }

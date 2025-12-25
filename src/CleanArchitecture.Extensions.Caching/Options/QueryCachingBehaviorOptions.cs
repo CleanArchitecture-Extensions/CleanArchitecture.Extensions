@@ -34,14 +34,24 @@ public sealed class QueryCachingBehaviorOptions
     public Dictionary<Type, TimeSpan> TtlByRequestType { get; set; } = new();
 
     /// <summary>
-    /// Gets or sets a value indicating whether failed results should bypass caching.
-    /// </summary>
-    public bool BypassOnError { get; set; } = true;
-
-    /// <summary>
     /// Gets or sets a value indicating whether null responses are cached.
     /// </summary>
     public bool CacheNullValues { get; set; } = true;
 
+    /// <summary>
+    /// Gets or sets an optional predicate to decide whether a response should be cached.
+    /// </summary>
+    public Func<object, object?, bool>? ResponseCachePredicate { get; set; }
+
     internal bool ShouldCache(object request) => CachePredicate?.Invoke(request) ?? false;
+
+    internal bool ShouldCacheResponse(object request, object? response)
+    {
+        if (!CacheNullValues && response is null)
+        {
+            return false;
+        }
+
+        return ResponseCachePredicate?.Invoke(request, response) ?? true;
+    }
 }

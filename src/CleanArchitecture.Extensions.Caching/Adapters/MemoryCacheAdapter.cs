@@ -3,8 +3,6 @@ using CleanArchitecture.Extensions.Caching.Abstractions;
 using CleanArchitecture.Extensions.Caching.Keys;
 using CleanArchitecture.Extensions.Caching.Options;
 using CleanArchitecture.Extensions.Caching.Serialization;
-using CleanArchitecture.Extensions.Core.Results;
-using CleanArchitecture.Extensions.Core.Time;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -19,7 +17,7 @@ public sealed class MemoryCacheAdapter : ICache
     private readonly IMemoryCache _memoryCache;
     private readonly ICacheSerializer _serializer;
     private readonly ILogger<MemoryCacheAdapter> _logger;
-    private readonly IClock _clock;
+    private readonly TimeProvider _timeProvider;
     private readonly CachingOptions _options;
     private readonly ConcurrentDictionary<string, SemaphoreSlim> _locks = new();
 
@@ -28,19 +26,19 @@ public sealed class MemoryCacheAdapter : ICache
     /// </summary>
     /// <param name="memoryCache">Memory cache instance.</param>
     /// <param name="serializer">Serializer used to persist values.</param>
-    /// <param name="clock">Clock used for timestamps.</param>
+    /// <param name="timeProvider">Time provider used for timestamps.</param>
     /// <param name="options">Caching options.</param>
     /// <param name="logger">Logger.</param>
     public MemoryCacheAdapter(
         IMemoryCache memoryCache,
         ICacheSerializer serializer,
-        IClock clock,
+        TimeProvider timeProvider,
         IOptions<CachingOptions> options,
         ILogger<MemoryCacheAdapter> logger)
     {
         _memoryCache = memoryCache ?? throw new ArgumentNullException(nameof(memoryCache));
         _serializer = serializer ?? throw new ArgumentNullException(nameof(serializer));
-        _clock = clock ?? throw new ArgumentNullException(nameof(clock));
+        _timeProvider = timeProvider ?? throw new ArgumentNullException(nameof(timeProvider));
         _options = options?.Value ?? throw new ArgumentNullException(nameof(options));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
@@ -87,7 +85,7 @@ public sealed class MemoryCacheAdapter : ICache
         }
 
         var memoryOptions = ToMemoryOptions(entryOptions);
-        var createdAt = _clock.UtcNow;
+        var createdAt = _timeProvider.GetUtcNow();
         var expiresAt = ResolveExpiresAt(createdAt, memoryOptions);
         var stored = new StoredCacheEntry(payload, _serializer.ContentType, createdAt, expiresAt, entryOptions, value);
 
@@ -205,123 +203,6 @@ public sealed class MemoryCacheAdapter : ICache
             await SetAsync(key, value, options, cancellationToken).ConfigureAwait(false);
             return value;
         }
-    }
-
-    /// <inheritdoc />
-    public Result<T> GetOrAddResult<T>(CacheKey key, Func<Result<T>> factory, CacheEntryOptions? options = null, CacheStampedePolicy? stampedePolicy = null)
-    {
-        ArgumentNullException.ThrowIfNull(factory);
-
-        var cached = Get<Result<T>>(key);
-        if (cached?.Value is not null)
-        {
-            return cached.Value;
-        }
-
-        if (!_options.Enabled)
-        {
-            return factory();
-        }
-
-        var policy = stampedePolicy ?? _options.StampedePolicy ?? CacheStampedePolicy.Default;
-
-        if (policy.EnableLocking)
-        {
-            var gate = GetLock(key.FullKey);
-            if (!gate.Wait(policy.LockTimeout))
-            {
-                _logger.LogWarning("Failed to acquire cache lock for {Key} within {Timeout}ms; bypassing cache.", key.FullKey, policy.LockTimeout.TotalMilliseconds);
-                return factory();
-            }
-
-            try
-            {
-                cached = Get<Result<T>>(key);
-                if (cached?.Value is not null)
-                {
-                    return cached.Value;
-                }
-
-                var result = factory();
-                if (result.IsSuccess)
-                {
-                    Set(key, result, options);
-                }
-
-                return result;
-            }
-            finally
-            {
-                gate.Release();
-            }
-        }
-
-        var value = factory();
-        if (value.IsSuccess)
-        {
-            Set(key, value, options);
-        }
-
-        return value;
-    }
-
-    /// <inheritdoc />
-    public async Task<Result<T>> GetOrAddResultAsync<T>(CacheKey key, Func<CancellationToken, Task<Result<T>>> factory, CacheEntryOptions? options = null, CacheStampedePolicy? stampedePolicy = null, CancellationToken cancellationToken = default)
-    {
-        ArgumentNullException.ThrowIfNull(factory);
-        cancellationToken.ThrowIfCancellationRequested();
-
-        var cached = await GetAsync<Result<T>>(key, cancellationToken).ConfigureAwait(false);
-        if (cached?.Value is not null)
-        {
-            return cached.Value;
-        }
-
-        if (!_options.Enabled)
-        {
-            return await factory(cancellationToken).ConfigureAwait(false);
-        }
-
-        var policy = stampedePolicy ?? _options.StampedePolicy ?? CacheStampedePolicy.Default;
-
-        if (policy.EnableLocking)
-        {
-            var gate = GetLock(key.FullKey);
-            if (!await gate.WaitAsync(policy.LockTimeout, cancellationToken).ConfigureAwait(false))
-            {
-                _logger.LogWarning("Failed to acquire cache lock for {Key} within {Timeout}ms; bypassing cache.", key.FullKey, policy.LockTimeout.TotalMilliseconds);
-                return await factory(cancellationToken).ConfigureAwait(false);
-            }
-
-            try
-            {
-                cached = await GetAsync<Result<T>>(key, cancellationToken).ConfigureAwait(false);
-                if (cached?.Value is not null)
-                {
-                    return cached.Value;
-                }
-
-                var result = await factory(cancellationToken).ConfigureAwait(false);
-                if (result.IsSuccess)
-                {
-                    await SetAsync(key, result, options, cancellationToken).ConfigureAwait(false);
-                }
-
-                return result;
-            }
-            finally
-            {
-                gate.Release();
-            }
-        }
-
-        var value = await factory(cancellationToken).ConfigureAwait(false);
-        if (value.IsSuccess)
-        {
-            await SetAsync(key, value, options, cancellationToken).ConfigureAwait(false);
-        }
-
-        return value;
     }
 
     /// <inheritdoc />

@@ -3,9 +3,7 @@ using CleanArchitecture.Extensions.Caching.Adapters;
 using CleanArchitecture.Extensions.Caching.Keys;
 using CleanArchitecture.Extensions.Caching.Options;
 using CleanArchitecture.Extensions.Caching.Serialization;
-using CleanArchitecture.Extensions.Core.Time;
 using MediatR;
-using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -44,7 +42,7 @@ public static class DependencyInjectionExtensions
 
         services.AddMemoryCache();
         services.AddDistributedMemoryCache();
-        services.TryAddSingleton<IClock, SystemClock>();
+        services.TryAddSingleton<TimeProvider>(TimeProvider.System);
         services.TryAddSingleton<ICacheSerializer, SystemTextJsonCacheSerializer>();
         services.TryAddSingleton<ICacheKeyFactory, DefaultCacheKeyFactory>();
         // TODO: Bridge tenant context (ICurrentTenant) into DefaultCacheScope when multitenancy extension is available.

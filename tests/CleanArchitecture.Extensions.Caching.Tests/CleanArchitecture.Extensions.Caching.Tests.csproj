@@ -34,7 +34,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\\..\\src\\CleanArchitecture.Extensions.Caching\\CleanArchitecture.Extensions.Caching.csproj" />
-    <ProjectReference Include="..\\..\\src\\CleanArchitecture.Extensions.Core\\CleanArchitecture.Extensions.Core.csproj" />
   </ItemGroup>
 
 </Project>

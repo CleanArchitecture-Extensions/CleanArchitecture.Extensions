@@ -3,8 +3,6 @@ using CleanArchitecture.Extensions.Caching.Abstractions;
 using CleanArchitecture.Extensions.Caching.Keys;
 using CleanArchitecture.Extensions.Caching.Options;
 using CleanArchitecture.Extensions.Caching.Serialization;
-using CleanArchitecture.Extensions.Core.Results;
-using CleanArchitecture.Extensions.Core.Time;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -19,7 +17,7 @@ public sealed class DistributedCacheAdapter : ICache
     private readonly IDistributedCache _distributedCache;
     private readonly ICacheSerializer _serializer;
     private readonly ILogger<DistributedCacheAdapter> _logger;
-    private readonly IClock _clock;
+    private readonly TimeProvider _timeProvider;
     private readonly CachingOptions _options;
     private readonly ConcurrentDictionary<string, SemaphoreSlim> _locks = new();
 
@@ -29,19 +27,19 @@ public sealed class DistributedCacheAdapter : ICache
     /// <param name="distributedCache">Distributed cache instance.</param>
     /// <param name="serializer">Serializer for payloads.</param>
     /// <param name="options">Caching options.</param>
-    /// <param name="clock">Clock used for timestamps.</param>
+    /// <param name="timeProvider">Time provider used for timestamps.</param>
     /// <param name="logger">Logger.</param>
     public DistributedCacheAdapter(
         IDistributedCache distributedCache,
         ICacheSerializer serializer,
         IOptions<CachingOptions> options,
-        IClock clock,
+        TimeProvider timeProvider,
         ILogger<DistributedCacheAdapter> logger)
     {
         _distributedCache = distributedCache ?? throw new ArgumentNullException(nameof(distributedCache));
         _serializer = serializer ?? throw new ArgumentNullException(nameof(serializer));
         _options = options?.Value ?? throw new ArgumentNullException(nameof(options));
-        _clock = clock ?? throw new ArgumentNullException(nameof(clock));
+        _timeProvider = timeProvider ?? throw new ArgumentNullException(nameof(timeProvider));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
@@ -239,137 +237,6 @@ public sealed class DistributedCacheAdapter : ICache
     }
 
     /// <inheritdoc />
-    public Result<T> GetOrAddResult<T>(CacheKey key, Func<Result<T>> factory, CacheEntryOptions? options = null, CacheStampedePolicy? stampedePolicy = null)
-    {
-        ArgumentNullException.ThrowIfNull(factory);
-
-        var cachedResult = Get<Result<T>>(key);
-        if (cachedResult?.Value is not null)
-        {
-            return cachedResult.Value;
-        }
-
-        if (!_options.Enabled)
-        {
-            return factory();
-        }
-
-        var policy = stampedePolicy ?? _options.StampedePolicy ?? CacheStampedePolicy.Default;
-
-        if (policy.EnableLocking)
-        {
-            var gate = GetLock(key.FullKey);
-            if (!gate.Wait(policy.LockTimeout))
-            {
-                _logger.LogWarning("Failed to acquire distributed cache lock for {Key} within {Timeout}ms; bypassing cache.", key.FullKey, policy.LockTimeout.TotalMilliseconds);
-                return factory();
-            }
-
-            try
-            {
-                cachedResult = Get<Result<T>>(key);
-                if (cachedResult?.Value is not null)
-                {
-                    return cachedResult.Value;
-                }
-
-                var cachedValue = Get<T>(key);
-                if (cachedValue is not null)
-                {
-                    return Result.Success(cachedValue.Value!);
-                }
-
-                var result = factory();
-
-                if (result.IsSuccess)
-                {
-                    Set(key, result.Value, options);
-                }
-
-                return result;
-            }
-            finally
-            {
-                gate.Release();
-            }
-        }
-
-        var uncached = factory();
-        if (uncached.IsSuccess)
-        {
-            Set(key, uncached.Value, options);
-        }
-
-        return uncached;
-    }
-
-    /// <inheritdoc />
-    public async Task<Result<T>> GetOrAddResultAsync<T>(CacheKey key, Func<CancellationToken, Task<Result<T>>> factory, CacheEntryOptions? options = null, CacheStampedePolicy? stampedePolicy = null, CancellationToken cancellationToken = default)
-    {
-        ArgumentNullException.ThrowIfNull(factory);
-        cancellationToken.ThrowIfCancellationRequested();
-
-        var cachedResult = await GetAsync<Result<T>>(key, cancellationToken).ConfigureAwait(false);
-        if (cachedResult?.Value is not null)
-        {
-            return cachedResult.Value;
-        }
-
-        if (!_options.Enabled)
-        {
-            return await factory(cancellationToken).ConfigureAwait(false);
-        }
-
-        var policy = stampedePolicy ?? _options.StampedePolicy ?? CacheStampedePolicy.Default;
-
-        if (policy.EnableLocking)
-        {
-            var gate = GetLock(key.FullKey);
-            if (!await gate.WaitAsync(policy.LockTimeout, cancellationToken).ConfigureAwait(false))
-            {
-                _logger.LogWarning("Failed to acquire distributed cache lock for {Key} within {Timeout}ms; bypassing cache.", key.FullKey, policy.LockTimeout.TotalMilliseconds);
-                return await factory(cancellationToken).ConfigureAwait(false);
-            }
-
-            try
-            {
-                cachedResult = await GetAsync<Result<T>>(key, cancellationToken).ConfigureAwait(false);
-                if (cachedResult?.Value is not null)
-                {
-                    return cachedResult.Value;
-                }
-
-                var cachedValue = await GetAsync<T>(key, cancellationToken).ConfigureAwait(false);
-                if (cachedValue is not null)
-                {
-                    return Result.Success(cachedValue.Value!);
-                }
-
-                var result = await factory(cancellationToken).ConfigureAwait(false);
-
-                if (result.IsSuccess)
-                {
-                    await SetAsync(key, result.Value, options, cancellationToken).ConfigureAwait(false);
-                }
-
-                return result;
-            }
-            finally
-            {
-                gate.Release();
-            }
-        }
-
-        var uncached = await factory(cancellationToken).ConfigureAwait(false);
-        if (uncached.IsSuccess)
-        {
-            await SetAsync(key, uncached.Value, options, cancellationToken).ConfigureAwait(false);
-        }
-
-        return uncached;
-    }
-
-    /// <inheritdoc />
     public void Remove(CacheKey key) => _distributedCache.Remove(key.FullKey);
 
     /// <inheritdoc />
@@ -392,7 +259,7 @@ public sealed class DistributedCacheAdapter : ICache
 
     private DistributedStoredEntry<T> CreateEnvelope<T>(T value, CacheEntryOptions options)
     {
-        var createdAt = _clock.UtcNow;
+        var createdAt = _timeProvider.GetUtcNow();
         DateTimeOffset? expiresAt = null;
         if (options.AbsoluteExpiration.HasValue)
         {

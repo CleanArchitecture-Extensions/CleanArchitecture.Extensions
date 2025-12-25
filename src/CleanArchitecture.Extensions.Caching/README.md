@@ -38,7 +38,7 @@ services.AddSingleton<ICache, DistributedCacheAdapter>();
 
 ### Notes
 - Keys follow `{namespace}:{tenant?}:{resource}:{hash}`; override `ResourceNameSelector`/`HashFactory` to control the resource or hash inputs.
-- `QueryCachingBehaviorOptions` lets you set TTL per request type, cache predicate, and bypass-on-error for `Result<T>` responses.
+- `QueryCachingBehaviorOptions` lets you set TTL per request type, cache predicate, and an optional response predicate to skip caching.
 - Default adapters: memory (`ICache`) and a distributed adapter (`DistributedCacheAdapter`) for any `IDistributedCache` implementation.
 
 ## Target frameworks
