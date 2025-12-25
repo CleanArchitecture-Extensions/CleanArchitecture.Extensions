@@ -1,5 +1,7 @@
 # Core Guard Clauses
 
+> Deprecated. This content is retained for reference only.
+
 Guard clauses in the Core extension give you a consistent, testable way to enforce invariants without scattering `if/throw` statements across handlers and entities. They pair with the extension’s `Result` primitives so you can choose return-based validation (preferred for application flows) or exception-based validation (when you rely on middleware). This page explains how the Clean Architecture template handles validation today, why the extension adds more flexible guards, and how to integrate them with pipelines, Results, and domain logic.
 
 ## What the template already covers

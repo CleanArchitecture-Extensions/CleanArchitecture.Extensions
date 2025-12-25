@@ -1,5 +1,7 @@
 # CleanArchitecture.Extensions.Exceptions
 
+> Deprecated. Use the template's built-in exception handling and Web problem details mapping.
+
 Exception catalog and MediatR pipeline behavior that standardize how Clean Architecture applications translate, log, and classify failures.
 
 - Base exception types with stable codes (`NotFoundException`, `ConflictException`, `ForbiddenAccessException`, `UnauthorizedException`, `ConcurrencyException`, `TransientException`, `DomainException`).

@@ -1,5 +1,7 @@
 # CleanArchitecture.Extensions.Validation
 
+> Deprecated. Use the template's FluentValidation pipeline directly.
+
 FluentValidation-powered MediatR pipeline aligned with CleanArchitecture.Extensions.Core results.
 
 - Executes validators in the MediatR pipeline and surfaces failures as exceptions or `Result` responses.

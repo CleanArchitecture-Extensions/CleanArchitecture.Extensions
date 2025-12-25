@@ -1,5 +1,7 @@
 # Extension: Core
 
+> Deprecated. We are retiring Core and returning to the template primitives. No replacement package is planned.
+
 ## Why this package exists
 
 Jason Taylor’s Clean Architecture template ships a thin set of primitives: a minimal `Result` (bool + string array), MediatR behaviors for logging/validation/authorization/performance, domain-event plumbing via EF Core interceptors, Microsoft.Extensions.Logging abstractions, and `TimeProvider` for auditing. Those building blocks are intentionally small so the template stays approachable, but teams often need richer primitives (correlation, error metadata, deterministic time, test-friendly logging) without rewriting the template. The Core extension keeps you aligned with Jason’s wiring while supplying opinionated, dependency-light upgrades:
@@ -17,7 +19,7 @@ If you want a deep dive into Results specifically, see [Result primitives](./cor
 
 - **Result:** In the template (`src/Application/Common/Models/Result.cs`), success is a boolean with `string[] Errors`. It is used primarily by the Identity service (`IdentityService.ToApplicationResult`, `DeleteUserAsync`). There is no correlation metadata or value payload. Core keeps the pattern (success/failure) but adds trace IDs, error codes/messages/metadata, and generic payloads.
 - **Pipeline behaviors:** The template wires `LoggingBehaviour` (pre-processor), `UnhandledExceptionBehaviour`, `AuthorizationBehaviour`, `ValidationBehaviour`, and `PerformanceBehaviour` in `DependencyInjection.cs`. Core behaviors mirror these signatures so you can swap without changing registrations, while layering correlation scopes and structured properties.
-- **Domain events:** Template entities derive from `BaseEntity` and raise `BaseEvent` (INotification). EF’s `DispatchDomainEventsInterceptor` drains events and publishes via MediatR on SaveChanges. Core keeps the MediatR-friendly event shape and supplies a `DomainEventTracker` plus `IDomainEventDispatcher` abstraction for alternate dispatch pipelines (e.g., outbox, bus).
+- **Domain events:** Template entities derive from `BaseEntity` and raise `BaseEvent` (INotification). EF's `DispatchDomainEventsInterceptor` drains events and publishes via MediatR on SaveChanges. Core keeps the MediatR-friendly event shape and supplies a `DomainEventTracker` plus `IDomainEventDispatcher` abstraction for alternate dispatch pipelines (e.g., outbox, bus). The EF Core interceptor lives in `CleanArchitecture.Extensions.Core.EFCore`.
 - **Time:** Template uses `TimeProvider` inside `AuditableEntityInterceptor` to stamp `Created`/`LastModified`. Core’s `IClock` wraps similar capabilities (`UtcNow`, `Today`, `Timestamp`, `Delay`, `NewGuid`) with test clocks and offsets.
 - **Logging:** Template relies on `ILogger<T>`, `IUser`, and `IIdentityService` to enrich logs. Core introduces provider-agnostic logging + context abstractions so you can plug in Serilog, MEL, or in-memory loggers without coupling application code to a specific provider.
 
@@ -78,6 +80,10 @@ If you want a deep dive into Results specifically, see [Result primitives](./cor
 ```bash
 dotnet add src/YourProject/YourProject.csproj package CleanArchitecture.Extensions.Core
 ```
+If you need the EF Core domain-event interceptor, also install:
+```bash
+dotnet add src/YourProject/YourProject.csproj package CleanArchitecture.Extensions.Core.EFCore
+```
 
 ## Integration guide (Application layer)
 
@@ -121,7 +127,7 @@ return Result.Success(created.Id, nameResult.TraceId);
 
 - **Drop-in for template behaviors:** Signatures are compatible with `cfg.AddOpenBehavior` and `AddOpenRequestPreProcessor` in the template DI (`LoggingPreProcessor` for pre-processing, `LoggingBehavior` for pipeline). Swap registrations without changing handlers.
 - **Interop with existing Result:** You can map template `Result` to/from Core’s `Result` by projecting errors into `Error` codes/messages and vice versa (e.g., `Result.Success().Errors` → `Result.Success(traceId)`).
-- **EF interceptors:** `DomainEventTracker` can complement `DispatchDomainEventsInterceptor`; use the tracker when you need to buffer events outside DbContext lifetime or forward to a bus/outbox.
+- **EF interceptors:** `DispatchDomainEventsInterceptor` ships in `CleanArchitecture.Extensions.Core.EFCore`. `DomainEventTracker` can complement the interceptor when you need to buffer events outside DbContext lifetime or forward to a bus/outbox.
 - **Time/Auditing:** Replace `TimeProvider` injections with `IClock` adapters that internally call `TimeProvider.System` if you need 1:1 behavior.
 
 ## Configuration reference

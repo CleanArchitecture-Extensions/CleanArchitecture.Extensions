@@ -1,5 +1,7 @@
 # Core Time Abstractions
 
+> Deprecated. This content is retained for reference only.
+
 Time is a cross-cutting concern in Jason Taylor’s Clean Architecture template. The template uses `TimeProvider` inside the EF Core `AuditableEntityInterceptor` to stamp `Created`/`LastModified` and uses `Stopwatch` in `PerformanceBehaviour` for timing. The Core extension introduces a unified `IClock` abstraction with system, frozen, and offset implementations, plus GUID generation and async delay, so you can keep tests deterministic, inject time consistently across layers, and align correlation/timing with other Core primitives.
 
 ## What the template already covers
