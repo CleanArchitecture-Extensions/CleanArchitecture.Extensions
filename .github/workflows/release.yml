@@ -45,9 +45,7 @@ jobs:
 
       - name: Verify SourceLink
         run: |
-          sourcelink test src/CleanArchitecture.Extensions.Core/bin/Release/net10.0/CleanArchitecture.Extensions.Core.pdb
-          sourcelink test src/CleanArchitecture.Extensions.Validation/bin/Release/net10.0/CleanArchitecture.Extensions.Validation.pdb
-          sourcelink test src/CleanArchitecture.Extensions.Exceptions/bin/Release/net10.0/CleanArchitecture.Extensions.Exceptions.pdb
+          sourcelink test src/CleanArchitecture.Extensions.Caching/bin/Release/net10.0/CleanArchitecture.Extensions.Caching.pdb
 
       - name: Publish packages to NuGet
         env:
