@@ -18,6 +18,9 @@ public static class DependencyInjectionExtensions
     /// <summary>
     /// Registers default Core abstractions (clock, log context, logger adapter) and options.
     /// </summary>
+    /// <remarks>
+    /// EF Core interceptors are registered via CleanArchitecture.Extensions.Core.EFCore.
+    /// </remarks>
     public static IServiceCollection AddCleanArchitectureCore(
         this IServiceCollection services,
         Action<CoreExtensionsOptions>? configure = null)
@@ -35,7 +38,6 @@ public static class DependencyInjectionExtensions
         services.TryAddScoped(typeof(IAppLogger<>), typeof(MelAppLoggerAdapter<>));
         services.TryAddScoped<DomainEvents.DomainEventTracker>();
         services.TryAddScoped<DomainEvents.IDomainEventDispatcher, DomainEvents.MediatRDomainEventDispatcher>();
-        services.TryAddScoped<DomainEvents.DispatchDomainEventsInterceptor>();
         services.AddSingleton<Microsoft.Extensions.Options.IPostConfigureOptions<CoreExtensionsOptions>>(provider =>
             new DomainEvents.DomainEventTimePostConfigure(provider.GetRequiredService<IClock>()));
         services.AddSingleton(_ => DomainEvents.DomainEventTimeMarker.Instance);

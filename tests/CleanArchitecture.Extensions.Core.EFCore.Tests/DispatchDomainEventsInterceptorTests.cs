@@ -4,7 +4,7 @@ using CleanArchitecture.Extensions.Core.Options;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
-namespace CleanArchitecture.Extensions.Core.Tests;
+namespace CleanArchitecture.Extensions.Core.EFCore.Tests;
 
 /// <summary>
 /// Tests covering the EF Core interceptor that dispatches domain events.
@@ -17,7 +17,7 @@ public class DispatchDomainEventsInterceptorTests
         var tracker = new DomainEventTracker();
         var dispatcher = new RecordingDispatcher();
         var logContext = new InMemoryLogContext();
-        var options = Microsoft.Extensions.Options.Options.Create(new CoreExtensionsOptions { CorrelationIdFactory = () => "cid-interceptor" });
+        var options = Options.Create(new CoreExtensionsOptions { CorrelationIdFactory = () => "cid-interceptor" });
         var interceptor = new DispatchDomainEventsInterceptor(tracker, dispatcher, logContext, options);
 
         var dbOptions = new DbContextOptionsBuilder<TestDbContext>()
@@ -47,7 +47,7 @@ public class DispatchDomainEventsInterceptorTests
         var tracker = new DomainEventTracker();
         var dispatcher = new RecordingDispatcher();
         var logContext = new InMemoryLogContext { CorrelationId = "context-correlation" };
-        var options = Microsoft.Extensions.Options.Options.Create(new CoreExtensionsOptions { CorrelationIdFactory = () => "generated" });
+        var options = Options.Create(new CoreExtensionsOptions { CorrelationIdFactory = () => "generated" });
         var interceptor = new DispatchDomainEventsInterceptor(tracker, dispatcher, logContext, options);
 
         var dbOptions = new DbContextOptionsBuilder<TestDbContext>()
