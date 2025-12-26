@@ -9,7 +9,7 @@ Add caching with clear cache key conventions and opt-in behaviors.
 
 ## Steps
 1. Add the caching package: `dotnet add package CleanArchitecture.Extensions.Caching`.
-2. Register caching services and the query caching pipeline behavior (after Validation, before Performance).
+2. Register caching services and the query caching pipeline behavior (after request checks, before performance logging).
 3. Configure cacheability predicate and TTLs per query type; choose memory (default) or distributed adapter.
 4. Apply invalidation on command success/domain events where needed (`ICache.Remove`).
 

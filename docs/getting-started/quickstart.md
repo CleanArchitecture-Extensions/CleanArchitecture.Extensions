@@ -12,6 +12,6 @@ Get caching into a template-based solution in a few minutes.
    services.AddMediatR(cfg => cfg.AddCleanArchitectureCachingPipeline());
    ```
 3. Configure cache options (expiration, predicate) as needed.
-4. Keep validation and exception handling on the template defaults.
+4. No other template changes required.
 
 Next: [Caching docs](../extensions/caching.md).

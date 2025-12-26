@@ -34,7 +34,7 @@ Quick links:
    services.AddMediatR(cfg => cfg.AddCleanArchitectureCachingPipeline());
    ```
 3. Configure caching options as needed.
-4. Keep validation and exception handling on the template defaults.
+4. No other template changes required.
 
 Docs to read next:
 

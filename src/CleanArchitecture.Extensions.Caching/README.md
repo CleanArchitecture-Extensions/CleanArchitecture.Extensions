@@ -28,7 +28,7 @@ services.AddCleanArchitectureCaching(options =>
 services.AddMediatR(cfg =>
 {
     cfg.RegisterServicesFromAssemblyContaining<Program>();
-    cfg.AddCleanArchitectureCachingPipeline(); // place after Validation, before Performance
+    cfg.AddCleanArchitectureCachingPipeline(); // place after request checks, before performance behavior
 });
 
 // Swap to distributed cache (e.g., Redis) by overriding ICache registration
