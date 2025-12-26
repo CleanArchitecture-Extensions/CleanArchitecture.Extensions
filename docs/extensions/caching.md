@@ -13,7 +13,7 @@ Cache abstractions, key conventions, and a MediatR query caching behavior for Cl
 
 - Target frameworks: `net10.0`.
 - Dependencies: MediatR `13.1.0`, `Microsoft.Extensions.Caching.Abstractions`, `Microsoft.Extensions.Caching.Memory` (defaults); distributed adapter uses `IDistributedCache` (MemoryDistributedCache by default).
-- Pipeline fit: register `QueryCachingBehavior<,>` after Authorization/Validation and before Performance to avoid skewing timing warnings.
+- Pipeline fit: register `QueryCachingBehavior<,>` after authorization and request checks, and before performance logging to avoid skewing timing warnings.
 
 ## Install
 
@@ -44,7 +44,7 @@ services.AddCleanArchitectureCaching(options =>
 services.AddMediatR(cfg =>
 {
     cfg.RegisterServicesFromAssemblyContaining<Program>();
-    cfg.AddCleanArchitectureCachingPipeline(); // place after Validation
+    cfg.AddCleanArchitectureCachingPipeline(); // place after request checks
 });
 ```
 
@@ -83,8 +83,8 @@ Use `QueryCachingBehaviorOptions.ResponseCachePredicate` to skip caching respons
 
 ## Pipeline ordering
 
-- Recommended: Authorization → Validation → **QueryCachingBehavior** → Performance/Logging → Handlers (align with the template order you already use).
-- Place caching after validation to avoid caching invalid requests and before performance to exclude cache hits from handler timing warnings.
+- Recommended: Authorization → Request checks → **QueryCachingBehavior** → Performance/Logging → Handlers (align with the template order you already use).
+- Place caching after request checks to avoid caching invalid requests and before performance logging to exclude cache hits from handler timing warnings.
 
 ## Invalidation guidance
 

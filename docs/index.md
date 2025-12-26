@@ -17,7 +17,7 @@ services.AddCleanArchitectureCaching();
 services.AddMediatR(cfg => cfg.AddCleanArchitectureCachingPipeline());
 ```
 
-Use the template defaults for validation and exception handling.
+No other template changes required.
 
 ## Where to go next
 
