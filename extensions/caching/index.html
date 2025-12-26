@@ -1405,7 +1405,7 @@
 <ul>
 <li>Target frameworks: <code>net10.0</code>.</li>
 <li>Dependencies: MediatR <code>13.1.0</code>, <code>Microsoft.Extensions.Caching.Abstractions</code>, <code>Microsoft.Extensions.Caching.Memory</code> (defaults); distributed adapter uses <code>IDistributedCache</code> (MemoryDistributedCache by default).</li>
-<li>Pipeline fit: register <code>QueryCachingBehavior&lt;,&gt;</code> after Authorization/Validation and before Performance to avoid skewing timing warnings.</li>
+<li>Pipeline fit: register <code>QueryCachingBehavior&lt;,&gt;</code> after authorization and request checks, and before performance logging to avoid skewing timing warnings.</li>
 </ul>
 <h2 id="install">Install<a class="headerlink" href="#install" title="Permanent link">&para;</a></h2>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>dotnet<span class="w"> </span>add<span class="w"> </span>src/YourProject/YourProject.csproj<span class="w"> </span>package<span class="w"> </span>CleanArchitecture.Extensions.Caching
@@ -1430,7 +1430,7 @@
 <a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a><span class="n">services</span><span class="p">.</span><span class="n">AddMediatR</span><span class="p">(</span><span class="n">cfg</span><span class="w"> </span><span class="o">=&gt;</span>
 <a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a><span class="p">{</span>
 <a id="__codelineno-1-18" name="__codelineno-1-18" href="#__codelineno-1-18"></a><span class="w">    </span><span class="n">cfg</span><span class="p">.</span><span class="n">RegisterServicesFromAssemblyContaining</span><span class="o">&lt;</span><span class="n">Program</span><span class="o">&gt;</span><span class="p">();</span>
-<a id="__codelineno-1-19" name="__codelineno-1-19" href="#__codelineno-1-19"></a><span class="w">    </span><span class="n">cfg</span><span class="p">.</span><span class="n">AddCleanArchitectureCachingPipeline</span><span class="p">();</span><span class="w"> </span><span class="c1">// place after Validation</span>
+<a id="__codelineno-1-19" name="__codelineno-1-19" href="#__codelineno-1-19"></a><span class="w">    </span><span class="n">cfg</span><span class="p">.</span><span class="n">AddCleanArchitectureCachingPipeline</span><span class="p">();</span><span class="w"> </span><span class="c1">// place after request checks</span>
 <a id="__codelineno-1-20" name="__codelineno-1-20" href="#__codelineno-1-20"></a><span class="p">});</span>
 </code></pre></div>
 <h3 id="configure-cache-keys-and-ttls">Configure cache keys and TTLs<a class="headerlink" href="#configure-cache-keys-and-ttls" title="Permanent link">&para;</a></h3>
@@ -1464,8 +1464,8 @@
 </ul>
 <h2 id="pipeline-ordering">Pipeline ordering<a class="headerlink" href="#pipeline-ordering" title="Permanent link">&para;</a></h2>
 <ul>
-<li>Recommended: Authorization → Validation → <strong>QueryCachingBehavior</strong> → Performance/Logging → Handlers (align with the template order you already use).</li>
-<li>Place caching after validation to avoid caching invalid requests and before performance to exclude cache hits from handler timing warnings.</li>
+<li>Recommended: Authorization → Request checks → <strong>QueryCachingBehavior</strong> → Performance/Logging → Handlers (align with the template order you already use).</li>
+<li>Place caching after request checks to avoid caching invalid requests and before performance logging to exclude cache hits from handler timing warnings.</li>
 </ul>
 <h2 id="invalidation-guidance">Invalidation guidance<a class="headerlink" href="#invalidation-guidance" title="Permanent link">&para;</a></h2>
 <ul>
@@ -1503,7 +1503,7 @@
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1-2.1-2M12.5 7v5.2l4 2.4-1 1L11 13V7h1.5M11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2v1.8Z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">December 25, 2025</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">December 26, 2025</span>
   </span>
 
     
