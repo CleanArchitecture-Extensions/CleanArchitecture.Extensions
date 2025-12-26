@@ -1,46 +1,67 @@
 # CleanArchitecture.Extensions.Caching
 
-Cache abstractions and MediatR-friendly behaviors for Clean Architecture apps (in progress).
+Simple setup for the JaysonTaylorCleanArchitectureBlank template.
 
-- Provider-agnostic `ICache` and serializer/key abstractions planned for memory and distributed stores.
-- Default MemoryCache adapter is registered by <code>AddCleanArchitectureCaching</code>; a distributed adapter is available for <code>IDistributedCache</code> (resolve <code>DistributedCacheAdapter</code> or override <code>ICache</code> registration).
-- Query caching behavior will plug into the MediatR pipeline without leaking infrastructure into handlers.
-- Tenant-aware key conventions, stampede protection, and safe serialization defaults will align with the design blueprint.
-- Ships with SourceLink, XML docs, and snupkg symbols like the other extensions once complete.
+## Step 1 - Install the package
 
-> Status: design staged; implementation is being built incrementally. API surface may change before the first preview.
+Install in both Application and Infrastructure projects:
 
-## Planned usage
+```powershell
+dotnet add src/Application/Application.csproj package CleanArchitecture.Extensions.Caching
+dotnet add src/Infrastructure/Infrastructure.csproj package CleanArchitecture.Extensions.Caching
+```
+
+## Step 2 - Register caching services (Infrastructure layer)
+
+File: `src/Infrastructure/DependencyInjection.cs`
+
+Add the package and register caching:
 
 ```csharp
 using CleanArchitecture.Extensions.Caching;
 using CleanArchitecture.Extensions.Caching.Options;
-using MediatR;
 
-// Register caching services and options
-services.AddCleanArchitectureCaching(options =>
+public static void AddInfrastructureServices(this IHostApplicationBuilder builder)
 {
-    options.Enabled = true;
-    options.DefaultNamespace = "MyApp";
-});
+    // existing registrations...
 
-// Wire the query caching behavior (ordering finalized in later steps)
-services.AddMediatR(cfg =>
-{
-    cfg.RegisterServicesFromAssemblyContaining<Program>();
-    cfg.AddCleanArchitectureCachingPipeline(); // place after request checks, before performance behavior
-});
-
-// Swap to distributed cache (e.g., Redis) by overriding ICache registration
-services.AddStackExchangeRedisCache(redis => redis.Configuration = "<redis-connection>");
-services.AddSingleton<ICache, DistributedCacheAdapter>();
+    builder.Services.AddCleanArchitectureCaching(options =>
+    {
+        options.DefaultNamespace = "MyApp";
+        options.MaxEntrySizeBytes = 256 * 1024;
+    }, queryOptions =>
+    {
+        queryOptions.DefaultTtl = TimeSpan.FromMinutes(5);
+    });
+}
 ```
 
-### Notes
-- Keys follow `{namespace}:{tenant?}:{resource}:{hash}`; override `ResourceNameSelector`/`HashFactory` to control the resource or hash inputs.
-- `QueryCachingBehaviorOptions` lets you set TTL per request type, cache predicate, and an optional response predicate to skip caching.
-- Default adapters: memory (`ICache`) and a distributed adapter (`DistributedCacheAdapter`) for any `IDistributedCache` implementation.
+## Step 3 - Register the caching behavior (Application layer)
 
-## Target frameworks
+File: `src/Application/DependencyInjection.cs`
 
-- net10.0
+Insert the caching behavior after Validation and before Performance:
+
+```csharp
+using CleanArchitecture.Extensions.Caching.Behaviors;
+
+builder.Services.AddMediatR(cfg =>
+{
+    cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());
+    cfg.AddOpenRequestPreProcessor(typeof(LoggingBehaviour<>));
+    cfg.AddOpenBehavior(typeof(UnhandledExceptionBehaviour<,>));
+    cfg.AddOpenBehavior(typeof(AuthorizationBehaviour<,>));
+    cfg.AddOpenBehavior(typeof(ValidationBehaviour<,>));
+    // Add caching behavior below this line ----
+    cfg.AddOpenBehavior(typeof(QueryCachingBehavior<,>));
+    // Add caching behavior above this line ----
+    cfg.AddOpenBehavior(typeof(PerformanceBehaviour<,>));
+});
+```
+
+## Step 4 - What to expect
+
+- Queries (types ending with `Query`) are cached by default; commands are not.
+- First request is a cache miss; the second identical request is a cache hit.
+- Default TTL is 5 minutes; override with `QueryCachingBehaviorOptions.DefaultTtl` or `TtlByRequestType`.
+- Debug logs show `Cache hit` and `Cache miss` messages when caching is active.
