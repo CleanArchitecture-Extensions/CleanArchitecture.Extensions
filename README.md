@@ -20,9 +20,12 @@ Quick links:
 ## Status
 
 - Shipped: `CleanArchitecture.Extensions.Caching` (net10.0)
-- Planned: Multitenancy core and adapters
+- Shipped: `CleanArchitecture.Extensions.Multitenancy` (core, host-agnostic, net10.0)
+- Planned: Multitenancy adapters (AspNetCore, EFCore, Identity, Provisioning, Redis, Sharding, Storage)
 
-## Getting started (caching)
+## Getting started
+
+### Caching
 
 1. Install:
    ```powershell
@@ -36,11 +39,29 @@ Quick links:
 3. Configure caching options as needed.
 4. No other template changes required.
 
+### Multitenancy core
+
+1. Install:
+   ```powershell
+   dotnet add src/Application/Application.csproj package CleanArchitecture.Extensions.Multitenancy
+   dotnet add src/Infrastructure/Infrastructure.csproj package CleanArchitecture.Extensions.Multitenancy
+   ```
+2. Register:
+   ```csharp
+   services.AddCleanArchitectureMultitenancy();
+   ```
+3. Resolve tenants in your host and set the current context (host adapter required).
+4. Add pipeline behaviors:
+   ```csharp
+   services.AddMediatR(cfg => cfg.AddCleanArchitectureMultitenancyPipeline());
+   ```
+
 Docs to read next:
 
-- Caching overview: https://cleanarchitecture-extensions.github.io/CleanArchitecture.Extensions/extensions/caching/
-- Extensions catalog: https://cleanarchitecture-extensions.github.io/CleanArchitecture.Extensions/extensions/
-- Roadmap: https://cleanarchitecture-extensions.github.io/CleanArchitecture.Extensions/roadmap/
+- [Caching overview](https://cleanarchitecture-extensions.github.io/CleanArchitecture.Extensions/extensions/caching/)
+- [Multitenancy core overview](https://cleanarchitecture-extensions.github.io/CleanArchitecture.Extensions/extensions/multitenancy-core/)
+- [Extensions catalog](https://cleanarchitecture-extensions.github.io/CleanArchitecture.Extensions/extensions/)
+- [Roadmap](https://cleanarchitecture-extensions.github.io/CleanArchitecture.Extensions/roadmap/)
 
 ## Repo layout
 

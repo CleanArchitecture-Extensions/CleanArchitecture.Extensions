@@ -27,3 +27,4 @@ We keep the upstream Jason Taylor template pristine and ship everything as opt-i
 - Use fenced code blocks with language tags (`bash`, `powershell`, `csharp`, `json`).
 - Prefer snippets from source to avoid drift; keep examples short and runnable.
 - Keep compatibility info current (template version, target frameworks, dependencies).
+- Format external links as Markdown links, for example `- [Roadmap](https://cleanarchitecture-extensions.github.io/CleanArchitecture.Extensions/roadmap/)` (avoid `Label: URL`).
