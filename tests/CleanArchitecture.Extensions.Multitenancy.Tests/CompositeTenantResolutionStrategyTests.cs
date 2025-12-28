@@ -48,4 +48,69 @@ public class CompositeTenantResolutionStrategyTests
         Assert.True(result.IsAmbiguous);
         Assert.Equal(TenantResolutionSource.Composite, result.Source);
     }
+
+    [Fact]
+    public async Task Resolution_returns_single_candidate_when_consensus_matches()
+    {
+        var options = Options.Create(new MultitenancyOptions
+        {
+            RequireMatchAcrossSources = true
+        });
+
+        var providers = new ITenantProvider[]
+        {
+            new DelegateTenantProvider(_ => "tenant-a", TenantResolutionSource.Header),
+            new DelegateTenantProvider(_ => "tenant-a", TenantResolutionSource.Route)
+        };
+
+        var strategy = new CompositeTenantResolutionStrategy(providers, options);
+
+        var result = await strategy.ResolveAsync(new TenantResolutionContext());
+
+        Assert.True(result.IsResolved);
+        Assert.Equal("tenant-a", result.TenantId);
+        Assert.Equal(TenantResolutionSource.Composite, result.Source);
+    }
+
+    [Fact]
+    public async Task Resolution_includes_unordered_providers_when_enabled()
+    {
+        var options = Options.Create(new MultitenancyOptions
+        {
+            IncludeUnorderedProviders = true
+        });
+
+        var providers = new ITenantProvider[]
+        {
+            new DelegateTenantProvider(_ => "custom-tenant", TenantResolutionSource.Custom)
+        };
+
+        var strategy = new CompositeTenantResolutionStrategy(providers, options);
+
+        var result = await strategy.ResolveAsync(new TenantResolutionContext());
+
+        Assert.True(result.IsResolved);
+        Assert.Equal("custom-tenant", result.TenantId);
+    }
+
+    [Fact]
+    public async Task Resolution_skips_unordered_providers_when_disabled()
+    {
+        var options = Options.Create(new MultitenancyOptions
+        {
+            IncludeUnorderedProviders = false
+        });
+
+        var providers = new ITenantProvider[]
+        {
+            new DelegateTenantProvider(_ => "custom-tenant", TenantResolutionSource.Custom)
+        };
+
+        var strategy = new CompositeTenantResolutionStrategy(providers, options);
+
+        var result = await strategy.ResolveAsync(new TenantResolutionContext());
+
+        Assert.False(result.IsResolved);
+        Assert.Equal(TenantResolutionSource.Composite, result.Source);
+    }
 }
