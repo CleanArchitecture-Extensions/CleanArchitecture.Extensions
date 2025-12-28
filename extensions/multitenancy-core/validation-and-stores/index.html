@@ -10,25 +10,25 @@
       
       
       
-        <link rel="canonical" href="https://cleanarchitecture-extensions.github.io/CleanArchitecture.Extensions/roadmap/package-blueprints/">
+        <link rel="canonical" href="https://cleanarchitecture-extensions.github.io/CleanArchitecture.Extensions/extensions/multitenancy-core/validation-and-stores/">
       
       
-        <link rel="prev" href="../">
+        <link rel="prev" href="../requirements-and-behaviors/">
       
       
-        <link rel="next" href="../../getting-started/quickstart/">
+        <link rel="next" href="../context-propagation/">
       
       
-      <link rel="icon" href="../../assets/images/favicon.png">
+      <link rel="icon" href="../../../assets/images/favicon.png">
       <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.5.13">
     
     
       
-        <title>Package Blueprints - CleanArchitecture.Extensions</title>
+        <title>Validation & stores - CleanArchitecture.Extensions</title>
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.7e359304.min.css">
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.7e359304.min.css">
       
       
 
@@ -47,7 +47,7 @@
       
     
     
-    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
@@ -66,7 +66,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#package-blueprints" class="md-skip">
+        <a href="#multitenancy-core-validation-and-stores" class="md-skip">
           Skip to content
         </a>
       
@@ -80,7 +80,7 @@
 
 <header class="md-header" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="../.." title="CleanArchitecture.Extensions" class="md-header__button md-logo" aria-label="CleanArchitecture.Extensions" data-md-component="logo">
+    <a href="../../.." title="CleanArchitecture.Extensions" class="md-header__button md-logo" aria-label="CleanArchitecture.Extensions" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
@@ -100,7 +100,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Package Blueprints
+              Validation & stores
             
           </span>
         </div>
@@ -183,7 +183,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="../.." class="md-tabs__link">
+      <a href="../../.." class="md-tabs__link">
         
   
     
@@ -198,13 +198,11 @@
         
   
   
-    
-  
   
     
     
-      <li class="md-tabs__item md-tabs__item--active">
-        <a href="../" class="md-tabs__link">
+      <li class="md-tabs__item">
+        <a href="../../../roadmap/" class="md-tabs__link">
           
   
   Roadmap
@@ -222,7 +220,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../../getting-started/quickstart/" class="md-tabs__link">
+        <a href="../../../getting-started/quickstart/" class="md-tabs__link">
           
   
   Getting Started
@@ -240,7 +238,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../../concepts/architecture-fit/" class="md-tabs__link">
+        <a href="../../../concepts/architecture-fit/" class="md-tabs__link">
           
   
   Concepts
@@ -254,11 +252,13 @@
         
   
   
+    
+  
   
     
     
-      <li class="md-tabs__item">
-        <a href="../../extensions/" class="md-tabs__link">
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../../" class="md-tabs__link">
           
   
   Extensions Catalog
@@ -276,7 +276,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../../recipes/authentication/" class="md-tabs__link">
+        <a href="../../../recipes/authentication/" class="md-tabs__link">
           
   
   Recipes
@@ -292,7 +292,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="../../samples/" class="md-tabs__link">
+      <a href="../../../samples/" class="md-tabs__link">
         
   
     
@@ -311,7 +311,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../../reference/configuration/" class="md-tabs__link">
+        <a href="../../../reference/configuration/" class="md-tabs__link">
           
   
   Reference
@@ -329,7 +329,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../../troubleshooting/" class="md-tabs__link">
+        <a href="../../../troubleshooting/" class="md-tabs__link">
           
   
   Troubleshooting
@@ -345,7 +345,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="../../contributing/" class="md-tabs__link">
+      <a href="../../../contributing/" class="md-tabs__link">
         
   
     
@@ -362,7 +362,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="../../release-notes/" class="md-tabs__link">
+      <a href="../../../release-notes/" class="md-tabs__link">
         
   
     
@@ -396,7 +396,7 @@
 
 <nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="../.." title="CleanArchitecture.Extensions" class="md-nav__button md-logo" aria-label="CleanArchitecture.Extensions" data-md-component="logo">
+    <a href="../../.." title="CleanArchitecture.Extensions" class="md-nav__button md-logo" aria-label="CleanArchitecture.Extensions" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
@@ -426,7 +426,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../.." class="md-nav__link">
+      <a href="../../.." class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -443,30 +443,25 @@
       
   
   
-    
   
   
-  
     
     
     
-      
-        
-        
       
       
         
       
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
         
           
-          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
             
   
   <span class="md-ellipsis">
@@ -477,7 +472,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_2">
             <span class="md-nav__icon md-icon"></span>
             Roadmap
@@ -491,7 +486,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../" class="md-nav__link">
+      <a href="../../../roadmap/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -509,30 +504,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  <span class="md-ellipsis">
-    Package Blueprints
-  </span>
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../../../roadmap/package-blueprints/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -541,71 +516,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#cleanarchitectureextensionscaching-shipped" class="md-nav__link">
-    <span class="md-ellipsis">
-      CleanArchitecture.Extensions.Caching (shipped)
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#cleanarchitectureextensionsmultitenancy-shipped" class="md-nav__link">
-    <span class="md-ellipsis">
-      CleanArchitecture.Extensions.Multitenancy (shipped)
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#cleanarchitectureextensionsmultitenancyefcore-planned" class="md-nav__link">
-    <span class="md-ellipsis">
-      CleanArchitecture.Extensions.Multitenancy.EFCore (planned)
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#cleanarchitectureextensionsmultitenancyaspnetcore-planned" class="md-nav__link">
-    <span class="md-ellipsis">
-      CleanArchitecture.Extensions.Multitenancy.AspNetCore (planned)
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#cleanarchitectureextensionsmultitenancyidentity-planned" class="md-nav__link">
-    <span class="md-ellipsis">
-      CleanArchitecture.Extensions.Multitenancy.Identity (planned)
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -665,7 +575,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../getting-started/quickstart/" class="md-nav__link">
+      <a href="../../../getting-started/quickstart/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -686,7 +596,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../getting-started/installation/" class="md-nav__link">
+      <a href="../../../getting-started/installation/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -707,7 +617,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../getting-started/adoption-playbooks/" class="md-nav__link">
+      <a href="../../../getting-started/adoption-playbooks/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -775,7 +685,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../concepts/architecture-fit/" class="md-nav__link">
+      <a href="../../../concepts/architecture-fit/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -796,7 +706,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../concepts/composition/" class="md-nav__link">
+      <a href="../../../concepts/composition/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -821,25 +731,30 @@
       
   
   
+    
   
   
+  
     
     
     
+      
+        
+        
       
       
         
       
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" checked>
         
           
-          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
             
   
   <span class="md-ellipsis">
@@ -850,7 +765,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_5">
             <span class="md-nav__icon md-icon"></span>
             Extensions Catalog
@@ -864,7 +779,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../extensions/" class="md-nav__link">
+      <a href="../../" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -885,7 +800,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../extensions/caching/" class="md-nav__link">
+      <a href="../../caching/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -903,25 +818,30 @@
                 
   
   
+    
   
   
+  
     
     
     
       
       
-        
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_3" >
         
           
-          <label class="md-nav__link" for="__nav_5_3" id="__nav_5_3_label" tabindex="0">
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_5_3" id="__nav_5_3_label" tabindex="">
             
   
   <span class="md-ellipsis">
@@ -932,7 +852,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_3_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_3_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_5_3">
             <span class="md-nav__icon md-icon"></span>
             Multitenancy Core
@@ -946,7 +866,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../extensions/multitenancy-core/" class="md-nav__link">
+      <a href="../" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -967,7 +887,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../extensions/multitenancy-core/resolution-pipeline/" class="md-nav__link">
+      <a href="../resolution-pipeline/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -988,7 +908,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../extensions/multitenancy-core/requirements-and-behaviors/" class="md-nav__link">
+      <a href="../requirements-and-behaviors/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1006,10 +926,30 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../../extensions/multitenancy-core/validation-and-stores/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Validation & stores
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   <span class="md-ellipsis">
@@ -1018,6 +958,71 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#validation-modes" class="md-nav__link">
+    <span class="md-ellipsis">
+      Validation modes
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#implementing-a-store" class="md-nav__link">
+    <span class="md-ellipsis">
+      Implementing a store
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#implementing-a-cache" class="md-nav__link">
+    <span class="md-ellipsis">
+      Implementing a cache
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#fallback-tenant" class="md-nav__link">
+    <span class="md-ellipsis">
+      Fallback tenant
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lifecycle-checks" class="md-nav__link">
+    <span class="md-ellipsis">
+      Lifecycle checks
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -1030,7 +1035,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../extensions/multitenancy-core/context-propagation/" class="md-nav__link">
+      <a href="../context-propagation/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1051,7 +1056,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../extensions/multitenancy-core/caching-integration/" class="md-nav__link">
+      <a href="../caching-integration/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1127,7 +1132,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../recipes/authentication/" class="md-nav__link">
+      <a href="../../../recipes/authentication/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1148,7 +1153,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../recipes/caching/" class="md-nav__link">
+      <a href="../../../recipes/caching/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1176,7 +1181,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../samples/" class="md-nav__link">
+      <a href="../../../samples/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1236,7 +1241,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/configuration/" class="md-nav__link">
+      <a href="../../../reference/configuration/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1257,7 +1262,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/multitenancy-options/" class="md-nav__link">
+      <a href="../../../reference/multitenancy-options/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1325,7 +1330,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../troubleshooting/" class="md-nav__link">
+      <a href="../../../troubleshooting/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1346,7 +1351,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../troubleshooting/multitenancy/" class="md-nav__link">
+      <a href="../../../troubleshooting/multitenancy/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1374,7 +1379,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../contributing/" class="md-nav__link">
+      <a href="../../../contributing/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1394,7 +1399,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../release-notes/" class="md-nav__link">
+      <a href="../../../release-notes/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1434,45 +1439,45 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#cleanarchitectureextensionscaching-shipped" class="md-nav__link">
+  <a href="#validation-modes" class="md-nav__link">
     <span class="md-ellipsis">
-      CleanArchitecture.Extensions.Caching (shipped)
+      Validation modes
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#cleanarchitectureextensionsmultitenancy-shipped" class="md-nav__link">
+  <a href="#implementing-a-store" class="md-nav__link">
     <span class="md-ellipsis">
-      CleanArchitecture.Extensions.Multitenancy (shipped)
+      Implementing a store
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#cleanarchitectureextensionsmultitenancyefcore-planned" class="md-nav__link">
+  <a href="#implementing-a-cache" class="md-nav__link">
     <span class="md-ellipsis">
-      CleanArchitecture.Extensions.Multitenancy.EFCore (planned)
+      Implementing a cache
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#cleanarchitectureextensionsmultitenancyaspnetcore-planned" class="md-nav__link">
+  <a href="#fallback-tenant" class="md-nav__link">
     <span class="md-ellipsis">
-      CleanArchitecture.Extensions.Multitenancy.AspNetCore (planned)
+      Fallback tenant
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#cleanarchitectureextensionsmultitenancyidentity-planned" class="md-nav__link">
+  <a href="#lifecycle-checks" class="md-nav__link">
     <span class="md-ellipsis">
-      CleanArchitecture.Extensions.Multitenancy.Identity (planned)
+      Lifecycle checks
     </span>
   </a>
   
@@ -1493,61 +1498,79 @@
                   
 
 
-<h1 id="package-blueprints">Package blueprints<a class="headerlink" href="#package-blueprints" title="Permanent link">&para;</a></h1>
-<h2 id="cleanarchitectureextensionscaching-shipped">CleanArchitecture.Extensions.Caching (shipped)<a class="headerlink" href="#cleanarchitectureextensionscaching-shipped" title="Permanent link">&para;</a></h2>
-<p>What it provides:</p>
+<h1 id="multitenancy-core-validation-and-stores">Multitenancy Core: Validation and stores<a class="headerlink" href="#multitenancy-core-validation-and-stores" title="Permanent link">&para;</a></h1>
+<p>This page explains validation modes and how to plug in tenant metadata stores and caches.</p>
+<h2 id="validation-modes">Validation modes<a class="headerlink" href="#validation-modes" title="Permanent link">&para;</a></h2>
+<p><code>MultitenancyOptions.ValidationMode</code> controls how tenant IDs are validated:</p>
 <ul>
-<li>Cache abstractions with memory and distributed adapters.</li>
-<li>Query caching behavior for MediatR.</li>
-<li>Simple configuration for expiration and cache predicates.</li>
+<li><code>None</code> (default): no lookup; the resolver creates a minimal active <code>TenantInfo</code>.</li>
+<li><code>Cache</code>: validate only via <code>ITenantInfoCache</code>.</li>
+<li><code>Repository</code>: validate via <code>ITenantInfoStore</code> and optionally cache results.</li>
 </ul>
-<p>Design notes:</p>
+<p>If a required cache/store is not registered, the system logs a warning and leaves the tenant as unvalidated. <code>TenantEnforcementBehavior</code> then throws <code>TenantNotFoundException</code> when a tenant is required.</p>
+<h2 id="implementing-a-store">Implementing a store<a class="headerlink" href="#implementing-a-store" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="k">using</span><span class="w"> </span><span class="nn">CleanArchitecture.Extensions.Multitenancy</span><span class="p">;</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="k">using</span><span class="w"> </span><span class="nn">CleanArchitecture.Extensions.Multitenancy.Abstractions</span><span class="p">;</span>
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="k">public</span><span class="w"> </span><span class="k">sealed</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">InMemoryTenantStore</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">ITenantInfoStore</span>
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="p">{</span>
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="k">readonly</span><span class="w"> </span><span class="n">Dictionary</span><span class="o">&lt;</span><span class="kt">string</span><span class="p">,</span><span class="w"> </span><span class="n">ITenantInfo</span><span class="o">&gt;</span><span class="w"> </span><span class="n">_tenants</span><span class="w"> </span><span class="o">=</span>
+<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="w">        </span><span class="k">new</span><span class="p">(</span><span class="n">StringComparer</span><span class="p">.</span><span class="n">OrdinalIgnoreCase</span><span class="p">)</span>
+<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="w">        </span><span class="p">{</span>
+<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="w">            </span><span class="na">[&quot;alpha&quot;]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">TenantInfo</span><span class="p">(</span><span class="s">&quot;alpha&quot;</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">Name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Alpha&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">IsActive</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">true</span><span class="w"> </span><span class="p">},</span>
+<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="w">            </span><span class="na">[&quot;beta&quot;]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">TenantInfo</span><span class="p">(</span><span class="s">&quot;beta&quot;</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">Name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Beta&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">IsActive</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">true</span><span class="w"> </span><span class="p">}</span>
+<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="w">        </span><span class="p">};</span>
+<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>
+<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="n">Task</span><span class="o">&lt;</span><span class="n">ITenantInfo</span><span class="o">?&gt;</span><span class="w"> </span><span class="n">FindByIdAsync</span><span class="p">(</span><span class="kt">string</span><span class="w"> </span><span class="n">tenantId</span><span class="p">,</span><span class="w"> </span><span class="n">CancellationToken</span><span class="w"> </span><span class="n">cancellationToken</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">default</span><span class="p">)</span>
+<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="w">        </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">Task</span><span class="p">.</span><span class="n">FromResult</span><span class="p">(</span><span class="n">_tenants</span><span class="p">.</span><span class="n">TryGetValue</span><span class="p">(</span><span class="n">tenantId</span><span class="p">,</span><span class="w"> </span><span class="k">out</span><span class="w"> </span><span class="kt">var</span><span class="w"> </span><span class="n">tenant</span><span class="p">)</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="n">tenant</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="k">null</span><span class="p">);</span>
+<a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a><span class="p">}</span>
+</code></pre></div>
+<h2 id="implementing-a-cache">Implementing a cache<a class="headerlink" href="#implementing-a-cache" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="k">using</span><span class="w"> </span><span class="nn">CleanArchitecture.Extensions.Multitenancy.Abstractions</span><span class="p">;</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="k">public</span><span class="w"> </span><span class="k">sealed</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">InMemoryTenantCache</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">ITenantInfoCache</span>
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="p">{</span>
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="k">readonly</span><span class="w"> </span><span class="n">Dictionary</span><span class="o">&lt;</span><span class="kt">string</span><span class="p">,</span><span class="w"> </span><span class="n">ITenantInfo</span><span class="o">&gt;</span><span class="w"> </span><span class="n">_cache</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="p">(</span><span class="n">StringComparer</span><span class="p">.</span><span class="n">OrdinalIgnoreCase</span><span class="p">);</span>
+<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>
+<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="n">Task</span><span class="o">&lt;</span><span class="n">ITenantInfo</span><span class="o">?&gt;</span><span class="w"> </span><span class="n">GetAsync</span><span class="p">(</span><span class="kt">string</span><span class="w"> </span><span class="n">tenantId</span><span class="p">,</span><span class="w"> </span><span class="n">CancellationToken</span><span class="w"> </span><span class="n">cancellationToken</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">default</span><span class="p">)</span>
+<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="w">        </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">Task</span><span class="p">.</span><span class="n">FromResult</span><span class="p">(</span><span class="n">_cache</span><span class="p">.</span><span class="n">TryGetValue</span><span class="p">(</span><span class="n">tenantId</span><span class="p">,</span><span class="w"> </span><span class="k">out</span><span class="w"> </span><span class="kt">var</span><span class="w"> </span><span class="n">tenant</span><span class="p">)</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="n">tenant</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="k">null</span><span class="p">);</span>
+<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>
+<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="n">Task</span><span class="w"> </span><span class="nf">SetAsync</span><span class="p">(</span><span class="n">ITenantInfo</span><span class="w"> </span><span class="n">tenant</span><span class="p">,</span><span class="w"> </span><span class="n">TimeSpan</span><span class="o">?</span><span class="w"> </span><span class="n">ttl</span><span class="p">,</span><span class="w"> </span><span class="n">CancellationToken</span><span class="w"> </span><span class="n">cancellationToken</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">default</span><span class="p">)</span>
+<a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="w">    </span><span class="p">{</span>
+<a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a><span class="w">        </span><span class="n">_cache</span><span class="p">[</span><span class="n">tenant</span><span class="p">.</span><span class="n">TenantId</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">tenant</span><span class="p">;</span>
+<a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">Task</span><span class="p">.</span><span class="n">CompletedTask</span><span class="p">;</span>
+<a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a><span class="w">    </span><span class="p">}</span>
+<a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a><span class="p">}</span>
+</code></pre></div>
+<p>Register the store/cache in DI and enable validation:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="k">using</span><span class="w"> </span><span class="nn">CleanArchitecture.Extensions.Multitenancy.Configuration</span><span class="p">;</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="n">services</span><span class="p">.</span><span class="n">AddSingleton</span><span class="o">&lt;</span><span class="n">ITenantInfoStore</span><span class="p">,</span><span class="w"> </span><span class="n">InMemoryTenantStore</span><span class="o">&gt;</span><span class="p">();</span>
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="n">services</span><span class="p">.</span><span class="n">AddSingleton</span><span class="o">&lt;</span><span class="n">ITenantInfoCache</span><span class="p">,</span><span class="w"> </span><span class="n">InMemoryTenantCache</span><span class="o">&gt;</span><span class="p">();</span>
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>
+<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="n">services</span><span class="p">.</span><span class="n">Configure</span><span class="o">&lt;</span><span class="n">MultitenancyOptions</span><span class="o">&gt;</span><span class="p">(</span><span class="n">options</span><span class="w"> </span><span class="o">=&gt;</span>
+<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="p">{</span>
+<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="w">    </span><span class="n">options</span><span class="p">.</span><span class="n">ValidationMode</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">TenantValidationMode</span><span class="p">.</span><span class="n">Repository</span><span class="p">;</span>
+<a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="w">    </span><span class="n">options</span><span class="p">.</span><span class="n">ResolutionCacheTtl</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">TimeSpan</span><span class="p">.</span><span class="n">FromMinutes</span><span class="p">(</span><span class="mi">10</span><span class="p">);</span>
+<a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a><span class="p">});</span>
+</code></pre></div>
+<h2 id="fallback-tenant">Fallback tenant<a class="headerlink" href="#fallback-tenant" title="Permanent link">&para;</a></h2>
+<p>The default provider can return a fallback tenant if configured:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="n">services</span><span class="p">.</span><span class="n">Configure</span><span class="o">&lt;</span><span class="n">MultitenancyOptions</span><span class="o">&gt;</span><span class="p">(</span><span class="n">options</span><span class="w"> </span><span class="o">=&gt;</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="p">{</span>
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="w">    </span><span class="n">options</span><span class="p">.</span><span class="n">FallbackTenantId</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;local&quot;</span><span class="p">;</span>
+<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="p">});</span>
+</code></pre></div>
+<p>Fallbacks are only used when the <code>DefaultTenantProvider</code> runs (source <code>Default</code>).</p>
+<h2 id="lifecycle-checks">Lifecycle checks<a class="headerlink" href="#lifecycle-checks" title="Permanent link">&para;</a></h2>
+<p><code>TenantEnforcementBehavior</code> treats a tenant as invalid when:</p>
 <ul>
-<li>HighLevelDocs/Domain1-CoreArchitectureExtensions/CleanArchitecture.Extensions.Caching.md</li>
-<li>Docs: <a href="../../extensions/caching/">docs/extensions/caching.md</a></li>
+<li><code>IsActive</code> is false</li>
+<li><code>IsSoftDeleted</code> is true</li>
+<li><code>State</code> is <code>Suspended</code>, <code>PendingProvision</code>, or <code>Deleted</code></li>
+<li><code>ExpiresAt</code> has passed</li>
 </ul>
-<h2 id="cleanarchitectureextensionsmultitenancy-shipped">CleanArchitecture.Extensions.Multitenancy (shipped)<a class="headerlink" href="#cleanarchitectureextensionsmultitenancy-shipped" title="Permanent link">&para;</a></h2>
-<p>What it provides:</p>
-<ul>
-<li>Tenant model and current tenant abstraction.</li>
-<li>Resolution providers (header, route, host, claims, default).</li>
-<li>Validation hooks (cache/store) and enforcement behaviors.</li>
-<li>Context serialization and cache scope integration.</li>
-</ul>
-<p>Design notes:</p>
-<ul>
-<li>HighLevelDocs/Domain2-Multitenancy/CleanArchitecture.Extensions.Multitenancy.md</li>
-<li>Docs: <a href="../../extensions/multitenancy-core/">docs/extensions/multitenancy-core.md</a></li>
-</ul>
-<h2 id="cleanarchitectureextensionsmultitenancyefcore-planned">CleanArchitecture.Extensions.Multitenancy.EFCore (planned)<a class="headerlink" href="#cleanarchitectureextensionsmultitenancyefcore-planned" title="Permanent link">&para;</a></h2>
-<p>What it will provide:</p>
-<ul>
-<li>Tenant-aware DbContext helpers and filters.</li>
-<li>Patterns for shared and schema-per-tenant databases.</li>
-</ul>
-<p>Design notes:</p>
-<ul>
-<li>HighLevelDocs/Domain2-Multitenancy/CleanArchitecture.Extensions.Multitenancy.EFCore.md</li>
-</ul>
-<h2 id="cleanarchitectureextensionsmultitenancyaspnetcore-planned">CleanArchitecture.Extensions.Multitenancy.AspNetCore (planned)<a class="headerlink" href="#cleanarchitectureextensionsmultitenancyaspnetcore-planned" title="Permanent link">&para;</a></h2>
-<p>What it will provide:</p>
-<ul>
-<li>Middleware and endpoint helpers for tenant resolution.</li>
-<li>Minimal API and controller integration points.</li>
-</ul>
-<p>Design notes:</p>
-<ul>
-<li>HighLevelDocs/Domain2-Multitenancy/CleanArchitecture.Extensions.Multitenancy.AspNetCore.md</li>
-</ul>
-<h2 id="cleanarchitectureextensionsmultitenancyidentity-planned">CleanArchitecture.Extensions.Multitenancy.Identity (planned)<a class="headerlink" href="#cleanarchitectureextensionsmultitenancyidentity-planned" title="Permanent link">&para;</a></h2>
-<p>What it will provide:</p>
-<ul>
-<li>Tenant-aware Identity helpers and policies.</li>
-</ul>
-<p>Design notes:</p>
-<ul>
-<li>HighLevelDocs/Domain2-Multitenancy/CleanArchitecture.Extensions.Multitenancy.Identity.md</li>
-</ul>
+<p>Populate these fields in your <code>ITenantInfoStore</code> so enforcement works as expected.</p>
 
 
 
@@ -1617,10 +1640,10 @@
     </div>
     
     
-    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.sections", "navigation.tracking", "content.code.copy", "content.tabs.link", "search.suggest", "search.highlight"], "search": "../../assets/javascripts/workers/search.b8dbb3d2.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    <script id="__config" type="application/json">{"base": "../../..", "features": ["navigation.tabs", "navigation.sections", "navigation.tracking", "content.code.copy", "content.tabs.link", "search.suggest", "search.highlight"], "search": "../../../assets/javascripts/workers/search.b8dbb3d2.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
-      <script src="../../assets/javascripts/bundle.c8d2eff1.min.js"></script>
+      <script src="../../../assets/javascripts/bundle.c8d2eff1.min.js"></script>
       
     
   </body>
