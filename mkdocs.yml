@@ -32,13 +32,23 @@ nav:
   - Extensions Catalog:
       - Overview: extensions/index.md
       - Caching: extensions/caching.md
-      - Multitenancy Core: extensions/multitenancy-core.md
+      - Multitenancy Core:
+          - Overview: extensions/multitenancy-core.md
+          - Resolution pipeline: extensions/multitenancy-core/resolution-pipeline.md
+          - Requirements & behaviors: extensions/multitenancy-core/requirements-and-behaviors.md
+          - Validation & stores: extensions/multitenancy-core/validation-and-stores.md
+          - Context propagation: extensions/multitenancy-core/context-propagation.md
+          - Caching integration: extensions/multitenancy-core/caching-integration.md
   - Recipes:
       - Authentication: recipes/authentication.md
       - Caching: recipes/caching.md
   - Samples: samples/index.md
-  - Reference: reference/configuration.md
-  - Troubleshooting: troubleshooting/index.md
+  - Reference:
+      - Configuration: reference/configuration.md
+      - Multitenancy options: reference/multitenancy-options.md
+  - Troubleshooting:
+      - Overview: troubleshooting/index.md
+      - Multitenancy: troubleshooting/multitenancy.md
   - Contributing: contributing/index.md
   - Release Notes: release-notes/index.md
 
