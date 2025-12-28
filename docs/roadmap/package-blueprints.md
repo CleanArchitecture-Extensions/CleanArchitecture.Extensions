@@ -13,13 +13,14 @@ Design notes:
 - HighLevelDocs/Domain1-CoreArchitectureExtensions/CleanArchitecture.Extensions.Caching.md
 - Docs: [docs/extensions/caching.md](../extensions/caching.md)
 
-## CleanArchitecture.Extensions.Multitenancy (planned)
+## CleanArchitecture.Extensions.Multitenancy (shipped)
 
-What it will provide:
+What it provides:
 
 - Tenant model and current tenant abstraction.
-- Resolution providers (header, route, host, claims).
-- Enforcement behaviors for tenant-aware pipelines.
+- Resolution providers (header, route, host, claims, default).
+- Validation hooks (cache/store) and enforcement behaviors.
+- Context serialization and cache scope integration.
 
 Design notes:
 
