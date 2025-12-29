@@ -6,6 +6,7 @@ A small catalog of opt-in extensions designed to plug into Jason Taylor's Clean 
 
 - **CleanArchitecture.Extensions.Caching** — cache abstractions plus query caching behavior: [Caching](caching.md)
 - **CleanArchitecture.Extensions.Multitenancy** — tenant resolution and enforcement primitives: [Multitenancy Core](multitenancy-core.md)
+- **CleanArchitecture.Extensions.Multitenancy.AspNetCore** — ASP.NET Core middleware and endpoint helpers: [Multitenancy.AspNetCore](multitenancy-aspnetcore.md)
 
 ## Planned
 

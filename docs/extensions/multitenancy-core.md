@@ -157,12 +157,12 @@ sequenceDiagram
 - Validation warnings: register `ITenantInfoStore`/`ITenantInfoCache` when using cache/repository validation.
 - Ambiguous candidates: ensure headers/queries contain only one tenant ID.
 
-## Roadmap (planned adapters)
+## Related modules
 
-- Multitenancy.AspNetCore
-- Multitenancy.EFCore
-- Multitenancy.Identity
-- Multitenancy.Provisioning
-- Multitenancy.Redis
-- Multitenancy.Sharding
-- Multitenancy.Storage
+- Multitenancy.AspNetCore (shipped)
+- Multitenancy.EFCore (planned)
+- Multitenancy.Identity (planned)
+- Multitenancy.Provisioning (planned)
+- Multitenancy.Redis (planned)
+- Multitenancy.Sharding (planned)
+- Multitenancy.Storage (planned)
