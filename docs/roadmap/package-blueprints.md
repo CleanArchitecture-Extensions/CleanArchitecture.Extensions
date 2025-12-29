@@ -27,6 +27,18 @@ Design notes:
 - HighLevelDocs/Domain2-Multitenancy/CleanArchitecture.Extensions.Multitenancy.md
 - Docs: [docs/extensions/multitenancy-core.md](../extensions/multitenancy-core.md)
 
+## CleanArchitecture.Extensions.Multitenancy.AspNetCore (shipped)
+
+What it provides:
+
+- Middleware and endpoint helpers for tenant resolution.
+- Minimal API and MVC enforcement filters.
+
+Design notes:
+
+- HighLevelDocs/Domain2-Multitenancy/CleanArchitecture.Extensions.Multitenancy.AspNetCore.md
+- Docs: [docs/extensions/multitenancy-aspnetcore.md](../extensions/multitenancy-aspnetcore.md)
+
 ## CleanArchitecture.Extensions.Multitenancy.EFCore (planned)
 
 What it will provide:
@@ -37,17 +49,6 @@ What it will provide:
 Design notes:
 
 - HighLevelDocs/Domain2-Multitenancy/CleanArchitecture.Extensions.Multitenancy.EFCore.md
-
-## CleanArchitecture.Extensions.Multitenancy.AspNetCore (planned)
-
-What it will provide:
-
-- Middleware and endpoint helpers for tenant resolution.
-- Minimal API and controller integration points.
-
-Design notes:
-
-- HighLevelDocs/Domain2-Multitenancy/CleanArchitecture.Extensions.Multitenancy.AspNetCore.md
 
 ## CleanArchitecture.Extensions.Multitenancy.Identity (planned)
 
