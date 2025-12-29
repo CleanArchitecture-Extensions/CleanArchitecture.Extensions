@@ -3,6 +3,7 @@ using CleanArchitecture.Extensions.Multitenancy.AspNetCore.Filters;
 using CleanArchitecture.Extensions.Multitenancy.Configuration;
 using CleanArchitecture.Extensions.Multitenancy.Context;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
 using OptionsFactory = Microsoft.Extensions.Options.Options;
 
 namespace CleanArchitecture.Extensions.Multitenancy.AspNetCore.Tests;
@@ -21,6 +22,10 @@ public class TenantEnforcementEndpointFilterTests
             new EndpointMetadataCollection(new RequiresTenantAttribute()),
             "test");
         httpContext.SetEndpoint(endpoint);
+        httpContext.RequestServices = new ServiceCollection()
+            .AddLogging()
+            .AddProblemDetails()
+            .BuildServiceProvider();
 
         var invocationContext = EndpointFilterInvocationContext.Create(httpContext);
 
