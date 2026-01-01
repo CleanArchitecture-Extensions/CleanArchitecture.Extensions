@@ -160,7 +160,7 @@ sequenceDiagram
 ## Related modules
 
 - Multitenancy.AspNetCore (shipped)
-- Multitenancy.EFCore (planned)
+- Multitenancy.EFCore (shipped)
 - Multitenancy.Identity (planned)
 - Multitenancy.Provisioning (planned)
 - Multitenancy.Redis (planned)

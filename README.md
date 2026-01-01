@@ -22,7 +22,8 @@ Quick links:
 - Shipped: `CleanArchitecture.Extensions.Caching` (net10.0)
 - Shipped: `CleanArchitecture.Extensions.Multitenancy` (core, host-agnostic, net10.0)
 - Shipped: `CleanArchitecture.Extensions.Multitenancy.AspNetCore` (ASP.NET Core adapters, net10.0)
-- Planned: Multitenancy adapters (EFCore, Identity, Provisioning, Redis, Sharding, Storage)
+- Shipped: `CleanArchitecture.Extensions.Multitenancy.EFCore` (EF Core adapters, net10.0)
+- Planned: Multitenancy adapters (Identity, Provisioning, Redis, Sharding, Storage)
 
 ## Getting started
 
@@ -74,6 +75,7 @@ Docs to read next:
 - [Caching overview](https://cleanarchitecture-extensions.github.io/CleanArchitecture.Extensions/extensions/caching/)
 - [Multitenancy core overview](https://cleanarchitecture-extensions.github.io/CleanArchitecture.Extensions/extensions/multitenancy-core/)
 - [Multitenancy.AspNetCore overview](https://cleanarchitecture-extensions.github.io/CleanArchitecture.Extensions/extensions/multitenancy-aspnetcore/)
+- [Multitenancy.EFCore overview](https://cleanarchitecture-extensions.github.io/CleanArchitecture.Extensions/extensions/multitenancy-efcore/)
 - [Extensions catalog](https://cleanarchitecture-extensions.github.io/CleanArchitecture.Extensions/extensions/)
 - [Roadmap](https://cleanarchitecture-extensions.github.io/CleanArchitecture.Extensions/roadmap/)
 

@@ -39,9 +39,9 @@ Design notes:
 - HighLevelDocs/Domain2-Multitenancy/CleanArchitecture.Extensions.Multitenancy.AspNetCore.md
 - Docs: [docs/extensions/multitenancy-aspnetcore.md](../extensions/multitenancy-aspnetcore.md)
 
-## CleanArchitecture.Extensions.Multitenancy.EFCore (planned)
+## CleanArchitecture.Extensions.Multitenancy.EFCore (shipped)
 
-What it will provide:
+What it provides:
 
 - Tenant-aware DbContext helpers and filters.
 - Patterns for shared and schema-per-tenant databases.
@@ -49,6 +49,7 @@ What it will provide:
 Design notes:
 
 - HighLevelDocs/Domain2-Multitenancy/CleanArchitecture.Extensions.Multitenancy.EFCore.md
+- Docs: [docs/extensions/multitenancy-efcore.md](../extensions/multitenancy-efcore.md)
 
 ## CleanArchitecture.Extensions.Multitenancy.Identity (planned)
 
