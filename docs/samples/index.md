@@ -1,7 +1,12 @@
 # Samples
 
-There are no runnable samples in the repo right now.
+There are no runnable samples in the repository yet. The current guidance is:
+
+- Use the extension pages for step-by-step setup.
+- Review tests under `tests/` for realistic usage patterns.
 
 Planned samples:
-- Caching query behavior with invalidation on command success.
-- Multitenancy core resolution (header/route) with enforcement.
+
+- Query caching with explicit invalidation.
+- Multitenancy resolution (header + route) with enforcement.
+- EF Core shared-database isolation with tenant filters.

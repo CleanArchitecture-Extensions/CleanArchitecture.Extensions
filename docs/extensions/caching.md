@@ -1,103 +1,166 @@
 # Extension: Caching
 
 ## Overview
-Cache abstractions, key conventions, and a MediatR query caching behavior for Clean Architecture applications. Ships memory and distributed adapters, deterministic key generation, and options for stampede protection and TTL tuning without leaking infrastructure into handlers.
+
+CleanArchitecture.Extensions.Caching provides cache abstractions, deterministic key generation, and a MediatR query caching behavior. It is provider-agnostic and can target in-memory or distributed caches without leaking infrastructure concerns into handlers.
 
 ## When to use
 
-- You want query read-through caching without embedding cache calls in handlers.
-- You need deterministic, namespace/tenant-aware cache keys and provider-agnostic entry options.
-- You plan to start with in-memory caching for dev/test and swap to distributed stores (Redis via `IDistributedCache`) later.
+- You want transparent query caching without embedding cache calls in handlers.
+- You need deterministic, namespace-aware cache keys.
+- You want to start with memory caching in development and switch to distributed cache in production.
 
-## Prereqs & Compatibility
+## Prereqs and compatibility
 
-- Target frameworks: `net10.0`.
-- Dependencies: MediatR `13.1.0`, `Microsoft.Extensions.Caching.Abstractions`, `Microsoft.Extensions.Caching.Memory` (defaults); distributed adapter uses `IDistributedCache` (MemoryDistributedCache by default).
-- Pipeline fit: register `QueryCachingBehavior<,>` after authorization and request checks, and before performance logging to avoid skewing timing warnings.
+- Target framework: `net10.0`.
+- Dependencies: MediatR `13.1.0`, `Microsoft.Extensions.Caching.*` `10.0.0`.
 
 ## Install
 
-```bash
-dotnet add src/YourProject/YourProject.csproj package CleanArchitecture.Extensions.Caching
+```powershell
+dotnet add src/Application/Application.csproj package CleanArchitecture.Extensions.Caching
+dotnet add src/Infrastructure/Infrastructure.csproj package CleanArchitecture.Extensions.Caching
 ```
 
-## Usage
-
-### Register caching and pipeline behavior
+## Register services
 
 ```csharp
 using CleanArchitecture.Extensions.Caching;
 using CleanArchitecture.Extensions.Caching.Options;
-using MediatR;
 
-services.AddCleanArchitectureCaching(options =>
+builder.Services.AddCleanArchitectureCaching(options =>
 {
     options.DefaultNamespace = "MyApp";
-    options.MaxEntrySizeBytes = 256 * 1024; // optional
-}, queryOptions =>
+    options.MaxEntrySizeBytes = 256 * 1024;
+}, behaviorOptions =>
 {
-    queryOptions.DefaultTtl = TimeSpan.FromMinutes(5);
-    // Default predicate caches types whose names end with "Query"; override to use a marker instead:
-    // queryOptions.CachePredicate = req => req is IQueryMarker;
-});
-
-services.AddMediatR(cfg =>
-{
-    cfg.RegisterServicesFromAssemblyContaining<Program>();
-    cfg.AddCleanArchitectureCachingPipeline(); // place after request checks
+    behaviorOptions.DefaultTtl = TimeSpan.FromMinutes(5);
 });
 ```
 
-### Configure cache keys and TTLs
-
-- Keys follow `{namespace}:{tenant?}:{resource}:{hash}` via `ICacheKeyFactory` and `ICacheScope`. Override `ResourceNameSelector`/`HashFactory` in `QueryCachingBehaviorOptions` for custom resource naming or hashing (e.g., when parameters should be normalized).
-- Default TTL comes from `QueryCachingBehaviorOptions.DefaultTtl`; override per request type with `TtlByRequestType[typeof(MyQuery)] = TimeSpan.FromSeconds(30);`.
-- `CachePredicate` controls which requests are cacheable. By default it caches request types whose names end with "Query"; override to use markers or explicit type checks. `ResponseCachePredicate` can skip caching for responses you do not want stored.
-
-### Choose an adapter
-
-- Memory (default): registered as `ICache` by `AddCleanArchitectureCaching`, uses `MemoryCacheAdapter` with stampede locking and jitter.
-- Distributed: resolve `DistributedCacheAdapter` or replace `ICache` registration:
+## Add the MediatR behavior
 
 ```csharp
-services.AddCleanArchitectureCaching();
-services.AddStackExchangeRedisCache(opts => opts.Configuration = "..."); // or other IDistributedCache
-services.AddSingleton<ICache, DistributedCacheAdapter>(); // override default
+builder.Services.AddMediatR(cfg =>
+{
+    cfg.RegisterServicesFromAssemblyContaining<Program>();
+    cfg.AddCleanArchitectureCachingPipeline();
+});
 ```
 
-### Entry options and stampede settings
+## How query caching works
 
-- `CachingOptions.DefaultEntryOptions` sets absolute/sliding expiration, priority, and size hints.
-- `CachingOptions.StampedePolicy` controls locking timeout and jitter for both adapters.
-- `CacheEntryOptions` can be passed per call or mapped by request type inside the behavior.
+`QueryCachingBehavior<TRequest, TResponse>` applies cache-aside semantics:
 
-### Response-aware caching
+- The default predicate caches request types whose names end with `Query` (case-insensitive).
+- The cache key uses the request type name as the resource and a SHA256 hash of the request payload.
+- Cache hits short-circuit the handler; cache misses store the handler result.
 
-Use `QueryCachingBehaviorOptions.ResponseCachePredicate` to skip caching responses you want to exclude (for example, error payloads or partial results).
+Configure request selection and TTLs via `QueryCachingBehaviorOptions`:
 
-## Key components
+```csharp
+builder.Services.AddCleanArchitectureCaching(
+    configureQueryCaching: options =>
+    {
+        options.CachePredicate = request => request is ICacheableQuery; // your own marker interface
+        options.DefaultTtl = TimeSpan.FromMinutes(2);
+        options.TtlByRequestType[typeof(GetUserQuery)] = TimeSpan.FromSeconds(30);
+        options.CacheNullValues = false;
+    });
+```
 
-- `ICache`, `CacheEntryOptions`, `CacheStampedePolicy`, `CacheKey`, `ICacheKeyFactory`, `ICacheScope`, `ICacheSerializer`.
-- `MemoryCacheAdapter`, `DistributedCacheAdapter` (for `IDistributedCache`).
-- `QueryCachingBehavior<TRequest,TResponse>` with configurable TTLs, hash selection, predicate, and response filtering.
+## Cache keys and scopes
 
-## Pipeline ordering
+- Key format: `{namespace}:{tenant?}:{resource}:{hash}`.
+- `DefaultCacheKeyFactory` hashes the request payload as JSON (deterministic SHA256).
+- `ICacheScope` supplies the namespace and optional tenant segment.
 
-- Recommended: Authorization → Request checks → **QueryCachingBehavior** → Performance/Logging → Handlers (align with the template order you already use).
-- Place caching after request checks to avoid caching invalid requests and before performance logging to exclude cache hits from handler timing warnings.
+If you customize keys, keep them deterministic and stable across versions.
+
+## Choose a cache adapter
+
+The default `ICache` implementation is `MemoryCacheAdapter`.
+
+!!! note
+    The memory adapter is process-local. In a multi-instance deployment, use a distributed cache.
+
+To use a distributed cache, register `IDistributedCache` and swap the adapter:
+
+```csharp
+using CleanArchitecture.Extensions.Caching.Adapters;
+using Microsoft.Extensions.Caching.StackExchangeRedis;
+
+builder.Services.AddCleanArchitectureCaching();
+builder.Services.AddStackExchangeRedisCache(options =>
+{
+    options.Configuration = "<redis-connection-string>";
+});
+
+builder.Services.AddSingleton<ICache, DistributedCacheAdapter>();
+```
+
+## Serialization
+
+The default serializer is `SystemTextJsonCacheSerializer`. Replace it when needed:
+
+```csharp
+using CleanArchitecture.Extensions.Caching.Serialization;
+
+builder.Services.AddSingleton<ICacheSerializer>(sp =>
+    new SystemTextJsonCacheSerializer(new JsonSerializerOptions(JsonSerializerDefaults.Web)));
+```
+
+## Stampede protection and entry options
+
+- `CachingOptions.StampedePolicy` controls locking, timeouts, and jitter.
+- `CachingOptions.DefaultEntryOptions` defines expiration, priority, and size hints.
+
+```csharp
+builder.Services.AddCleanArchitectureCaching(options =>
+{
+    options.StampedePolicy = new CacheStampedePolicy
+    {
+        EnableLocking = true,
+        LockTimeout = TimeSpan.FromSeconds(3),
+        Jitter = TimeSpan.FromMilliseconds(50)
+    };
+});
+```
 
 ## Invalidation guidance
 
-- Cache-aside pattern: explicit `ICache.Remove` or `ICache.RemoveAsync` on command success or domain event handlers.
-- Include versioning and tenant segments in keys to avoid collisions; adjust namespace when making breaking DTO changes.
+Caching is read-through; invalidation is explicit. On command success or domain events, remove keys:
 
-## Backlog / Next Iteration
+```csharp
+await cache.RemoveAsync(cacheScope.Create("GetUserQuery", hash));
+```
 
-- Add PII/classification guardrails so sensitive payloads can be blocked or redirected to encrypted storage.
-- Provide an optional encrypting serializer wrapper for distributed caches with guidance for key management.
-- Expose instrumentation hooks (hits, misses, latency) without forcing a specific metrics provider.
-- Document and/or implement schema-versioned key strategies to support DTO shape changes safely.
+Keep key conventions stable and consider bumping the namespace for breaking DTO changes.
 
-## Testing
+## Multitenancy integration
 
-- Use the default memory adapter for Application tests; distributed adapter can use `MemoryDistributedCache` for deterministic runs.
+If you use multitenancy, call `AddCleanArchitectureMultitenancyCaching` to include tenant IDs in cache keys:
+
+```csharp
+builder.Services.AddCleanArchitectureCaching();
+builder.Services.AddCleanArchitectureMultitenancyCaching();
+```
+
+## Observability
+
+- `QueryCachingBehavior` logs cache hits and misses at `Debug` level.
+- Adapters log warnings on oversized payloads or deserialization failures.
+
+## Troubleshooting
+
+- Cache is never hit: ensure the request type matches the cache predicate and the behavior is registered.
+- Missing tenant in keys: call `AddCleanArchitectureMultitenancyCaching` after caching registration.
+- Large payloads: raise `MaxEntrySizeBytes` or skip caching via `ResponseCachePredicate`.
+
+## Samples and tests
+
+See the caching tests under `tests/` for behavior coverage and usage patterns.
+
+## Reference
+
+- [Caching options](../reference/caching-options.md)

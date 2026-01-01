@@ -1,4 +1,4 @@
-# Multitenancy Core: Validation and stores
+# Multitenancy core: validation and stores
 
 This page explains validation modes and how to plug in tenant metadata stores and caches.
 
@@ -6,11 +6,11 @@ This page explains validation modes and how to plug in tenant metadata stores an
 
 `MultitenancyOptions.ValidationMode` controls how tenant IDs are validated:
 
-- `None` (default): no lookup; the resolver creates a minimal active `TenantInfo`.
+- `None` (default): no lookup; the resolver creates a minimal active `TenantInfo` and marks it validated.
 - `Cache`: validate only via `ITenantInfoCache`.
 - `Repository`: validate via `ITenantInfoStore` and optionally cache results.
 
-If a required cache/store is not registered, the system logs a warning and leaves the tenant as unvalidated. `TenantEnforcementBehavior` then throws `TenantNotFoundException` when a tenant is required.
+If a required cache/store is not registered, the system logs a warning and leaves the tenant unvalidated. `TenantEnforcementBehavior` then throws `TenantNotFoundException` when a tenant is required.
 
 ## Implementing a store
 
@@ -52,15 +52,15 @@ public sealed class InMemoryTenantCache : ITenantInfoCache
 }
 ```
 
-Register the store/cache in DI and enable validation:
+## Register and enable validation
 
 ```csharp
 using CleanArchitecture.Extensions.Multitenancy.Configuration;
 
-services.AddSingleton<ITenantInfoStore, InMemoryTenantStore>();
-services.AddSingleton<ITenantInfoCache, InMemoryTenantCache>();
+builder.Services.AddSingleton<ITenantInfoStore, InMemoryTenantStore>();
+builder.Services.AddSingleton<ITenantInfoCache, InMemoryTenantCache>();
 
-services.Configure<MultitenancyOptions>(options =>
+builder.Services.Configure<MultitenancyOptions>(options =>
 {
     options.ValidationMode = TenantValidationMode.Repository;
     options.ResolutionCacheTtl = TimeSpan.FromMinutes(10);
@@ -72,7 +72,7 @@ services.Configure<MultitenancyOptions>(options =>
 The default provider can return a fallback tenant if configured:
 
 ```csharp
-services.Configure<MultitenancyOptions>(options =>
+builder.Services.Configure<MultitenancyOptions>(options =>
 {
     options.FallbackTenantId = "local";
 });
@@ -84,9 +84,9 @@ Fallbacks are only used when the `DefaultTenantProvider` runs (source `Default`)
 
 `TenantEnforcementBehavior` treats a tenant as invalid when:
 
-- `IsActive` is false
-- `IsSoftDeleted` is true
+- `IsActive` is `false`
+- `IsSoftDeleted` is `true`
 - `State` is `Suspended`, `PendingProvision`, or `Deleted`
-- `ExpiresAt` has passed
+- `ExpiresAt` is in the past
 
 Populate these fields in your `ITenantInfoStore` so enforcement works as expected.

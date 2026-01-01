@@ -1,20 +1,29 @@
 # Recipe: Authentication
 
 ## Goal
-Wire authentication with extension-friendly hooks.
+
+Wire authentication in a template-based solution while keeping extension integration clean.
 
 ## Prereqs
+
 - Base Clean Architecture template running.
-- Auth provider chosen (e.g., JWT, cookies, Identity) using the template defaults.
+- Authentication strategy chosen (JWT, cookies, or Identity).
 
 ## Steps
-1. Configure authentication in Program.cs (or equivalent) using the template guidance.
-2. If multitenancy is enabled, ensure tenant resolution runs before authorization checks.
-3. Add tenant-aware authorization policies if needed.
+
+1. Configure authentication schemes in `Program.cs` (or equivalent).
+2. Add authorization policies for tenant-aware endpoints if needed.
+3. If multitenancy is enabled, ensure tenant resolution and authentication are ordered correctly:
+   - Use tenant resolution before authorization.
+   - If tenant resolution depends on claims, run authentication before tenant resolution.
 
 ## Verify
-- Hitting a protected endpoint returns 200 with valid token; 401 otherwise.
+
+- Hitting a protected endpoint returns `200` with a valid token and `401` without one.
+- Tenant-required endpoints return a tenant error when the tenant is missing.
 
 ## Pitfalls
-- Misaligned schemes between API and client; ensure defaults match.
-- Ensure tenant resolution occurs before authz when multitenancy is enabled.
+
+- Authentication runs after tenant resolution when claim-based resolution is enabled (claims will be empty).
+- Mismatched schemes between API and client.
+- Missing authorization policies on tenant-required endpoints.

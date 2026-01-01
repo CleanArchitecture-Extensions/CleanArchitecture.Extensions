@@ -1,13 +1,13 @@
-# Multitenancy Core: Requirements and behaviors
+# Multitenancy core: requirements and behaviors
 
-This page documents how tenant requirements are expressed and how pipeline behaviors enforce them.
+This page explains how tenant requirements are expressed and how the MediatR behaviors enforce them.
 
 ## Tenant requirements
 
-A request or endpoint can declare its requirement in two ways:
+A request or endpoint can declare a requirement in two ways:
 
 1) Implement `ITenantRequirement` on the request type.
-2) Apply `RequiresTenantAttribute` or `AllowHostRequestsAttribute` on the request or endpoint.
+2) Apply `RequiresTenantAttribute` or `AllowHostRequestsAttribute` to the request or endpoint.
 
 Example request-level requirement:
 
@@ -31,39 +31,30 @@ using MediatR;
 public sealed record GetHealthQuery() : IRequest<string>;
 ```
 
-If no requirement is specified, the system falls back to:
-- `MultitenancyOptions.RequireTenantByDefault` (default true)
-- `MultitenancyOptions.AllowAnonymous`
+If no requirement is specified, the default is determined by:
+
+- `MultitenancyOptions.RequireTenantByDefault` (default `true`)
+- `MultitenancyOptions.AllowAnonymous` (default `false`)
 
 ## Pipeline behaviors
 
-The core package includes the following MediatR behaviors:
-
-- `TenantValidationBehavior` - validates tenant metadata against cache/store.
-- `TenantEnforcementBehavior` - enforces resolution and tenant lifecycle checks.
-- `TenantCorrelationBehavior` - adds tenant ID to logging scope and activity baggage.
-- `TenantScopedCacheBehavior` - warns when cache scope is missing tenant context.
-
-Register them using the extension method:
+Register the core behaviors with:
 
 ```csharp
-using CleanArchitecture.Extensions.Multitenancy.Behaviors;
-using MediatR;
-
-services.AddMediatR(cfg =>
+builder.Services.AddMediatR(cfg =>
 {
     cfg.RegisterServicesFromAssemblyContaining<Program>();
-
-    // Template behaviors...
-    // cfg.AddOpenBehavior(typeof(AuthorizationBehaviour<,>));
-    // cfg.AddOpenBehavior(typeof(ValidationBehaviour<,>));
-
     cfg.AddCleanArchitectureMultitenancyPipeline();
-    cfg.AddOpenBehavior(typeof(TenantScopedCacheBehavior<,>)); // optional
 });
 ```
 
-Place the call near your other request checks so tenant enforcement happens before the handler executes.
+The pipeline includes:
+
+- `TenantValidationBehavior` - validates tenant metadata against cache/store when enabled.
+- `TenantEnforcementBehavior` - enforces resolution and lifecycle checks.
+- `TenantCorrelationBehavior` - enriches logs and activity with tenant ID.
+
+`TenantScopedCacheBehavior` is optional and warns when cache scope does not align with the current tenant.
 
 ## Enforcement rules
 
@@ -74,33 +65,15 @@ Place the call near your other request checks so tenant enforcement happens befo
 - Tenant is suspended (`TenantSuspendedException`).
 - Tenant is inactive, soft-deleted, pending provisioning, deleted, or expired (`TenantInactiveException`).
 
-If you need to bypass enforcement for specific endpoints, apply `AllowHostRequestsAttribute` or return `TenantRequirementMode.Optional`.
+These rules are evaluated against `TenantInfo` fields: `IsActive`, `IsSoftDeleted`, `State`, and `ExpiresAt`.
 
-## Optional: map exceptions to HTTP responses
+## Log and trace correlation
 
-In ASP.NET Core, map tenant exceptions to HTTP status codes:
+`TenantCorrelationBehavior` adds the tenant ID to:
 
-```csharp
-using CleanArchitecture.Extensions.Multitenancy.Exceptions;
-using Microsoft.AspNetCore.Diagnostics;
-using Microsoft.AspNetCore.Http;
+- Log scopes (key is `MultitenancyOptions.LogScopeKey`)
+- Activity tags and baggage when `AddTenantToActivity` is enabled
 
-app.UseExceptionHandler(handler =>
-{
-    handler.Run(async context =>
-    {
-        var feature = context.Features.Get<IExceptionHandlerFeature>();
-        var status = feature?.Error switch
-        {
-            TenantNotResolvedException => StatusCodes.Status400BadRequest,
-            TenantNotFoundException => StatusCodes.Status404NotFound,
-            TenantSuspendedException => StatusCodes.Status403Forbidden,
-            TenantInactiveException => StatusCodes.Status403Forbidden,
-            _ => StatusCodes.Status500InternalServerError
-        };
+## HTTP enforcement
 
-        context.Response.StatusCode = status;
-        await context.Response.WriteAsync("Tenant error.");
-    });
-});
-```
+For HTTP endpoints, use the ASP.NET Core adapter's filters (`TenantEnforcementEndpointFilter` or `TenantEnforcementActionFilter`). They apply the same enforcement rules and can map exceptions to ProblemDetails responses.

@@ -47,7 +47,10 @@ nav:
   - Samples: samples/index.md
   - Reference:
       - Configuration: reference/configuration.md
+      - Caching options: reference/caching-options.md
       - Multitenancy options: reference/multitenancy-options.md
+      - AspNetCore multitenancy options: reference/aspnetcore-multitenancy-options.md
+      - EF Core multitenancy options: reference/efcore-multitenancy-options.md
   - Troubleshooting:
       - Overview: troubleshooting/index.md
       - Multitenancy: troubleshooting/multitenancy.md

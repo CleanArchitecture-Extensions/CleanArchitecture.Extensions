@@ -1,23 +1,18 @@
-# Configuration Reference
+# Configuration reference
 
-Configuration keys and environment variables for extensions.
+This page explains how to configure extensions using the Options pattern.
 
-- Use the Options pattern to bind configuration sections to extension options.
-- Section names are not enforced; the names below are recommended for consistency.
+## Recommended configuration sections
 
-## Available references
+| Section                              | Options type                    | Notes                            |
+| ------------------------------------ | ------------------------------- | -------------------------------- |
+| `Extensions:Caching`                 | `CachingOptions`                | Core caching defaults.           |
+| `Extensions:Caching:QueryBehavior`   | `QueryCachingBehaviorOptions`   | Query caching behavior settings. |
+| `Extensions:Multitenancy`            | `MultitenancyOptions`           | Core multitenancy settings.      |
+| `Extensions:Multitenancy:AspNetCore` | `AspNetCoreMultitenancyOptions` | ASP.NET Core adapter settings.   |
+| `Extensions:Multitenancy:EFCore`     | `EfCoreMultitenancyOptions`     | EF Core adapter settings.        |
 
-- Multitenancy options: [multitenancy-options.md](multitenancy-options.md)
-
-## Recommended sections
-
-- `Extensions:Caching` -> `CachingOptions`
-- `Extensions:Caching:QueryBehavior` -> `QueryCachingBehaviorOptions`
-- `Extensions:Multitenancy` -> `MultitenancyOptions`
-- `Extensions:Multitenancy:AspNetCore` -> `AspNetCoreMultitenancyOptions`
-- `Extensions:Multitenancy:EFCore` -> `EfCoreMultitenancyOptions`
-
-## Example
+## Example configuration
 
 ```json
 {
@@ -25,6 +20,7 @@ Configuration keys and environment variables for extensions.
     "Caching": {
       "Enabled": true,
       "DefaultNamespace": "MyApp",
+      "MaxEntrySizeBytes": 262144,
       "QueryBehavior": {
         "DefaultTtl": "00:05:00",
         "CacheNullValues": false
@@ -32,25 +28,49 @@ Configuration keys and environment variables for extensions.
     },
     "Multitenancy": {
       "RequireTenantByDefault": true,
-      "HeaderNames": [ "X-Tenant-ID" ],
+      "HeaderNames": ["X-Tenant-ID"],
+      "RouteParameterName": "tenantId",
+      "ValidationMode": "Repository",
+      "AspNetCore": {
+        "CorrelationIdHeaderName": "X-Correlation-ID",
+        "StoreTenantInHttpContextItems": true
+      },
       "EFCore": {
         "Mode": "SharedDatabase",
-        "TenantIdPropertyName": "TenantId"
+        "TenantIdPropertyName": "TenantId",
+        "UseShadowTenantId": true
       }
     }
   }
 }
 ```
 
-Bind sections in your host:
+## Bind configuration in code
 
 ```csharp
 builder.Services.Configure<CachingOptions>(
     builder.Configuration.GetSection("Extensions:Caching"));
+
 builder.Services.Configure<QueryCachingBehaviorOptions>(
     builder.Configuration.GetSection("Extensions:Caching:QueryBehavior"));
+
 builder.Services.Configure<MultitenancyOptions>(
     builder.Configuration.GetSection("Extensions:Multitenancy"));
+
+builder.Services.Configure<AspNetCoreMultitenancyOptions>(
+    builder.Configuration.GetSection("Extensions:Multitenancy:AspNetCore"));
+
 builder.Services.Configure<EfCoreMultitenancyOptions>(
     builder.Configuration.GetSection("Extensions:Multitenancy:EFCore"));
 ```
+
+## Options that must be set in code
+
+Some options are delegates (for example, `HostTenantSelector`, `SchemaNameProvider`, `ConnectionStringProvider`). These cannot be bound from JSON and must be configured in code.
+
+## See also
+
+- [Caching options](caching-options.md)
+- [Multitenancy options](multitenancy-options.md)
+- [AspNetCore multitenancy options](aspnetcore-multitenancy-options.md)
+- [EF Core multitenancy options](efcore-multitenancy-options.md)

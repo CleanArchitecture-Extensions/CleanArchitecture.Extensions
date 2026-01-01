@@ -1,8 +1,14 @@
 # Troubleshooting
 
-Common issues and fixes (expand as features land).
+Common issues and fixes for the current extensions.
 
-- Extension fails to start: enable debug logs and check config keys.
-- Tenant not resolved: verify provider order (host/header/route/claims) and add logging for resolution steps.
-- Caching mismatches: confirm cache keys include tenant/user when required.
-- Multitenancy deep dive: [multitenancy.md](multitenancy.md)
+- Caching not working: verify the behavior is registered and the request matches the cache predicate.
+- Tenant not resolved: confirm the resolution context is populated and provider order is correct.
+- Tenant validation failures: ensure `ITenantInfoStore`/`ITenantInfoCache` is registered when validation is enabled.
+- EF Core enforcement errors: confirm tenant context is available for writes.
+
+See also:
+
+- [Multitenancy troubleshooting](multitenancy.md)
+- [Caching extension](../extensions/caching.md)
+- [Multitenancy core](../extensions/multitenancy-core.md)
