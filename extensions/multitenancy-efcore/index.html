@@ -10,13 +10,13 @@
       
       
       
-        <link rel="canonical" href="https://cleanarchitecture-extensions.github.io/CleanArchitecture.Extensions/extensions/caching/">
+        <link rel="canonical" href="https://cleanarchitecture-extensions.github.io/CleanArchitecture.Extensions/extensions/multitenancy-efcore/">
       
       
-        <link rel="prev" href="../">
+        <link rel="prev" href="../multitenancy-aspnetcore/">
       
       
-        <link rel="next" href="../multitenancy-aspnetcore/">
+        <link rel="next" href="../multitenancy-core/">
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
@@ -24,7 +24,7 @@
     
     
       
-        <title>Caching - CleanArchitecture.Extensions</title>
+        <title>Multitenancy.EFCore - CleanArchitecture.Extensions</title>
       
     
     
@@ -66,7 +66,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#extension-caching" class="md-skip">
+        <a href="#extension-multitenancyefcore" class="md-skip">
           Skip to content
         </a>
       
@@ -100,7 +100,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Caching
+              Multitenancy.EFCore
             
           </span>
         </div>
@@ -797,6 +797,48 @@
                 
   
   
+  
+  
+    <li class="md-nav__item">
+      <a href="../caching/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Caching
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../multitenancy-aspnetcore/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Multitenancy.AspNetCore
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
     
   
   
@@ -813,7 +855,7 @@
           
   
   <span class="md-ellipsis">
-    Caching
+    Multitenancy.EFCore
   </span>
   
 
@@ -824,7 +866,7 @@
         
   
   <span class="md-ellipsis">
-    Caching
+    Multitenancy.EFCore
   </span>
   
 
@@ -882,55 +924,55 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#usage" class="md-nav__link">
+  <a href="#quickstart" class="md-nav__link">
     <span class="md-ellipsis">
-      Usage
+      Quickstart
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Usage">
+    <nav class="md-nav" aria-label="Quickstart">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#register-caching-and-pipeline-behavior" class="md-nav__link">
+  <a href="#register-services" class="md-nav__link">
     <span class="md-ellipsis">
-      Register caching and pipeline behavior
+      Register services
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#configure-cache-keys-and-ttls" class="md-nav__link">
+  <a href="#configure-dbcontext" class="md-nav__link">
     <span class="md-ellipsis">
-      Configure cache keys and TTLs
+      Configure DbContext
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#choose-an-adapter" class="md-nav__link">
+  <a href="#option-a-derive-from-tenantdbcontext-non-identity-dbcontext" class="md-nav__link">
     <span class="md-ellipsis">
-      Choose an adapter
+      Option A: Derive from TenantDbContext (non-Identity DbContext)
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#entry-options-and-stampede-settings" class="md-nav__link">
+  <a href="#option-b-keep-identitydbcontext-template-default" class="md-nav__link">
     <span class="md-ellipsis">
-      Entry options and stampede settings
+      Option B: Keep IdentityDbContext (template default)
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#response-aware-caching" class="md-nav__link">
+  <a href="#tenant-entities" class="md-nav__link">
     <span class="md-ellipsis">
-      Response-aware caching
+      Tenant entities
     </span>
   </a>
   
@@ -938,6 +980,15 @@
         
       </ul>
     </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#schema-per-tenant-setup" class="md-nav__link">
+    <span class="md-ellipsis">
+      Schema-per-tenant setup
+    </span>
+  </a>
   
 </li>
       
@@ -951,36 +1002,9 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#pipeline-ordering" class="md-nav__link">
+  <a href="#related-modules" class="md-nav__link">
     <span class="md-ellipsis">
-      Pipeline ordering
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#invalidation-guidance" class="md-nav__link">
-    <span class="md-ellipsis">
-      Invalidation guidance
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#backlog-next-iteration" class="md-nav__link">
-    <span class="md-ellipsis">
-      Backlog / Next Iteration
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#testing" class="md-nav__link">
-    <span class="md-ellipsis">
-      Testing
+      Related modules
     </span>
   </a>
   
@@ -990,48 +1014,6 @@
   
 </nav>
       
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../multitenancy-aspnetcore/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Multitenancy.AspNetCore
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../multitenancy-efcore/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Multitenancy.EFCore
-  </span>
-  
-
-      </a>
     </li>
   
 
@@ -1611,55 +1593,55 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#usage" class="md-nav__link">
+  <a href="#quickstart" class="md-nav__link">
     <span class="md-ellipsis">
-      Usage
+      Quickstart
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Usage">
+    <nav class="md-nav" aria-label="Quickstart">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#register-caching-and-pipeline-behavior" class="md-nav__link">
+  <a href="#register-services" class="md-nav__link">
     <span class="md-ellipsis">
-      Register caching and pipeline behavior
+      Register services
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#configure-cache-keys-and-ttls" class="md-nav__link">
+  <a href="#configure-dbcontext" class="md-nav__link">
     <span class="md-ellipsis">
-      Configure cache keys and TTLs
+      Configure DbContext
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#choose-an-adapter" class="md-nav__link">
+  <a href="#option-a-derive-from-tenantdbcontext-non-identity-dbcontext" class="md-nav__link">
     <span class="md-ellipsis">
-      Choose an adapter
+      Option A: Derive from TenantDbContext (non-Identity DbContext)
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#entry-options-and-stampede-settings" class="md-nav__link">
+  <a href="#option-b-keep-identitydbcontext-template-default" class="md-nav__link">
     <span class="md-ellipsis">
-      Entry options and stampede settings
+      Option B: Keep IdentityDbContext (template default)
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#response-aware-caching" class="md-nav__link">
+  <a href="#tenant-entities" class="md-nav__link">
     <span class="md-ellipsis">
-      Response-aware caching
+      Tenant entities
     </span>
   </a>
   
@@ -1667,6 +1649,15 @@
         
       </ul>
     </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#schema-per-tenant-setup" class="md-nav__link">
+    <span class="md-ellipsis">
+      Schema-per-tenant setup
+    </span>
+  </a>
   
 </li>
       
@@ -1680,36 +1671,9 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#pipeline-ordering" class="md-nav__link">
+  <a href="#related-modules" class="md-nav__link">
     <span class="md-ellipsis">
-      Pipeline ordering
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#invalidation-guidance" class="md-nav__link">
-    <span class="md-ellipsis">
-      Invalidation guidance
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#backlog-next-iteration" class="md-nav__link">
-    <span class="md-ellipsis">
-      Backlog / Next Iteration
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#testing" class="md-nav__link">
-    <span class="md-ellipsis">
-      Testing
+      Related modules
     </span>
   </a>
   
@@ -1730,96 +1694,141 @@
                   
 
 
-<h1 id="extension-caching">Extension: Caching<a class="headerlink" href="#extension-caching" title="Permanent link">&para;</a></h1>
+<h1 id="extension-multitenancyefcore">Extension: Multitenancy.EFCore<a class="headerlink" href="#extension-multitenancyefcore" title="Permanent link">&para;</a></h1>
 <h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">&para;</a></h2>
-<p>Cache abstractions, key conventions, and a MediatR query caching behavior for Clean Architecture applications. Ships memory and distributed adapters, deterministic key generation, and options for stampede protection and TTL tuning without leaking infrastructure into handlers.</p>
+<p>Tenant-aware EF Core helpers that enforce isolation for shared databases, schema-per-tenant, and database-per-tenant configurations. Includes global query filters, SaveChanges enforcement, schema handling, and DbContext factory helpers.</p>
 <h2 id="when-to-use">When to use<a class="headerlink" href="#when-to-use" title="Permanent link">&para;</a></h2>
 <ul>
-<li>You want query read-through caching without embedding cache calls in handlers.</li>
-<li>You need deterministic, namespace/tenant-aware cache keys and provider-agnostic entry options.</li>
-<li>You plan to start with in-memory caching for dev/test and swap to distributed stores (Redis via <code>IDistributedCache</code>) later.</li>
+<li>You want row-level tenant isolation in a shared database.</li>
+<li>You need schema-per-tenant isolation with model cache separation.</li>
+<li>You want SaveChanges to enforce tenant ownership automatically.</li>
 </ul>
 <h2 id="prereqs-compatibility">Prereqs &amp; Compatibility<a class="headerlink" href="#prereqs-compatibility" title="Permanent link">&para;</a></h2>
 <ul>
 <li>Target frameworks: <code>net10.0</code>.</li>
-<li>Dependencies: MediatR <code>13.1.0</code>, <code>Microsoft.Extensions.Caching.Abstractions</code>, <code>Microsoft.Extensions.Caching.Memory</code> (defaults); distributed adapter uses <code>IDistributedCache</code> (MemoryDistributedCache by default).</li>
-<li>Pipeline fit: register <code>QueryCachingBehavior&lt;,&gt;</code> after authorization and request checks, and before performance logging to avoid skewing timing warnings.</li>
+<li>Dependencies: EF Core <code>10.0.0</code>, Microsoft.Extensions.Options <code>10.0.0</code>.</li>
+<li>Requires multitenancy core and a tenant resolver in your host.</li>
 </ul>
 <h2 id="install">Install<a class="headerlink" href="#install" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>dotnet<span class="w"> </span>add<span class="w"> </span>src/YourProject/YourProject.csproj<span class="w"> </span>package<span class="w"> </span>CleanArchitecture.Extensions.Caching
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>dotnet<span class="w"> </span>add<span class="w"> </span>src/Infrastructure/Infrastructure.csproj<span class="w"> </span>package<span class="w"> </span>CleanArchitecture.Extensions.Multitenancy.EFCore
 </code></pre></div>
-<h2 id="usage">Usage<a class="headerlink" href="#usage" title="Permanent link">&para;</a></h2>
-<h3 id="register-caching-and-pipeline-behavior">Register caching and pipeline behavior<a class="headerlink" href="#register-caching-and-pipeline-behavior" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="k">using</span><span class="w"> </span><span class="nn">CleanArchitecture.Extensions.Caching</span><span class="p">;</span>
-<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="k">using</span><span class="w"> </span><span class="nn">CleanArchitecture.Extensions.Caching.Options</span><span class="p">;</span>
-<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="k">using</span><span class="w"> </span><span class="nn">MediatR</span><span class="p">;</span>
+<h2 id="quickstart">Quickstart<a class="headerlink" href="#quickstart" title="Permanent link">&para;</a></h2>
+<h3 id="register-services">Register services<a class="headerlink" href="#register-services" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="k">using</span><span class="w"> </span><span class="nn">CleanArchitecture.Extensions.Multitenancy.EFCore</span><span class="p">;</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="k">using</span><span class="w"> </span><span class="nn">CleanArchitecture.Extensions.Multitenancy.EFCore.Interceptors</span><span class="p">;</span>
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="k">using</span><span class="w"> </span><span class="nn">CleanArchitecture.Extensions.Multitenancy.EFCore.Options</span><span class="p">;</span>
 <a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>
-<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="n">services</span><span class="p">.</span><span class="n">AddCleanArchitectureCaching</span><span class="p">(</span><span class="n">options</span><span class="w"> </span><span class="o">=&gt;</span>
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="n">AddCleanArchitectureMultitenancyEfCore</span><span class="p">(</span><span class="n">options</span><span class="w"> </span><span class="o">=&gt;</span>
 <a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="p">{</span>
-<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="w">    </span><span class="n">options</span><span class="p">.</span><span class="n">DefaultNamespace</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;MyApp&quot;</span><span class="p">;</span>
-<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="w">    </span><span class="n">options</span><span class="p">.</span><span class="n">MaxEntrySizeBytes</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">256</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">1024</span><span class="p">;</span><span class="w"> </span><span class="c1">// optional</span>
-<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="p">},</span><span class="w"> </span><span class="n">queryOptions</span><span class="w"> </span><span class="o">=&gt;</span>
-<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="p">{</span>
-<a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="w">    </span><span class="n">queryOptions</span><span class="p">.</span><span class="n">DefaultTtl</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">TimeSpan</span><span class="p">.</span><span class="n">FromMinutes</span><span class="p">(</span><span class="mi">5</span><span class="p">);</span>
-<a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a><span class="w">    </span><span class="c1">// Default predicate caches types whose names end with &quot;Query&quot;; override to use a marker instead:</span>
-<a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a><span class="w">    </span><span class="c1">// queryOptions.CachePredicate = req =&gt; req is IQueryMarker;</span>
-<a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a><span class="p">});</span>
-<a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a>
-<a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a><span class="n">services</span><span class="p">.</span><span class="n">AddMediatR</span><span class="p">(</span><span class="n">cfg</span><span class="w"> </span><span class="o">=&gt;</span>
-<a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a><span class="p">{</span>
-<a id="__codelineno-1-18" name="__codelineno-1-18" href="#__codelineno-1-18"></a><span class="w">    </span><span class="n">cfg</span><span class="p">.</span><span class="n">RegisterServicesFromAssemblyContaining</span><span class="o">&lt;</span><span class="n">Program</span><span class="o">&gt;</span><span class="p">();</span>
-<a id="__codelineno-1-19" name="__codelineno-1-19" href="#__codelineno-1-19"></a><span class="w">    </span><span class="n">cfg</span><span class="p">.</span><span class="n">AddCleanArchitectureCachingPipeline</span><span class="p">();</span><span class="w"> </span><span class="c1">// place after request checks</span>
-<a id="__codelineno-1-20" name="__codelineno-1-20" href="#__codelineno-1-20"></a><span class="p">});</span>
+<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="w">    </span><span class="n">options</span><span class="p">.</span><span class="n">Mode</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">TenantIsolationMode</span><span class="p">.</span><span class="n">SharedDatabase</span><span class="p">;</span>
+<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="w">    </span><span class="n">options</span><span class="p">.</span><span class="n">TenantIdPropertyName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;TenantId&quot;</span><span class="p">;</span>
+<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="w">    </span><span class="n">options</span><span class="p">.</span><span class="n">UseShadowTenantId</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">true</span><span class="p">;</span>
+<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="p">});</span>
 </code></pre></div>
-<h3 id="configure-cache-keys-and-ttls">Configure cache keys and TTLs<a class="headerlink" href="#configure-cache-keys-and-ttls" title="Permanent link">&para;</a></h3>
-<ul>
-<li>Keys follow <code>{namespace}:{tenant?}:{resource}:{hash}</code> via <code>ICacheKeyFactory</code> and <code>ICacheScope</code>. Override <code>ResourceNameSelector</code>/<code>HashFactory</code> in <code>QueryCachingBehaviorOptions</code> for custom resource naming or hashing (e.g., when parameters should be normalized).</li>
-<li>Default TTL comes from <code>QueryCachingBehaviorOptions.DefaultTtl</code>; override per request type with <code>TtlByRequestType[typeof(MyQuery)] = TimeSpan.FromSeconds(30);</code>.</li>
-<li><code>CachePredicate</code> controls which requests are cacheable. By default it caches request types whose names end with "Query"; override to use markers or explicit type checks. <code>ResponseCachePredicate</code> can skip caching for responses you do not want stored.</li>
-</ul>
-<h3 id="choose-an-adapter">Choose an adapter<a class="headerlink" href="#choose-an-adapter" title="Permanent link">&para;</a></h3>
-<ul>
-<li>Memory (default): registered as <code>ICache</code> by <code>AddCleanArchitectureCaching</code>, uses <code>MemoryCacheAdapter</code> with stampede locking and jitter.</li>
-<li>Distributed: resolve <code>DistributedCacheAdapter</code> or replace <code>ICache</code> registration:</li>
-</ul>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="n">services</span><span class="p">.</span><span class="n">AddCleanArchitectureCaching</span><span class="p">();</span>
-<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="n">services</span><span class="p">.</span><span class="n">AddStackExchangeRedisCache</span><span class="p">(</span><span class="n">opts</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">opts</span><span class="p">.</span><span class="n">Configuration</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;...&quot;</span><span class="p">);</span><span class="w"> </span><span class="c1">// or other IDistributedCache</span>
-<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="n">services</span><span class="p">.</span><span class="n">AddSingleton</span><span class="o">&lt;</span><span class="n">ICache</span><span class="p">,</span><span class="w"> </span><span class="n">DistributedCacheAdapter</span><span class="o">&gt;</span><span class="p">();</span><span class="w"> </span><span class="c1">// override default</span>
+<h3 id="configure-dbcontext">Configure DbContext<a class="headerlink" href="#configure-dbcontext" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="n">AddDbContext</span><span class="o">&lt;</span><span class="n">ApplicationDbContext</span><span class="o">&gt;</span><span class="p">((</span><span class="n">sp</span><span class="p">,</span><span class="w"> </span><span class="n">options</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="p">{</span>
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">    </span><span class="n">options</span><span class="p">.</span><span class="n">UseSqlServer</span><span class="p">(</span><span class="n">builder</span><span class="p">.</span><span class="n">Configuration</span><span class="p">.</span><span class="n">GetConnectionString</span><span class="p">(</span><span class="s">&quot;DefaultConnection&quot;</span><span class="p">));</span>
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="w">    </span><span class="n">options</span><span class="p">.</span><span class="n">AddInterceptors</span><span class="p">(</span><span class="n">sp</span><span class="p">.</span><span class="n">GetRequiredService</span><span class="o">&lt;</span><span class="n">TenantSaveChangesInterceptor</span><span class="o">&gt;</span><span class="p">());</span>
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="p">});</span>
 </code></pre></div>
-<h3 id="entry-options-and-stampede-settings">Entry options and stampede settings<a class="headerlink" href="#entry-options-and-stampede-settings" title="Permanent link">&para;</a></h3>
-<ul>
-<li><code>CachingOptions.DefaultEntryOptions</code> sets absolute/sliding expiration, priority, and size hints.</li>
-<li><code>CachingOptions.StampedePolicy</code> controls locking timeout and jitter for both adapters.</li>
-<li><code>CacheEntryOptions</code> can be passed per call or mapped by request type inside the behavior.</li>
-</ul>
-<h3 id="response-aware-caching">Response-aware caching<a class="headerlink" href="#response-aware-caching" title="Permanent link">&para;</a></h3>
-<p>Use <code>QueryCachingBehaviorOptions.ResponseCachePredicate</code> to skip caching responses you want to exclude (for example, error payloads or partial results).</p>
+<p>If your host already registers <code>ISaveChangesInterceptor</code> instances, you can omit the explicit <code>TenantSaveChangesInterceptor</code> line and rely on <code>GetServices&lt;ISaveChangesInterceptor&gt;()</code>.</p>
+<h3 id="option-a-derive-from-tenantdbcontext-non-identity-dbcontext">Option A: Derive from TenantDbContext (non-Identity DbContext)<a class="headerlink" href="#option-a-derive-from-tenantdbcontext-non-identity-dbcontext" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="k">using</span><span class="w"> </span><span class="nn">CleanArchitecture.Extensions.Multitenancy.Abstractions</span><span class="p">;</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="k">using</span><span class="w"> </span><span class="nn">CleanArchitecture.Extensions.Multitenancy.EFCore.Abstractions</span><span class="p">;</span>
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="k">using</span><span class="w"> </span><span class="nn">CleanArchitecture.Extensions.Multitenancy.EFCore</span><span class="p">;</span>
+<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="k">using</span><span class="w"> </span><span class="nn">CleanArchitecture.Extensions.Multitenancy.EFCore.Options</span><span class="p">;</span>
+<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>
+<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="k">public</span><span class="w"> </span><span class="k">sealed</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">ApplicationDbContext</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">TenantDbContext</span>
+<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="p">{</span>
+<a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="nf">ApplicationDbContext</span><span class="p">(</span>
+<a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a><span class="w">        </span><span class="n">DbContextOptions</span><span class="o">&lt;</span><span class="n">ApplicationDbContext</span><span class="o">&gt;</span><span class="w"> </span><span class="n">options</span><span class="p">,</span>
+<a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a><span class="w">        </span><span class="n">ICurrentTenant</span><span class="w"> </span><span class="n">currentTenant</span><span class="p">,</span>
+<a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a><span class="w">        </span><span class="n">IOptions</span><span class="o">&lt;</span><span class="n">EfCoreMultitenancyOptions</span><span class="o">&gt;</span><span class="w"> </span><span class="n">optionsAccessor</span><span class="p">,</span>
+<a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a><span class="w">        </span><span class="n">ITenantModelCustomizer</span><span class="w"> </span><span class="n">modelCustomizer</span><span class="p">)</span>
+<a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a><span class="w">        </span><span class="p">:</span><span class="w"> </span><span class="k">base</span><span class="p">(</span><span class="n">options</span><span class="p">,</span><span class="w"> </span><span class="n">currentTenant</span><span class="p">,</span><span class="w"> </span><span class="n">optionsAccessor</span><span class="p">,</span><span class="w"> </span><span class="n">modelCustomizer</span><span class="p">)</span>
+<a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a><span class="w">    </span><span class="p">{</span>
+<a id="__codelineno-3-15" name="__codelineno-3-15" href="#__codelineno-3-15"></a><span class="w">    </span><span class="p">}</span>
+<a id="__codelineno-3-16" name="__codelineno-3-16" href="#__codelineno-3-16"></a><span class="p">}</span>
+</code></pre></div>
+<h3 id="option-b-keep-identitydbcontext-template-default">Option B: Keep IdentityDbContext (template default)<a class="headerlink" href="#option-b-keep-identitydbcontext-template-default" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="k">using</span><span class="w"> </span><span class="nn">System.Reflection</span><span class="p">;</span>
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="k">using</span><span class="w"> </span><span class="nn">CleanArchitecture.Extensions.Multitenancy.Abstractions</span><span class="p">;</span>
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="k">using</span><span class="w"> </span><span class="nn">CleanArchitecture.Extensions.Multitenancy.EFCore.Abstractions</span><span class="p">;</span>
+<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="k">using</span><span class="w"> </span><span class="nn">CleanArchitecture.Extensions.Multitenancy.EFCore.Options</span><span class="p">;</span>
+<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="k">using</span><span class="w"> </span><span class="nn">Microsoft.AspNetCore.Identity.EntityFrameworkCore</span><span class="p">;</span>
+<a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="k">using</span><span class="w"> </span><span class="nn">Microsoft.EntityFrameworkCore</span><span class="p">;</span>
+<a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="k">using</span><span class="w"> </span><span class="nn">Microsoft.Extensions.Options</span><span class="p">;</span>
+<a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a>
+<a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a><span class="k">public</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">ApplicationDbContext</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">IdentityDbContext</span><span class="o">&lt;</span><span class="n">ApplicationUser</span><span class="o">&gt;</span><span class="p">,</span><span class="w"> </span><span class="n">ITenantDbContext</span>
+<a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a><span class="p">{</span>
+<a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a><span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="k">readonly</span><span class="w"> </span><span class="n">ICurrentTenant</span><span class="w"> </span><span class="n">_currentTenant</span><span class="p">;</span>
+<a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a><span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="k">readonly</span><span class="w"> </span><span class="n">EfCoreMultitenancyOptions</span><span class="w"> </span><span class="n">_multitenancyOptions</span><span class="p">;</span>
+<a id="__codelineno-4-13" name="__codelineno-4-13" href="#__codelineno-4-13"></a><span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="k">readonly</span><span class="w"> </span><span class="n">ITenantModelCustomizer</span><span class="w"> </span><span class="n">_tenantModelCustomizer</span><span class="p">;</span>
+<a id="__codelineno-4-14" name="__codelineno-4-14" href="#__codelineno-4-14"></a>
+<a id="__codelineno-4-15" name="__codelineno-4-15" href="#__codelineno-4-15"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="nf">ApplicationDbContext</span><span class="p">(</span>
+<a id="__codelineno-4-16" name="__codelineno-4-16" href="#__codelineno-4-16"></a><span class="w">        </span><span class="n">DbContextOptions</span><span class="o">&lt;</span><span class="n">ApplicationDbContext</span><span class="o">&gt;</span><span class="w"> </span><span class="n">options</span><span class="p">,</span>
+<a id="__codelineno-4-17" name="__codelineno-4-17" href="#__codelineno-4-17"></a><span class="w">        </span><span class="n">ICurrentTenant</span><span class="w"> </span><span class="n">currentTenant</span><span class="p">,</span>
+<a id="__codelineno-4-18" name="__codelineno-4-18" href="#__codelineno-4-18"></a><span class="w">        </span><span class="n">IOptions</span><span class="o">&lt;</span><span class="n">EfCoreMultitenancyOptions</span><span class="o">&gt;</span><span class="w"> </span><span class="n">optionsAccessor</span><span class="p">,</span>
+<a id="__codelineno-4-19" name="__codelineno-4-19" href="#__codelineno-4-19"></a><span class="w">        </span><span class="n">ITenantModelCustomizer</span><span class="w"> </span><span class="n">tenantModelCustomizer</span><span class="p">)</span>
+<a id="__codelineno-4-20" name="__codelineno-4-20" href="#__codelineno-4-20"></a><span class="w">        </span><span class="p">:</span><span class="w"> </span><span class="k">base</span><span class="p">(</span><span class="n">options</span><span class="p">)</span>
+<a id="__codelineno-4-21" name="__codelineno-4-21" href="#__codelineno-4-21"></a><span class="w">    </span><span class="p">{</span>
+<a id="__codelineno-4-22" name="__codelineno-4-22" href="#__codelineno-4-22"></a><span class="w">        </span><span class="n">_currentTenant</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">currentTenant</span><span class="p">;</span>
+<a id="__codelineno-4-23" name="__codelineno-4-23" href="#__codelineno-4-23"></a><span class="w">        </span><span class="n">_multitenancyOptions</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">optionsAccessor</span><span class="p">.</span><span class="n">Value</span><span class="p">;</span>
+<a id="__codelineno-4-24" name="__codelineno-4-24" href="#__codelineno-4-24"></a><span class="w">        </span><span class="n">_tenantModelCustomizer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">tenantModelCustomizer</span><span class="p">;</span>
+<a id="__codelineno-4-25" name="__codelineno-4-25" href="#__codelineno-4-25"></a><span class="w">    </span><span class="p">}</span>
+<a id="__codelineno-4-26" name="__codelineno-4-26" href="#__codelineno-4-26"></a>
+<a id="__codelineno-4-27" name="__codelineno-4-27" href="#__codelineno-4-27"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">string?</span><span class="w"> </span><span class="n">CurrentTenantId</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">_currentTenant</span><span class="p">.</span><span class="n">TenantId</span><span class="p">;</span>
+<a id="__codelineno-4-28" name="__codelineno-4-28" href="#__codelineno-4-28"></a>
+<a id="__codelineno-4-29" name="__codelineno-4-29" href="#__codelineno-4-29"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="n">ITenantInfo</span><span class="o">?</span><span class="w"> </span><span class="n">CurrentTenantInfo</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">_currentTenant</span><span class="p">.</span><span class="n">TenantInfo</span><span class="p">;</span>
+<a id="__codelineno-4-30" name="__codelineno-4-30" href="#__codelineno-4-30"></a>
+<a id="__codelineno-4-31" name="__codelineno-4-31" href="#__codelineno-4-31"></a><span class="w">    </span><span class="k">protected</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">OnModelCreating</span><span class="p">(</span><span class="n">ModelBuilder</span><span class="w"> </span><span class="n">builder</span><span class="p">)</span>
+<a id="__codelineno-4-32" name="__codelineno-4-32" href="#__codelineno-4-32"></a><span class="w">    </span><span class="p">{</span>
+<a id="__codelineno-4-33" name="__codelineno-4-33" href="#__codelineno-4-33"></a><span class="w">        </span><span class="k">base</span><span class="p">.</span><span class="n">OnModelCreating</span><span class="p">(</span><span class="n">builder</span><span class="p">);</span>
+<a id="__codelineno-4-34" name="__codelineno-4-34" href="#__codelineno-4-34"></a><span class="w">        </span><span class="n">builder</span><span class="p">.</span><span class="n">ApplyConfigurationsFromAssembly</span><span class="p">(</span><span class="n">Assembly</span><span class="p">.</span><span class="n">GetExecutingAssembly</span><span class="p">());</span>
+<a id="__codelineno-4-35" name="__codelineno-4-35" href="#__codelineno-4-35"></a><span class="w">        </span><span class="n">_tenantModelCustomizer</span><span class="p">.</span><span class="n">Customize</span><span class="p">(</span><span class="n">builder</span><span class="p">,</span><span class="w"> </span><span class="k">this</span><span class="p">,</span><span class="w"> </span><span class="n">_multitenancyOptions</span><span class="p">);</span>
+<a id="__codelineno-4-36" name="__codelineno-4-36" href="#__codelineno-4-36"></a><span class="w">    </span><span class="p">}</span>
+<a id="__codelineno-4-37" name="__codelineno-4-37" href="#__codelineno-4-37"></a><span class="p">}</span>
+</code></pre></div>
+<h3 id="tenant-entities">Tenant entities<a class="headerlink" href="#tenant-entities" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="k">using</span><span class="w"> </span><span class="nn">CleanArchitecture.Extensions.Multitenancy.EFCore.Abstractions</span><span class="p">;</span>
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>
+<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="k">public</span><span class="w"> </span><span class="k">sealed</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">Customer</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">ITenantEntity</span>
+<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="p">{</span>
+<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">Id</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">TenantId</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kt">string</span><span class="p">.</span><span class="n">Empty</span><span class="p">;</span>
+<a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="p">}</span>
+</code></pre></div>
+<p>If you already use <code>BaseAuditableEntity</code>, you can rely on the shadow <code>TenantId</code> property, or implement <code>ITenantEntity</code> on your base entity to make the tenant column explicit.</p>
+<p>Exclude global entities:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="k">using</span><span class="w"> </span><span class="nn">CleanArchitecture.Extensions.Multitenancy.EFCore.Abstractions</span><span class="p">;</span>
+<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>
+<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="na">[GlobalEntity]</span>
+<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="k">public</span><span class="w"> </span><span class="k">sealed</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">FeatureFlag</span>
+<a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="p">{</span>
+<a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">Id</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a><span class="p">}</span>
+</code></pre></div>
+<h2 id="schema-per-tenant-setup">Schema-per-tenant setup<a class="headerlink" href="#schema-per-tenant-setup" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="n">AddCleanArchitectureMultitenancyEfCore</span><span class="p">(</span><span class="n">options</span><span class="w"> </span><span class="o">=&gt;</span>
+<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="p">{</span>
+<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="w">    </span><span class="n">options</span><span class="p">.</span><span class="n">Mode</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">TenantIsolationMode</span><span class="p">.</span><span class="n">SchemaPerTenant</span><span class="p">;</span>
+<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="w">    </span><span class="n">options</span><span class="p">.</span><span class="n">SchemaNameFormat</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;tenant_{0}&quot;</span><span class="p">;</span>
+<a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="p">});</span>
+</code></pre></div>
 <h2 id="key-components">Key components<a class="headerlink" href="#key-components" title="Permanent link">&para;</a></h2>
 <ul>
-<li><code>ICache</code>, <code>CacheEntryOptions</code>, <code>CacheStampedePolicy</code>, <code>CacheKey</code>, <code>ICacheKeyFactory</code>, <code>ICacheScope</code>, <code>ICacheSerializer</code>.</li>
-<li><code>MemoryCacheAdapter</code>, <code>DistributedCacheAdapter</code> (for <code>IDistributedCache</code>).</li>
-<li><code>QueryCachingBehavior&lt;TRequest,TResponse&gt;</code> with configurable TTLs, hash selection, predicate, and response filtering.</li>
+<li><code>TenantDbContext</code> base class, <code>ITenantDbContext</code>, and <code>TenantModelCacheKeyFactory</code>.</li>
+<li><code>TenantSaveChangesInterceptor</code> for tenant enforcement on writes.</li>
+<li><code>TenantModelCustomizer</code> for filters and schema configuration.</li>
+<li><code>TenantMigrationRunner&lt;TContext&gt;</code> for per-tenant migrations.</li>
 </ul>
-<h2 id="pipeline-ordering">Pipeline ordering<a class="headerlink" href="#pipeline-ordering" title="Permanent link">&para;</a></h2>
+<h2 id="related-modules">Related modules<a class="headerlink" href="#related-modules" title="Permanent link">&para;</a></h2>
 <ul>
-<li>Recommended: Authorization → Request checks → <strong>QueryCachingBehavior</strong> → Performance/Logging → Handlers (align with the template order you already use).</li>
-<li>Place caching after request checks to avoid caching invalid requests and before performance logging to exclude cache hits from handler timing warnings.</li>
-</ul>
-<h2 id="invalidation-guidance">Invalidation guidance<a class="headerlink" href="#invalidation-guidance" title="Permanent link">&para;</a></h2>
-<ul>
-<li>Cache-aside pattern: explicit <code>ICache.Remove</code> or <code>ICache.RemoveAsync</code> on command success or domain event handlers.</li>
-<li>Include versioning and tenant segments in keys to avoid collisions; adjust namespace when making breaking DTO changes.</li>
-</ul>
-<h2 id="backlog-next-iteration">Backlog / Next Iteration<a class="headerlink" href="#backlog-next-iteration" title="Permanent link">&para;</a></h2>
-<ul>
-<li>Add PII/classification guardrails so sensitive payloads can be blocked or redirected to encrypted storage.</li>
-<li>Provide an optional encrypting serializer wrapper for distributed caches with guidance for key management.</li>
-<li>Expose instrumentation hooks (hits, misses, latency) without forcing a specific metrics provider.</li>
-<li>Document and/or implement schema-versioned key strategies to support DTO shape changes safely.</li>
-</ul>
-<h2 id="testing">Testing<a class="headerlink" href="#testing" title="Permanent link">&para;</a></h2>
-<ul>
-<li>Use the default memory adapter for Application tests; distributed adapter can use <code>MemoryDistributedCache</code> for deterministic runs.</li>
+<li>Multitenancy Core (shipped)</li>
+<li>Multitenancy.AspNetCore (shipped)</li>
+<li>Multitenancy.Identity (planned)</li>
+<li>Multitenancy.Provisioning (planned)</li>
 </ul>
 
 
@@ -1841,7 +1850,7 @@
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1-2.1-2M12.5 7v5.2l4 2.4-1 1L11 13V7h1.5M11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2v1.8Z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">December 26, 2025</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">January 1, 2026</span>
   </span>
 
     
