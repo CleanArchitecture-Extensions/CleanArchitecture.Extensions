@@ -34,7 +34,11 @@ builder.Services.AddDbContext<ApplicationDbContext>((sp, options) =>
 });
 ```
 
-## Step 3 - Use the tenant-aware DbContext base class
+If you already register `ISaveChangesInterceptor` instances (as the template does), you can omit the explicit `TenantSaveChangesInterceptor` line and rely on `GetServices<ISaveChangesInterceptor>()`.
+
+## Step 3 - Wire tenant context into your DbContext
+
+### Option A: use the tenant-aware base class (non-Identity DbContext)
 
 ```csharp
 using CleanArchitecture.Extensions.Multitenancy.Abstractions;
@@ -54,6 +58,52 @@ public sealed class ApplicationDbContext : TenantDbContext
 }
 ```
 
+### Option B: keep IdentityDbContext (template default)
+
+The Jason Taylor template uses `IdentityDbContext`, so you can implement `ITenantDbContext` directly and apply the model customizer after your configurations.
+
+```csharp
+using System.Reflection;
+using CleanArchitecture.Extensions.Multitenancy.Abstractions;
+using CleanArchitecture.Extensions.Multitenancy.EFCore.Abstractions;
+using CleanArchitecture.Extensions.Multitenancy.EFCore.Options;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
+
+public class ApplicationDbContext : IdentityDbContext<ApplicationUser>, ITenantDbContext
+{
+    private readonly ICurrentTenant _currentTenant;
+    private readonly EfCoreMultitenancyOptions _multitenancyOptions;
+    private readonly ITenantModelCustomizer _tenantModelCustomizer;
+
+    public ApplicationDbContext(
+        DbContextOptions<ApplicationDbContext> options,
+        ICurrentTenant currentTenant,
+        IOptions<EfCoreMultitenancyOptions> optionsAccessor,
+        ITenantModelCustomizer tenantModelCustomizer)
+        : base(options)
+    {
+        _currentTenant = currentTenant;
+        _multitenancyOptions = optionsAccessor.Value;
+        _tenantModelCustomizer = tenantModelCustomizer;
+    }
+
+    public string? CurrentTenantId => _currentTenant.TenantId;
+
+    public ITenantInfo? CurrentTenantInfo => _currentTenant.TenantInfo;
+
+    protected override void OnModelCreating(ModelBuilder builder)
+    {
+        base.OnModelCreating(builder);
+        builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
+        _tenantModelCustomizer.Customize(builder, this, _multitenancyOptions);
+    }
+}
+```
+
+Note: if you add your own `HasQueryFilter` calls, apply tenant filtering last by calling `ApplyTenantModel(builder)` (from `TenantDbContext`) or `_tenantModelCustomizer.Customize(...)` after your configurations.
+
 ## Step 4 - Mark tenant entities
 
 Use explicit tenant identifiers or let the extension add a shadow property:
@@ -67,6 +117,10 @@ public sealed class Customer : ITenantEntity
     public string TenantId { get; set; } = string.Empty;
 }
 ```
+
+If you already use `BaseAuditableEntity`, you can either:
+- Keep it as-is and rely on the shadow `TenantId` property.
+- Implement `ITenantEntity` on your base entity to make the tenant column explicit.
 
 To exclude global entities from filtering:
 

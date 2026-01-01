@@ -46,7 +46,9 @@ builder.Services.AddDbContext<ApplicationDbContext>((sp, options) =>
 });
 ```
 
-### Derive from TenantDbContext
+If your host already registers `ISaveChangesInterceptor` instances, you can omit the explicit `TenantSaveChangesInterceptor` line and rely on `GetServices<ISaveChangesInterceptor>()`.
+
+### Option A: Derive from TenantDbContext (non-Identity DbContext)
 
 ```csharp
 using CleanArchitecture.Extensions.Multitenancy.Abstractions;
@@ -67,6 +69,48 @@ public sealed class ApplicationDbContext : TenantDbContext
 }
 ```
 
+### Option B: Keep IdentityDbContext (template default)
+
+```csharp
+using System.Reflection;
+using CleanArchitecture.Extensions.Multitenancy.Abstractions;
+using CleanArchitecture.Extensions.Multitenancy.EFCore.Abstractions;
+using CleanArchitecture.Extensions.Multitenancy.EFCore.Options;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
+
+public class ApplicationDbContext : IdentityDbContext<ApplicationUser>, ITenantDbContext
+{
+    private readonly ICurrentTenant _currentTenant;
+    private readonly EfCoreMultitenancyOptions _multitenancyOptions;
+    private readonly ITenantModelCustomizer _tenantModelCustomizer;
+
+    public ApplicationDbContext(
+        DbContextOptions<ApplicationDbContext> options,
+        ICurrentTenant currentTenant,
+        IOptions<EfCoreMultitenancyOptions> optionsAccessor,
+        ITenantModelCustomizer tenantModelCustomizer)
+        : base(options)
+    {
+        _currentTenant = currentTenant;
+        _multitenancyOptions = optionsAccessor.Value;
+        _tenantModelCustomizer = tenantModelCustomizer;
+    }
+
+    public string? CurrentTenantId => _currentTenant.TenantId;
+
+    public ITenantInfo? CurrentTenantInfo => _currentTenant.TenantInfo;
+
+    protected override void OnModelCreating(ModelBuilder builder)
+    {
+        base.OnModelCreating(builder);
+        builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
+        _tenantModelCustomizer.Customize(builder, this, _multitenancyOptions);
+    }
+}
+```
+
 ### Tenant entities
 
 ```csharp
@@ -78,6 +122,8 @@ public sealed class Customer : ITenantEntity
     public string TenantId { get; set; } = string.Empty;
 }
 ```
+
+If you already use `BaseAuditableEntity`, you can rely on the shadow `TenantId` property, or implement `ITenantEntity` on your base entity to make the tenant column explicit.
 
 Exclude global entities:
 
@@ -103,7 +149,7 @@ builder.Services.AddCleanArchitectureMultitenancyEfCore(options =>
 
 ## Key components
 
-- `TenantDbContext` base class and `TenantModelCacheKeyFactory`.
+- `TenantDbContext` base class, `ITenantDbContext`, and `TenantModelCacheKeyFactory`.
 - `TenantSaveChangesInterceptor` for tenant enforcement on writes.
 - `TenantModelCustomizer` for filters and schema configuration.
 - `TenantMigrationRunner<TContext>` for per-tenant migrations.
