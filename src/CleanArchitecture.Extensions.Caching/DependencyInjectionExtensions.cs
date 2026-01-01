@@ -16,7 +16,7 @@ namespace CleanArchitecture.Extensions.Caching;
 public static class DependencyInjectionExtensions
 {
     /// <summary>
-    /// Registers caching options and placeholder services. Implementation details will be added in subsequent steps.
+    /// Registers caching options and default services.
     /// </summary>
     /// <param name="services">Service collection.</param>
     /// <param name="configure">Optional callback to configure <see cref="CachingOptions"/>.</param>
@@ -45,7 +45,7 @@ public static class DependencyInjectionExtensions
         services.TryAddSingleton<TimeProvider>(TimeProvider.System);
         services.TryAddSingleton<ICacheSerializer, SystemTextJsonCacheSerializer>();
         services.TryAddSingleton<ICacheKeyFactory, DefaultCacheKeyFactory>();
-        // TODO: Bridge tenant context (ICurrentTenant) into DefaultCacheScope when multitenancy extension is available.
+        // Call AddCleanArchitectureMultitenancyCaching to bind cache scopes to tenant context.
         services.TryAddScoped<ICacheScope, DefaultCacheScope>();
         services.TryAddSingleton<ICache, MemoryCacheAdapter>();
         services.TryAddSingleton<DistributedCacheAdapter>();

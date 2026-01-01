@@ -144,6 +144,43 @@ builder.Services.AddCleanArchitectureMultitenancyEfCore(options =>
 });
 ```
 
+## Database-per-tenant setup
+
+```csharp
+builder.Services.AddCleanArchitectureMultitenancyEfCore(options =>
+{
+    options.Mode = TenantIsolationMode.DatabasePerTenant;
+    options.ConnectionStringFormat = "Server=.;Database=Tenant_{0};Trusted_Connection=True;TrustServerCertificate=True;";
+});
+
+builder.Services.AddDbContextFactory<ApplicationDbContext>((sp, options) =>
+{
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+});
+
+builder.Services.AddTenantDbContextFactory<ApplicationDbContext>();
+```
+
+For request-scoped DbContext registration, resolve the tenant connection inside `AddDbContext`:
+
+```csharp
+builder.Services.AddDbContext<ApplicationDbContext>((sp, options) =>
+{
+    var currentTenant = sp.GetRequiredService<ICurrentTenant>();
+    var resolver = sp.GetRequiredService<ITenantConnectionResolver>();
+    var connectionString = resolver.ResolveConnectionString(currentTenant.TenantInfo);
+
+    if (string.IsNullOrWhiteSpace(connectionString))
+    {
+        throw new InvalidOperationException("Tenant connection string was not resolved.");
+    }
+
+    options.UseSqlServer(connectionString);
+});
+```
+
+`ITenantDbContextFactory<TContext>` switches the connection string per tenant for background tasks and migrations. Register a custom resolver if you want to pull connection strings from a vault or catalog.
+
 ## What to expect
 
 - Shared database mode automatically adds a tenant filter (`TenantId`) to all tenant-scoped entities.
