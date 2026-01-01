@@ -1,4 +1,5 @@
 using CleanArchitecture.Extensions.Multitenancy.Context;
+using CleanArchitecture.Extensions.Multitenancy.Exceptions;
 using CleanArchitecture.Extensions.Multitenancy.EFCore.Options;
 using Microsoft.EntityFrameworkCore;
 
@@ -55,5 +56,58 @@ public class TenantSaveChangesInterceptorTests
 
             Assert.Throws<InvalidOperationException>(() => dbContext.SaveChanges());
         }
+    }
+
+    [Fact]
+    public void SavingChanges_throws_when_tenant_missing_for_writes()
+    {
+        var accessor = new CurrentTenantAccessor();
+        var options = new EfCoreMultitenancyOptions
+        {
+            EnableSaveChangesEnforcement = true,
+            RequireTenantForWrites = true
+        };
+
+        using var dbContext = TestDbContextFactory.Create(accessor, options, addInterceptor: true);
+        dbContext.TenantWidgets.Add(new TenantWidget { Name = "Alpha", TenantId = "alpha" });
+
+        Assert.Throws<TenantNotResolvedException>(() => dbContext.SaveChanges());
+    }
+
+    [Fact]
+    public void SavingChanges_allows_global_entities_without_tenant()
+    {
+        var accessor = new CurrentTenantAccessor();
+        var options = new EfCoreMultitenancyOptions
+        {
+            EnableSaveChangesEnforcement = true,
+            RequireTenantForWrites = true
+        };
+
+        using var dbContext = TestDbContextFactory.Create(accessor, options, addInterceptor: true);
+        dbContext.GlobalWidgets.Add(new GlobalWidget { Name = "Global" });
+
+        dbContext.SaveChanges();
+
+        Assert.Equal(1, dbContext.GlobalWidgets.Count());
+    }
+
+    [Fact]
+    public void SavingChanges_skips_enforcement_when_disabled()
+    {
+        var accessor = new CurrentTenantAccessor();
+        var options = new EfCoreMultitenancyOptions
+        {
+            EnableSaveChangesEnforcement = false,
+            RequireTenantForWrites = true
+        };
+
+        using var dbContext = TestDbContextFactory.Create(accessor, options, addInterceptor: true);
+        var widget = new TenantWidget { Name = "Alpha", TenantId = "beta" };
+
+        dbContext.TenantWidgets.Add(widget);
+        dbContext.SaveChanges();
+
+        Assert.Equal("beta", widget.TenantId);
     }
 }
