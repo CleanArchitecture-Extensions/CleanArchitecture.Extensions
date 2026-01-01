@@ -1,3 +1,4 @@
+using CleanArchitecture.Extensions.Multitenancy.EFCore.Abstractions;
 using CleanArchitecture.Extensions.Multitenancy.EFCore.Options;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
@@ -37,9 +38,10 @@ public sealed class TenantModelCacheKeyFactory : IModelCacheKeyFactory
             return baseKey;
         }
 
-        if (context is TenantDbContext tenantContext)
+        if (context is ITenantDbContext tenantContext)
         {
-            return new TenantModelCacheKey(baseKey, tenantContext.CurrentSchema ?? string.Empty);
+            var schema = _options.ResolveSchemaName(tenantContext.CurrentTenantInfo) ?? string.Empty;
+            return new TenantModelCacheKey(baseKey, schema);
         }
 
         return baseKey;

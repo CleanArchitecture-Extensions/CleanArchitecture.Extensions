@@ -1,7 +1,6 @@
 using System.Linq.Expressions;
 using System.Reflection;
 using CleanArchitecture.Extensions.Multitenancy.EFCore.Abstractions;
-using CleanArchitecture.Extensions.Multitenancy.EFCore;
 using CleanArchitecture.Extensions.Multitenancy.EFCore.Options;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
@@ -19,7 +18,7 @@ public sealed class TenantModelCustomizer : ITenantModelCustomizer
             && method.GetParameters().Length == 2);
 
     /// <inheritdoc />
-    public void Customize(ModelBuilder modelBuilder, TenantDbContext context, EfCoreMultitenancyOptions options)
+    public void Customize(ModelBuilder modelBuilder, ITenantDbContext context, EfCoreMultitenancyOptions options)
     {
         ArgumentNullException.ThrowIfNull(modelBuilder);
         ArgumentNullException.ThrowIfNull(context);
@@ -74,7 +73,7 @@ public sealed class TenantModelCustomizer : ITenantModelCustomizer
         }
     }
 
-    private static LambdaExpression BuildTenantFilter(Type entityType, TenantDbContext context, EfCoreMultitenancyOptions options)
+    private static LambdaExpression BuildTenantFilter(Type entityType, ITenantDbContext context, EfCoreMultitenancyOptions options)
     {
         var parameter = Expression.Parameter(entityType, "entity");
         var propertyAccess = Expression.Call(
@@ -82,7 +81,8 @@ public sealed class TenantModelCustomizer : ITenantModelCustomizer
             parameter,
             Expression.Constant(options.TenantIdPropertyName));
 
-        var tenantId = Expression.Property(Expression.Constant(context), nameof(TenantDbContext.CurrentTenantId));
+        var contextExpression = Expression.Constant(context, typeof(ITenantDbContext));
+        var tenantId = Expression.Property(contextExpression, nameof(ITenantDbContext.CurrentTenantId));
         var equals = Expression.Equal(propertyAccess, tenantId);
         return Expression.Lambda(equals, parameter);
     }
