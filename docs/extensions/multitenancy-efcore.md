@@ -147,12 +147,49 @@ builder.Services.AddCleanArchitectureMultitenancyEfCore(options =>
 });
 ```
 
+## Database-per-tenant setup
+
+```csharp
+builder.Services.AddCleanArchitectureMultitenancyEfCore(options =>
+{
+    options.Mode = TenantIsolationMode.DatabasePerTenant;
+    options.ConnectionStringFormat = "Server=.;Database=Tenant_{0};Trusted_Connection=True;TrustServerCertificate=True;";
+});
+
+builder.Services.AddDbContextFactory<ApplicationDbContext>((sp, options) =>
+{
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+});
+
+builder.Services.AddTenantDbContextFactory<ApplicationDbContext>();
+```
+
+For request-scoped DbContext registration, resolve the tenant connection inside `AddDbContext`:
+
+```csharp
+builder.Services.AddDbContext<ApplicationDbContext>((sp, options) =>
+{
+    var currentTenant = sp.GetRequiredService<ICurrentTenant>();
+    var resolver = sp.GetRequiredService<ITenantConnectionResolver>();
+    var connectionString = resolver.ResolveConnectionString(currentTenant.TenantInfo);
+
+    if (string.IsNullOrWhiteSpace(connectionString))
+    {
+        throw new InvalidOperationException("Tenant connection string was not resolved.");
+    }
+
+    options.UseSqlServer(connectionString);
+});
+```
+
+`ITenantDbContextFactory<TContext>` sets the connection string per tenant for background tasks and migrations. Register your own resolver if connection strings live outside configuration.
+
 ## Key components
 
 - `TenantDbContext` base class, `ITenantDbContext`, and `TenantModelCacheKeyFactory`.
 - `TenantSaveChangesInterceptor` for tenant enforcement on writes.
 - `TenantModelCustomizer` for filters and schema configuration.
-- `TenantMigrationRunner<TContext>` for per-tenant migrations.
+- `TenantDbContextFactory<TContext>` + `TenantMigrationRunner<TContext>` for per-tenant connections and migrations.
 
 ## Related modules
 

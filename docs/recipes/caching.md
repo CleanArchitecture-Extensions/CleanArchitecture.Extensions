@@ -5,7 +5,7 @@ Add caching with clear cache key conventions and opt-in behaviors.
 
 ## Prereqs
 - Base Clean Architecture template running.
-- Choose cache store (in-memory, distributed) — adapters TBD.
+- Choose cache store (in-memory default or an `IDistributedCache` implementation for distributed caching).
 
 ## Steps
 1. Add the caching package: `dotnet add package CleanArchitecture.Extensions.Caching`.
