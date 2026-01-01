@@ -993,6 +993,15 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#database-per-tenant-setup" class="md-nav__link">
+    <span class="md-ellipsis">
+      Database-per-tenant setup
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#key-components" class="md-nav__link">
     <span class="md-ellipsis">
       Key components
@@ -1662,6 +1671,15 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#database-per-tenant-setup" class="md-nav__link">
+    <span class="md-ellipsis">
+      Database-per-tenant setup
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#key-components" class="md-nav__link">
     <span class="md-ellipsis">
       Key components
@@ -1816,12 +1834,42 @@
 <a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="w">    </span><span class="n">options</span><span class="p">.</span><span class="n">SchemaNameFormat</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;tenant_{0}&quot;</span><span class="p">;</span>
 <a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="p">});</span>
 </code></pre></div>
+<h2 id="database-per-tenant-setup">Database-per-tenant setup<a class="headerlink" href="#database-per-tenant-setup" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="n">AddCleanArchitectureMultitenancyEfCore</span><span class="p">(</span><span class="n">options</span><span class="w"> </span><span class="o">=&gt;</span>
+<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="p">{</span>
+<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="w">    </span><span class="n">options</span><span class="p">.</span><span class="n">Mode</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">TenantIsolationMode</span><span class="p">.</span><span class="n">DatabasePerTenant</span><span class="p">;</span>
+<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="w">    </span><span class="n">options</span><span class="p">.</span><span class="n">ConnectionStringFormat</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Server=.;Database=Tenant_{0};Trusted_Connection=True;TrustServerCertificate=True;&quot;</span><span class="p">;</span>
+<a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a><span class="p">});</span>
+<a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a>
+<a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a><span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="n">AddDbContextFactory</span><span class="o">&lt;</span><span class="n">ApplicationDbContext</span><span class="o">&gt;</span><span class="p">((</span><span class="n">sp</span><span class="p">,</span><span class="w"> </span><span class="n">options</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span>
+<a id="__codelineno-8-8" name="__codelineno-8-8" href="#__codelineno-8-8"></a><span class="p">{</span>
+<a id="__codelineno-8-9" name="__codelineno-8-9" href="#__codelineno-8-9"></a><span class="w">    </span><span class="n">options</span><span class="p">.</span><span class="n">UseSqlServer</span><span class="p">(</span><span class="n">builder</span><span class="p">.</span><span class="n">Configuration</span><span class="p">.</span><span class="n">GetConnectionString</span><span class="p">(</span><span class="s">&quot;DefaultConnection&quot;</span><span class="p">));</span>
+<a id="__codelineno-8-10" name="__codelineno-8-10" href="#__codelineno-8-10"></a><span class="p">});</span>
+<a id="__codelineno-8-11" name="__codelineno-8-11" href="#__codelineno-8-11"></a>
+<a id="__codelineno-8-12" name="__codelineno-8-12" href="#__codelineno-8-12"></a><span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="n">AddTenantDbContextFactory</span><span class="o">&lt;</span><span class="n">ApplicationDbContext</span><span class="o">&gt;</span><span class="p">();</span>
+</code></pre></div>
+<p>For request-scoped DbContext registration, resolve the tenant connection inside <code>AddDbContext</code>:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="n">AddDbContext</span><span class="o">&lt;</span><span class="n">ApplicationDbContext</span><span class="o">&gt;</span><span class="p">((</span><span class="n">sp</span><span class="p">,</span><span class="w"> </span><span class="n">options</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span>
+<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="p">{</span>
+<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="w">    </span><span class="kt">var</span><span class="w"> </span><span class="n">currentTenant</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sp</span><span class="p">.</span><span class="n">GetRequiredService</span><span class="o">&lt;</span><span class="n">ICurrentTenant</span><span class="o">&gt;</span><span class="p">();</span>
+<a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="w">    </span><span class="kt">var</span><span class="w"> </span><span class="n">resolver</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sp</span><span class="p">.</span><span class="n">GetRequiredService</span><span class="o">&lt;</span><span class="n">ITenantConnectionResolver</span><span class="o">&gt;</span><span class="p">();</span>
+<a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a><span class="w">    </span><span class="kt">var</span><span class="w"> </span><span class="n">connectionString</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">resolver</span><span class="p">.</span><span class="n">ResolveConnectionString</span><span class="p">(</span><span class="n">currentTenant</span><span class="p">.</span><span class="n">TenantInfo</span><span class="p">);</span>
+<a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a>
+<a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="kt">string</span><span class="p">.</span><span class="n">IsNullOrWhiteSpace</span><span class="p">(</span><span class="n">connectionString</span><span class="p">))</span>
+<a id="__codelineno-9-8" name="__codelineno-9-8" href="#__codelineno-9-8"></a><span class="w">    </span><span class="p">{</span>
+<a id="__codelineno-9-9" name="__codelineno-9-9" href="#__codelineno-9-9"></a><span class="w">        </span><span class="k">throw</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="nf">InvalidOperationException</span><span class="p">(</span><span class="s">&quot;Tenant connection string was not resolved.&quot;</span><span class="p">);</span>
+<a id="__codelineno-9-10" name="__codelineno-9-10" href="#__codelineno-9-10"></a><span class="w">    </span><span class="p">}</span>
+<a id="__codelineno-9-11" name="__codelineno-9-11" href="#__codelineno-9-11"></a>
+<a id="__codelineno-9-12" name="__codelineno-9-12" href="#__codelineno-9-12"></a><span class="w">    </span><span class="n">options</span><span class="p">.</span><span class="n">UseSqlServer</span><span class="p">(</span><span class="n">connectionString</span><span class="p">);</span>
+<a id="__codelineno-9-13" name="__codelineno-9-13" href="#__codelineno-9-13"></a><span class="p">});</span>
+</code></pre></div>
+<p><code>ITenantDbContextFactory&lt;TContext&gt;</code> sets the connection string per tenant for background tasks and migrations. Register your own resolver if connection strings live outside configuration.</p>
 <h2 id="key-components">Key components<a class="headerlink" href="#key-components" title="Permanent link">&para;</a></h2>
 <ul>
 <li><code>TenantDbContext</code> base class, <code>ITenantDbContext</code>, and <code>TenantModelCacheKeyFactory</code>.</li>
 <li><code>TenantSaveChangesInterceptor</code> for tenant enforcement on writes.</li>
 <li><code>TenantModelCustomizer</code> for filters and schema configuration.</li>
-<li><code>TenantMigrationRunner&lt;TContext&gt;</code> for per-tenant migrations.</li>
+<li><code>TenantDbContextFactory&lt;TContext&gt;</code> + <code>TenantMigrationRunner&lt;TContext&gt;</code> for per-tenant connections and migrations.</li>
 </ul>
 <h2 id="related-modules">Related modules<a class="headerlink" href="#related-modules" title="Permanent link">&para;</a></h2>
 <ul>
