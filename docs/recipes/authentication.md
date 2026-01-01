@@ -5,12 +5,12 @@ Wire authentication with extension-friendly hooks.
 
 ## Prereqs
 - Base Clean Architecture template running.
-- Auth provider chosen (e.g., JWT, IdentityServer) — placeholder until packages land.
+- Auth provider chosen (e.g., JWT, cookies, Identity) using the template defaults.
 
 ## Steps
-1. Add the relevant authentication adapter package (TBD).
-2. Configure authentication in Program.cs (or equivalent) with provided helpers.
-3. Add middleware/filters for tenant-aware auth if needed.
+1. Configure authentication in Program.cs (or equivalent) using the template guidance.
+2. If multitenancy is enabled, ensure tenant resolution runs before authorization checks.
+3. Add tenant-aware authorization policies if needed.
 
 ## Verify
 - Hitting a protected endpoint returns 200 with valid token; 401 otherwise.
