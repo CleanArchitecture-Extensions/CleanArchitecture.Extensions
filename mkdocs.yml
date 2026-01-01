@@ -32,6 +32,8 @@ nav:
   - Extensions Catalog:
       - Overview: extensions/index.md
       - Caching: extensions/caching.md
+      - Multitenancy.AspNetCore: extensions/multitenancy-aspnetcore.md
+      - Multitenancy.EFCore: extensions/multitenancy-efcore.md
       - Multitenancy Core:
           - Overview: extensions/multitenancy-core.md
           - Resolution pipeline: extensions/multitenancy-core/resolution-pipeline.md
