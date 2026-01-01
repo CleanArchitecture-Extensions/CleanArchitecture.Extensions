@@ -9,7 +9,7 @@ namespace CleanArchitecture.Extensions.Multitenancy.EFCore;
 /// <summary>
 /// Base DbContext that applies tenant-aware model configuration.
 /// </summary>
-public abstract class TenantDbContext : Microsoft.EntityFrameworkCore.DbContext
+public abstract class TenantDbContext : Microsoft.EntityFrameworkCore.DbContext, ITenantDbContext
 {
     private readonly ICurrentTenant _currentTenant;
     private readonly EfCoreMultitenancyOptions _options;
@@ -49,10 +49,19 @@ public abstract class TenantDbContext : Microsoft.EntityFrameworkCore.DbContext
     /// </summary>
     public string? CurrentSchema => _options.ResolveSchemaName(CurrentTenantInfo);
 
+    /// <summary>
+    /// Applies tenant-specific model configuration.
+    /// </summary>
+    /// <param name="modelBuilder">Model builder.</param>
+    protected void ApplyTenantModel(ModelBuilder modelBuilder)
+    {
+        _modelCustomizer.Customize(modelBuilder, this, _options);
+    }
+
     /// <inheritdoc />
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
-        _modelCustomizer.Customize(modelBuilder, this, _options);
+        ApplyTenantModel(modelBuilder);
     }
 }
