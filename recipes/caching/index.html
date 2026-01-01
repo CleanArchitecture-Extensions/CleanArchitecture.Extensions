@@ -1299,11 +1299,74 @@
   
   
     <li class="md-nav__item">
+      <a href="../../reference/caching-options/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Caching options
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../reference/multitenancy-options/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
     Multitenancy options
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/aspnetcore-multitenancy-options/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    AspNetCore multitenancy options
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/efcore-multitenancy-options/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    EF Core multitenancy options
   </span>
   
 
@@ -1537,29 +1600,54 @@
 
 <h1 id="recipe-caching">Recipe: Caching<a class="headerlink" href="#recipe-caching" title="Permanent link">&para;</a></h1>
 <h2 id="goal">Goal<a class="headerlink" href="#goal" title="Permanent link">&para;</a></h2>
-<p>Add caching with clear cache key conventions and opt-in behaviors.</p>
+<p>Add query caching with clear key conventions and safe invalidation.</p>
 <h2 id="prereqs">Prereqs<a class="headerlink" href="#prereqs" title="Permanent link">&para;</a></h2>
 <ul>
 <li>Base Clean Architecture template running.</li>
-<li>Choose cache store (in-memory default or an <code>IDistributedCache</code> implementation for distributed caching).</li>
+<li>Decide on cache store (memory for development or <code>IDistributedCache</code> in production).</li>
 </ul>
 <h2 id="steps">Steps<a class="headerlink" href="#steps" title="Permanent link">&para;</a></h2>
 <ol>
-<li>Add the caching package: <code>dotnet add package CleanArchitecture.Extensions.Caching</code>.</li>
-<li>Register caching services and the query caching pipeline behavior (after request checks, before performance logging).</li>
-<li>Configure cacheability predicate and TTLs per query type; choose memory (default) or distributed adapter.</li>
-<li>Apply invalidation on command success/domain events where needed (<code>ICache.Remove</code>).</li>
+<li>Add the caching package.</li>
 </ol>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">dotnet</span> <span class="n">add</span> <span class="n">src</span><span class="p">/</span><span class="n">Application</span><span class="p">/</span><span class="n">Application</span><span class="p">.</span><span class="n">csproj</span> <span class="n">package</span> <span class="n">CleanArchitecture</span><span class="p">.</span><span class="n">Extensions</span><span class="p">.</span><span class="n">Caching</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="n">dotnet</span> <span class="n">add</span> <span class="n">src</span><span class="p">/</span><span class="n">Infrastructure</span><span class="p">/</span><span class="n">Infrastructure</span><span class="p">.</span><span class="n">csproj</span> <span class="n">package</span> <span class="n">CleanArchitecture</span><span class="p">.</span><span class="n">Extensions</span><span class="p">.</span><span class="n">Caching</span>
+</code></pre></div>
+<ol>
+<li>Register caching services and configure TTLs.</li>
+</ol>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="n">AddCleanArchitectureCaching</span><span class="p">(</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">    </span><span class="n">options</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">options</span><span class="p">.</span><span class="n">DefaultNamespace</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;MyApp&quot;</span><span class="p">;</span><span class="w"> </span><span class="p">},</span>
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">    </span><span class="n">behaviorOptions</span><span class="w"> </span><span class="o">=&gt;</span>
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">    </span><span class="p">{</span>
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">        </span><span class="n">behaviorOptions</span><span class="p">.</span><span class="n">DefaultTtl</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">TimeSpan</span><span class="p">.</span><span class="n">FromMinutes</span><span class="p">(</span><span class="mi">5</span><span class="p">);</span>
+<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="w">        </span><span class="n">behaviorOptions</span><span class="p">.</span><span class="n">CacheNullValues</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">false</span><span class="p">;</span>
+<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="w">    </span><span class="p">});</span>
+</code></pre></div>
+<ol>
+<li>Add the query caching pipeline behavior.</li>
+</ol>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="n">AddMediatR</span><span class="p">(</span><span class="n">cfg</span><span class="w"> </span><span class="o">=&gt;</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="p">{</span>
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">    </span><span class="n">cfg</span><span class="p">.</span><span class="n">RegisterServicesFromAssemblyContaining</span><span class="o">&lt;</span><span class="n">Program</span><span class="o">&gt;</span><span class="p">();</span>
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="w">    </span><span class="n">cfg</span><span class="p">.</span><span class="n">AddCleanArchitectureCachingPipeline</span><span class="p">();</span>
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="p">});</span>
+</code></pre></div>
+<ol>
+<li>Add invalidation for write operations (commands or domain events).</li>
+</ol>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="k">await</span><span class="w"> </span><span class="n">cache</span><span class="p">.</span><span class="n">RemoveAsync</span><span class="p">(</span><span class="n">cacheScope</span><span class="p">.</span><span class="n">Create</span><span class="p">(</span><span class="s">&quot;GetOrdersQuery&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">hash</span><span class="p">));</span>
+</code></pre></div>
 <h2 id="verify">Verify<a class="headerlink" href="#verify" title="Permanent link">&para;</a></h2>
 <ul>
-<li>First call hits data source; subsequent call hits cache (check logs or set a breakpoint).</li>
-<li>Change input parameters and confirm a different cache key/hash is used.</li>
+<li>First call hits the data source; the second call hits cache.</li>
+<li>Different request parameters produce different cache keys.</li>
 </ul>
 <h2 id="pitfalls">Pitfalls<a class="headerlink" href="#pitfalls" title="Permanent link">&para;</a></h2>
 <ul>
-<li>Cache stampede: add locking or jitter where needed.</li>
-<li>Tenant-aware caching: ensure keys include tenant context when multitenancy is enabled.</li>
-<li>Avoid caching error or transient responses; use <code>ResponseCachePredicate</code> to skip them.</li>
+<li>Cache stampede: keep locking enabled and set jitter.</li>
+<li>Tenant-aware caching: call <code>AddCleanArchitectureMultitenancyCaching</code> when multitenancy is enabled.</li>
+<li>Caching error responses: use <code>ResponseCachePredicate</code> to skip them.</li>
 </ul>
 
 

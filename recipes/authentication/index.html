@@ -1299,11 +1299,74 @@
   
   
     <li class="md-nav__item">
+      <a href="../../reference/caching-options/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Caching options
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../reference/multitenancy-options/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
     Multitenancy options
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/aspnetcore-multitenancy-options/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    AspNetCore multitenancy options
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/efcore-multitenancy-options/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    EF Core multitenancy options
   </span>
   
 
@@ -1537,26 +1600,30 @@
 
 <h1 id="recipe-authentication">Recipe: Authentication<a class="headerlink" href="#recipe-authentication" title="Permanent link">&para;</a></h1>
 <h2 id="goal">Goal<a class="headerlink" href="#goal" title="Permanent link">&para;</a></h2>
-<p>Wire authentication with extension-friendly hooks.</p>
+<p>Wire authentication in a template-based solution while keeping extension integration clean.</p>
 <h2 id="prereqs">Prereqs<a class="headerlink" href="#prereqs" title="Permanent link">&para;</a></h2>
 <ul>
 <li>Base Clean Architecture template running.</li>
-<li>Auth provider chosen (e.g., JWT, cookies, Identity) using the template defaults.</li>
+<li>Authentication strategy chosen (JWT, cookies, or Identity).</li>
 </ul>
 <h2 id="steps">Steps<a class="headerlink" href="#steps" title="Permanent link">&para;</a></h2>
 <ol>
-<li>Configure authentication in Program.cs (or equivalent) using the template guidance.</li>
-<li>If multitenancy is enabled, ensure tenant resolution runs before authorization checks.</li>
-<li>Add tenant-aware authorization policies if needed.</li>
+<li>Configure authentication schemes in <code>Program.cs</code> (or equivalent).</li>
+<li>Add authorization policies for tenant-aware endpoints if needed.</li>
+<li>If multitenancy is enabled, ensure tenant resolution and authentication are ordered correctly:</li>
+<li>Use tenant resolution before authorization.</li>
+<li>If tenant resolution depends on claims, run authentication before tenant resolution.</li>
 </ol>
 <h2 id="verify">Verify<a class="headerlink" href="#verify" title="Permanent link">&para;</a></h2>
 <ul>
-<li>Hitting a protected endpoint returns 200 with valid token; 401 otherwise.</li>
+<li>Hitting a protected endpoint returns <code>200</code> with a valid token and <code>401</code> without one.</li>
+<li>Tenant-required endpoints return a tenant error when the tenant is missing.</li>
 </ul>
 <h2 id="pitfalls">Pitfalls<a class="headerlink" href="#pitfalls" title="Permanent link">&para;</a></h2>
 <ul>
-<li>Misaligned schemes between API and client; ensure defaults match.</li>
-<li>Ensure tenant resolution occurs before authz when multitenancy is enabled.</li>
+<li>Authentication runs after tenant resolution when claim-based resolution is enabled (claims will be empty).</li>
+<li>Mismatched schemes between API and client.</li>
+<li>Missing authorization policies on tenant-required endpoints.</li>
 </ul>
 
 

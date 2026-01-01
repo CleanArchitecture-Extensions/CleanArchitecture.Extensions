@@ -825,9 +825,9 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#shipped" class="md-nav__link">
+  <a href="#shipped-packages" class="md-nav__link">
     <span class="md-ellipsis">
-      Shipped
+      Shipped packages
     </span>
   </a>
   
@@ -1275,11 +1275,74 @@
   
   
     <li class="md-nav__item">
+      <a href="../reference/caching-options/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Caching options
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../reference/multitenancy-options/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
     Multitenancy options
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/aspnetcore-multitenancy-options/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    AspNetCore multitenancy options
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/efcore-multitenancy-options/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    EF Core multitenancy options
   </span>
   
 
@@ -1452,9 +1515,9 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#shipped" class="md-nav__link">
+  <a href="#shipped-packages" class="md-nav__link">
     <span class="md-ellipsis">
-      Shipped
+      Shipped packages
     </span>
   </a>
   
@@ -1484,19 +1547,49 @@
                   
 
 
-<h1 id="extensions-catalog">Extensions Catalog<a class="headerlink" href="#extensions-catalog" title="Permanent link">&para;</a></h1>
-<p>A small catalog of opt-in extensions designed to plug into Jason Taylor's Clean Architecture template without forking it.</p>
-<h2 id="shipped">Shipped<a class="headerlink" href="#shipped" title="Permanent link">&para;</a></h2>
-<ul>
-<li><strong>CleanArchitecture.Extensions.Caching</strong> — cache abstractions plus query caching behavior: <a href="caching/">Caching</a></li>
-<li><strong>CleanArchitecture.Extensions.Multitenancy</strong> — tenant resolution and enforcement primitives: <a href="multitenancy-core/">Multitenancy Core</a></li>
-<li><strong>CleanArchitecture.Extensions.Multitenancy.AspNetCore</strong> — ASP.NET Core middleware and endpoint helpers: <a href="multitenancy-aspnetcore/">Multitenancy.AspNetCore</a></li>
-<li><strong>CleanArchitecture.Extensions.Multitenancy.EFCore</strong> — EF Core filters and DbContext helpers: <a href="multitenancy-efcore/">Multitenancy.EFCore</a></li>
-</ul>
+<h1 id="extensions-catalog">Extensions catalog<a class="headerlink" href="#extensions-catalog" title="Permanent link">&para;</a></h1>
+<p>This catalog lists the extensions that ship today and how they fit into the template.</p>
+<h2 id="shipped-packages">Shipped packages<a class="headerlink" href="#shipped-packages" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Package</th>
+<th>Purpose</th>
+<th>Docs</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>CleanArchitecture.Extensions.Caching</code></td>
+<td>Cache abstractions, adapters, and query caching behavior.</td>
+<td><a href="caching/">Caching</a></td>
+</tr>
+<tr>
+<td><code>CleanArchitecture.Extensions.Multitenancy</code></td>
+<td>Core tenant model, resolution pipeline, and MediatR behaviors.</td>
+<td><a href="multitenancy-core/">Multitenancy Core</a></td>
+</tr>
+<tr>
+<td><code>CleanArchitecture.Extensions.Multitenancy.AspNetCore</code></td>
+<td>HTTP middleware and endpoint enforcement.</td>
+<td><a href="multitenancy-aspnetcore/">Multitenancy.AspNetCore</a></td>
+</tr>
+<tr>
+<td><code>CleanArchitecture.Extensions.Multitenancy.EFCore</code></td>
+<td>EF Core filters, interceptors, and tenant-aware factories.</td>
+<td><a href="multitenancy-efcore/">Multitenancy.EFCore</a></td>
+</tr>
+</tbody>
+</table>
 <h2 id="planned">Planned<a class="headerlink" href="#planned" title="Permanent link">&para;</a></h2>
 <ul>
-<li>Additional modules and adapters (Identity, Redis, Storage, Sharding).</li>
+<li>Multitenancy.Identity</li>
+<li>Multitenancy.Provisioning</li>
+<li>Multitenancy.Redis</li>
+<li>Multitenancy.Sharding</li>
+<li>Storage/Search adapters</li>
 </ul>
+<p>See the <a href="../roadmap/">Roadmap</a> for the current plan.</p>
 
 
 

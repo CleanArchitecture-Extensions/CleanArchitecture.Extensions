@@ -647,18 +647,27 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#install" class="md-nav__link">
+  <a href="#choose-packages" class="md-nav__link">
     <span class="md-ellipsis">
-      Install
+      Choose packages
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#register" class="md-nav__link">
+  <a href="#install-packages" class="md-nav__link">
     <span class="md-ellipsis">
-      Register
+      Install packages
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#register-services" class="md-nav__link">
+    <span class="md-ellipsis">
+      Register services
     </span>
   </a>
   
@@ -1281,11 +1290,74 @@
   
   
     <li class="md-nav__item">
+      <a href="../../reference/caching-options/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Caching options
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../reference/multitenancy-options/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
     Multitenancy options
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/aspnetcore-multitenancy-options/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    AspNetCore multitenancy options
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/efcore-multitenancy-options/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    EF Core multitenancy options
   </span>
   
 
@@ -1458,18 +1530,27 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#install" class="md-nav__link">
+  <a href="#choose-packages" class="md-nav__link">
     <span class="md-ellipsis">
-      Install
+      Choose packages
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#register" class="md-nav__link">
+  <a href="#install-packages" class="md-nav__link">
     <span class="md-ellipsis">
-      Register
+      Install packages
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#register-services" class="md-nav__link">
+    <span class="md-ellipsis">
+      Register services
     </span>
   </a>
   
@@ -1500,17 +1581,74 @@
 
 
 <h1 id="installation">Installation<a class="headerlink" href="#installation" title="Permanent link">&para;</a></h1>
-<h2 id="install">Install<a class="headerlink" href="#install" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">dotnet</span> <span class="n">add</span> <span class="n">package</span> <span class="n">CleanArchitecture</span><span class="p">.</span><span class="n">Extensions</span><span class="p">.</span><span class="n">Caching</span>
+<p>This guide shows how to reference the extensions from the default Jason Taylor Clean Architecture template layout.</p>
+<h2 id="choose-packages">Choose packages<a class="headerlink" href="#choose-packages" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Package</th>
+<th>Typical projects</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>CleanArchitecture.Extensions.Caching</code></td>
+<td>Application + Infrastructure</td>
+<td>Cache abstractions, adapters, and query caching behavior.</td>
+</tr>
+<tr>
+<td><code>CleanArchitecture.Extensions.Multitenancy</code></td>
+<td>Application + Infrastructure</td>
+<td>Core multitenancy abstractions, resolution, and pipeline behaviors.</td>
+</tr>
+<tr>
+<td><code>CleanArchitecture.Extensions.Multitenancy.AspNetCore</code></td>
+<td>Web/API</td>
+<td>Middleware and endpoint enforcement for HTTP.</td>
+</tr>
+<tr>
+<td><code>CleanArchitecture.Extensions.Multitenancy.EFCore</code></td>
+<td>Infrastructure</td>
+<td>EF Core filters, interceptors, and DbContext helpers.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="install-packages">Install packages<a class="headerlink" href="#install-packages" title="Permanent link">&para;</a></h2>
+<p>Caching:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">dotnet</span> <span class="n">add</span> <span class="n">src</span><span class="p">/</span><span class="n">Application</span><span class="p">/</span><span class="n">Application</span><span class="p">.</span><span class="n">csproj</span> <span class="n">package</span> <span class="n">CleanArchitecture</span><span class="p">.</span><span class="n">Extensions</span><span class="p">.</span><span class="n">Caching</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="n">dotnet</span> <span class="n">add</span> <span class="n">src</span><span class="p">/</span><span class="n">Infrastructure</span><span class="p">/</span><span class="n">Infrastructure</span><span class="p">.</span><span class="n">csproj</span> <span class="n">package</span> <span class="n">CleanArchitecture</span><span class="p">.</span><span class="n">Extensions</span><span class="p">.</span><span class="n">Caching</span>
 </code></pre></div>
-<h2 id="register">Register<a class="headerlink" href="#register" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="n">services</span><span class="p">.</span><span class="n">AddCleanArchitectureCaching</span><span class="p">();</span>
-<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="n">services</span><span class="p">.</span><span class="n">AddMediatR</span><span class="p">(</span><span class="n">cfg</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">cfg</span><span class="p">.</span><span class="n">AddCleanArchitectureCachingPipeline</span><span class="p">());</span>
+<p>Multitenancy core:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="n">dotnet</span> <span class="n">add</span> <span class="n">src</span><span class="p">/</span><span class="n">Application</span><span class="p">/</span><span class="n">Application</span><span class="p">.</span><span class="n">csproj</span> <span class="n">package</span> <span class="n">CleanArchitecture</span><span class="p">.</span><span class="n">Extensions</span><span class="p">.</span><span class="n">Multitenancy</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="n">dotnet</span> <span class="n">add</span> <span class="n">src</span><span class="p">/</span><span class="n">Infrastructure</span><span class="p">/</span><span class="n">Infrastructure</span><span class="p">.</span><span class="n">csproj</span> <span class="n">package</span> <span class="n">CleanArchitecture</span><span class="p">.</span><span class="n">Extensions</span><span class="p">.</span><span class="n">Multitenancy</span>
 </code></pre></div>
-<p>If you do not want automatic query caching, skip <code>AddCleanArchitectureCachingPipeline()</code> and call <code>ICache</code> directly.</p>
+<p>ASP.NET Core adapter:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="n">dotnet</span> <span class="n">add</span> <span class="n">src</span><span class="p">/</span><span class="n">Web</span><span class="p">/</span><span class="n">Web</span><span class="p">.</span><span class="n">csproj</span> <span class="n">package</span> <span class="n">CleanArchitecture</span><span class="p">.</span><span class="n">Extensions</span><span class="p">.</span><span class="n">Multitenancy</span><span class="p">.</span><span class="n">AspNetCore</span>
+</code></pre></div>
+<p>EF Core adapter:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="n">dotnet</span> <span class="n">add</span> <span class="n">src</span><span class="p">/</span><span class="n">Infrastructure</span><span class="p">/</span><span class="n">Infrastructure</span><span class="p">.</span><span class="n">csproj</span> <span class="n">package</span> <span class="n">CleanArchitecture</span><span class="p">.</span><span class="n">Extensions</span><span class="p">.</span><span class="n">Multitenancy</span><span class="p">.</span><span class="n">EFCore</span>
+</code></pre></div>
+<h2 id="register-services">Register services<a class="headerlink" href="#register-services" title="Permanent link">&para;</a></h2>
+<p>Each package provides an <code>AddCleanArchitecture...</code> extension method. For example:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="n">AddCleanArchitectureCaching</span><span class="p">();</span>
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="n">AddCleanArchitectureMultitenancy</span><span class="p">();</span>
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="n">AddCleanArchitectureMultitenancyAspNetCore</span><span class="p">();</span>
+<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="n">AddCleanArchitectureMultitenancyEfCore</span><span class="p">();</span>
+</code></pre></div>
+<p>Add pipeline behaviors in Application:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="n">AddMediatR</span><span class="p">(</span><span class="n">cfg</span><span class="w"> </span><span class="o">=&gt;</span>
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="p">{</span>
+<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="w">    </span><span class="n">cfg</span><span class="p">.</span><span class="n">RegisterServicesFromAssemblyContaining</span><span class="o">&lt;</span><span class="n">Program</span><span class="o">&gt;</span><span class="p">();</span>
+<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="w">    </span><span class="n">cfg</span><span class="p">.</span><span class="n">AddCleanArchitectureCachingPipeline</span><span class="p">();</span>
+<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="w">    </span><span class="n">cfg</span><span class="p">.</span><span class="n">AddCleanArchitectureMultitenancyPipeline</span><span class="p">();</span>
+<a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a><span class="p">});</span>
+</code></pre></div>
 <h2 id="uninstall">Uninstall<a class="headerlink" href="#uninstall" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="n">dotnet</span> <span class="n">remove</span> <span class="n">package</span> <span class="n">CleanArchitecture</span><span class="p">.</span><span class="n">Extensions</span><span class="p">.</span><span class="n">Caching</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="n">dotnet</span> <span class="n">remove</span> <span class="n">src</span><span class="p">/</span><span class="n">Application</span><span class="p">/</span><span class="n">Application</span><span class="p">.</span><span class="n">csproj</span> <span class="n">package</span> <span class="n">CleanArchitecture</span><span class="p">.</span><span class="n">Extensions</span><span class="p">.</span><span class="n">Caching</span>
+<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="n">dotnet</span> <span class="n">remove</span> <span class="n">src</span><span class="p">/</span><span class="n">Infrastructure</span><span class="p">/</span><span class="n">Infrastructure</span><span class="p">.</span><span class="n">csproj</span> <span class="n">package</span> <span class="n">CleanArchitecture</span><span class="p">.</span><span class="n">Extensions</span><span class="p">.</span><span class="n">Caching</span>
 </code></pre></div>
+<p>Adjust for the package(s) you installed.</p>
 
 
 
@@ -1531,7 +1669,7 @@
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1-2.1-2M12.5 7v5.2l4 2.4-1 1L11 13V7h1.5M11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2v1.8Z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">December 25, 2025</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">January 1, 2026</span>
   </span>
 
     

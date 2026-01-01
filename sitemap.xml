@@ -101,7 +101,22 @@
          <changefreq>daily</changefreq>
     </url>
     <url>
+         <loc>https://cleanarchitecture-extensions.github.io/CleanArchitecture.Extensions/reference/aspnetcore-multitenancy-options/</loc>
+         <lastmod>2026-01-01</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://cleanarchitecture-extensions.github.io/CleanArchitecture.Extensions/reference/caching-options/</loc>
+         <lastmod>2026-01-01</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
          <loc>https://cleanarchitecture-extensions.github.io/CleanArchitecture.Extensions/reference/configuration/</loc>
+         <lastmod>2026-01-01</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://cleanarchitecture-extensions.github.io/CleanArchitecture.Extensions/reference/efcore-multitenancy-options/</loc>
          <lastmod>2026-01-01</lastmod>
          <changefreq>daily</changefreq>
     </url>

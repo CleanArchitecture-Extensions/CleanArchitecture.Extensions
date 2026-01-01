@@ -1023,9 +1023,18 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#optional-map-exceptions-to-http-responses" class="md-nav__link">
+  <a href="#log-and-trace-correlation" class="md-nav__link">
     <span class="md-ellipsis">
-      Optional: map exceptions to HTTP responses
+      Log and trace correlation
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#http-enforcement" class="md-nav__link">
+    <span class="md-ellipsis">
+      HTTP enforcement
     </span>
   </a>
   
@@ -1295,11 +1304,74 @@
   
   
     <li class="md-nav__item">
+      <a href="../../../reference/caching-options/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Caching options
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../../reference/multitenancy-options/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
     Multitenancy options
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../reference/aspnetcore-multitenancy-options/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    AspNetCore multitenancy options
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../reference/efcore-multitenancy-options/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    EF Core multitenancy options
   </span>
   
 
@@ -1499,9 +1571,18 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#optional-map-exceptions-to-http-responses" class="md-nav__link">
+  <a href="#log-and-trace-correlation" class="md-nav__link">
     <span class="md-ellipsis">
-      Optional: map exceptions to HTTP responses
+      Log and trace correlation
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#http-enforcement" class="md-nav__link">
+    <span class="md-ellipsis">
+      HTTP enforcement
     </span>
   </a>
   
@@ -1522,12 +1603,12 @@
                   
 
 
-<h1 id="multitenancy-core-requirements-and-behaviors">Multitenancy Core: Requirements and behaviors<a class="headerlink" href="#multitenancy-core-requirements-and-behaviors" title="Permanent link">&para;</a></h1>
-<p>This page documents how tenant requirements are expressed and how pipeline behaviors enforce them.</p>
+<h1 id="multitenancy-core-requirements-and-behaviors">Multitenancy core: requirements and behaviors<a class="headerlink" href="#multitenancy-core-requirements-and-behaviors" title="Permanent link">&para;</a></h1>
+<p>This page explains how tenant requirements are expressed and how the MediatR behaviors enforce them.</p>
 <h2 id="tenant-requirements">Tenant requirements<a class="headerlink" href="#tenant-requirements" title="Permanent link">&para;</a></h2>
-<p>A request or endpoint can declare its requirement in two ways:</p>
+<p>A request or endpoint can declare a requirement in two ways:</p>
 <p>1) Implement <code>ITenantRequirement</code> on the request type.
-2) Apply <code>RequiresTenantAttribute</code> or <code>AllowHostRequestsAttribute</code> on the request or endpoint.</p>
+2) Apply <code>RequiresTenantAttribute</code> or <code>AllowHostRequestsAttribute</code> to the request or endpoint.</p>
 <p>Example request-level requirement:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="k">using</span><span class="w"> </span><span class="nn">CleanArchitecture.Extensions.Multitenancy.Abstractions</span><span class="p">;</span>
 <a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="k">using</span><span class="w"> </span><span class="nn">MediatR</span><span class="p">;</span>
@@ -1544,34 +1625,26 @@
 <a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="na">[AllowHostRequests]</span>
 <a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="k">public</span><span class="w"> </span><span class="k">sealed</span><span class="w"> </span><span class="k">record</span><span class="w"> </span><span class="nf">GetHealthQuery</span><span class="p">()</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">IRequest</span><span class="o">&lt;</span><span class="kt">string</span><span class="o">&gt;</span><span class="p">;</span>
 </code></pre></div>
-<p>If no requirement is specified, the system falls back to:
-- <code>MultitenancyOptions.RequireTenantByDefault</code> (default true)
-- <code>MultitenancyOptions.AllowAnonymous</code></p>
-<h2 id="pipeline-behaviors">Pipeline behaviors<a class="headerlink" href="#pipeline-behaviors" title="Permanent link">&para;</a></h2>
-<p>The core package includes the following MediatR behaviors:</p>
+<p>If no requirement is specified, the default is determined by:</p>
 <ul>
-<li><code>TenantValidationBehavior</code> - validates tenant metadata against cache/store.</li>
-<li><code>TenantEnforcementBehavior</code> - enforces resolution and tenant lifecycle checks.</li>
-<li><code>TenantCorrelationBehavior</code> - adds tenant ID to logging scope and activity baggage.</li>
-<li><code>TenantScopedCacheBehavior</code> - warns when cache scope is missing tenant context.</li>
+<li><code>MultitenancyOptions.RequireTenantByDefault</code> (default <code>true</code>)</li>
+<li><code>MultitenancyOptions.AllowAnonymous</code> (default <code>false</code>)</li>
 </ul>
-<p>Register them using the extension method:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="k">using</span><span class="w"> </span><span class="nn">CleanArchitecture.Extensions.Multitenancy.Behaviors</span><span class="p">;</span>
-<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="k">using</span><span class="w"> </span><span class="nn">MediatR</span><span class="p">;</span>
-<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>
-<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="n">services</span><span class="p">.</span><span class="n">AddMediatR</span><span class="p">(</span><span class="n">cfg</span><span class="w"> </span><span class="o">=&gt;</span>
-<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="p">{</span>
-<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="w">    </span><span class="n">cfg</span><span class="p">.</span><span class="n">RegisterServicesFromAssemblyContaining</span><span class="o">&lt;</span><span class="n">Program</span><span class="o">&gt;</span><span class="p">();</span>
-<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>
-<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="w">    </span><span class="c1">// Template behaviors...</span>
-<a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="w">    </span><span class="c1">// cfg.AddOpenBehavior(typeof(AuthorizationBehaviour&lt;,&gt;));</span>
-<a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a><span class="w">    </span><span class="c1">// cfg.AddOpenBehavior(typeof(ValidationBehaviour&lt;,&gt;));</span>
-<a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a>
-<a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a><span class="w">    </span><span class="n">cfg</span><span class="p">.</span><span class="n">AddCleanArchitectureMultitenancyPipeline</span><span class="p">();</span>
-<a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a><span class="w">    </span><span class="n">cfg</span><span class="p">.</span><span class="n">AddOpenBehavior</span><span class="p">(</span><span class="k">typeof</span><span class="p">(</span><span class="n">TenantScopedCacheBehavior</span><span class="o">&lt;</span><span class="p">,</span><span class="o">&gt;</span><span class="p">));</span><span class="w"> </span><span class="c1">// optional</span>
-<a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a><span class="p">});</span>
+<h2 id="pipeline-behaviors">Pipeline behaviors<a class="headerlink" href="#pipeline-behaviors" title="Permanent link">&para;</a></h2>
+<p>Register the core behaviors with:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="n">AddMediatR</span><span class="p">(</span><span class="n">cfg</span><span class="w"> </span><span class="o">=&gt;</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="p">{</span>
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">    </span><span class="n">cfg</span><span class="p">.</span><span class="n">RegisterServicesFromAssemblyContaining</span><span class="o">&lt;</span><span class="n">Program</span><span class="o">&gt;</span><span class="p">();</span>
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="w">    </span><span class="n">cfg</span><span class="p">.</span><span class="n">AddCleanArchitectureMultitenancyPipeline</span><span class="p">();</span>
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="p">});</span>
 </code></pre></div>
-<p>Place the call near your other request checks so tenant enforcement happens before the handler executes.</p>
+<p>The pipeline includes:</p>
+<ul>
+<li><code>TenantValidationBehavior</code> - validates tenant metadata against cache/store when enabled.</li>
+<li><code>TenantEnforcementBehavior</code> - enforces resolution and lifecycle checks.</li>
+<li><code>TenantCorrelationBehavior</code> - enriches logs and activity with tenant ID.</li>
+</ul>
+<p><code>TenantScopedCacheBehavior</code> is optional and warns when cache scope does not align with the current tenant.</p>
 <h2 id="enforcement-rules">Enforcement rules<a class="headerlink" href="#enforcement-rules" title="Permanent link">&para;</a></h2>
 <p><code>TenantEnforcementBehavior</code> throws when:</p>
 <ul>
@@ -1580,32 +1653,15 @@
 <li>Tenant is suspended (<code>TenantSuspendedException</code>).</li>
 <li>Tenant is inactive, soft-deleted, pending provisioning, deleted, or expired (<code>TenantInactiveException</code>).</li>
 </ul>
-<p>If you need to bypass enforcement for specific endpoints, apply <code>AllowHostRequestsAttribute</code> or return <code>TenantRequirementMode.Optional</code>.</p>
-<h2 id="optional-map-exceptions-to-http-responses">Optional: map exceptions to HTTP responses<a class="headerlink" href="#optional-map-exceptions-to-http-responses" title="Permanent link">&para;</a></h2>
-<p>In ASP.NET Core, map tenant exceptions to HTTP status codes:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="k">using</span><span class="w"> </span><span class="nn">CleanArchitecture.Extensions.Multitenancy.Exceptions</span><span class="p">;</span>
-<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="k">using</span><span class="w"> </span><span class="nn">Microsoft.AspNetCore.Diagnostics</span><span class="p">;</span>
-<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="k">using</span><span class="w"> </span><span class="nn">Microsoft.AspNetCore.Http</span><span class="p">;</span>
-<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>
-<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="n">app</span><span class="p">.</span><span class="n">UseExceptionHandler</span><span class="p">(</span><span class="n">handler</span><span class="w"> </span><span class="o">=&gt;</span>
-<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="p">{</span>
-<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="w">    </span><span class="n">handler</span><span class="p">.</span><span class="n">Run</span><span class="p">(</span><span class="k">async</span><span class="w"> </span><span class="n">context</span><span class="w"> </span><span class="o">=&gt;</span>
-<a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="w">    </span><span class="p">{</span>
-<a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a><span class="w">        </span><span class="kt">var</span><span class="w"> </span><span class="n">feature</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">context</span><span class="p">.</span><span class="n">Features</span><span class="p">.</span><span class="n">Get</span><span class="o">&lt;</span><span class="n">IExceptionHandlerFeature</span><span class="o">&gt;</span><span class="p">();</span>
-<a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a><span class="w">        </span><span class="kt">var</span><span class="w"> </span><span class="n">status</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">feature</span><span class="o">?.</span><span class="n">Error</span><span class="w"> </span><span class="k">switch</span>
-<a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a><span class="w">        </span><span class="p">{</span>
-<a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a><span class="w">            </span><span class="n">TenantNotResolvedException</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">StatusCodes</span><span class="p">.</span><span class="n">Status400BadRequest</span><span class="p">,</span>
-<a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a><span class="w">            </span><span class="n">TenantNotFoundException</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">StatusCodes</span><span class="p">.</span><span class="n">Status404NotFound</span><span class="p">,</span>
-<a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a><span class="w">            </span><span class="n">TenantSuspendedException</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">StatusCodes</span><span class="p">.</span><span class="n">Status403Forbidden</span><span class="p">,</span>
-<a id="__codelineno-3-15" name="__codelineno-3-15" href="#__codelineno-3-15"></a><span class="w">            </span><span class="n">TenantInactiveException</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">StatusCodes</span><span class="p">.</span><span class="n">Status403Forbidden</span><span class="p">,</span>
-<a id="__codelineno-3-16" name="__codelineno-3-16" href="#__codelineno-3-16"></a><span class="w">            </span><span class="n">_</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">StatusCodes</span><span class="p">.</span><span class="n">Status500InternalServerError</span>
-<a id="__codelineno-3-17" name="__codelineno-3-17" href="#__codelineno-3-17"></a><span class="w">        </span><span class="p">};</span>
-<a id="__codelineno-3-18" name="__codelineno-3-18" href="#__codelineno-3-18"></a>
-<a id="__codelineno-3-19" name="__codelineno-3-19" href="#__codelineno-3-19"></a><span class="w">        </span><span class="n">context</span><span class="p">.</span><span class="n">Response</span><span class="p">.</span><span class="n">StatusCode</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">status</span><span class="p">;</span>
-<a id="__codelineno-3-20" name="__codelineno-3-20" href="#__codelineno-3-20"></a><span class="w">        </span><span class="k">await</span><span class="w"> </span><span class="n">context</span><span class="p">.</span><span class="n">Response</span><span class="p">.</span><span class="n">WriteAsync</span><span class="p">(</span><span class="s">&quot;Tenant error.&quot;</span><span class="p">);</span>
-<a id="__codelineno-3-21" name="__codelineno-3-21" href="#__codelineno-3-21"></a><span class="w">    </span><span class="p">});</span>
-<a id="__codelineno-3-22" name="__codelineno-3-22" href="#__codelineno-3-22"></a><span class="p">});</span>
-</code></pre></div>
+<p>These rules are evaluated against <code>TenantInfo</code> fields: <code>IsActive</code>, <code>IsSoftDeleted</code>, <code>State</code>, and <code>ExpiresAt</code>.</p>
+<h2 id="log-and-trace-correlation">Log and trace correlation<a class="headerlink" href="#log-and-trace-correlation" title="Permanent link">&para;</a></h2>
+<p><code>TenantCorrelationBehavior</code> adds the tenant ID to:</p>
+<ul>
+<li>Log scopes (key is <code>MultitenancyOptions.LogScopeKey</code>)</li>
+<li>Activity tags and baggage when <code>AddTenantToActivity</code> is enabled</li>
+</ul>
+<h2 id="http-enforcement">HTTP enforcement<a class="headerlink" href="#http-enforcement" title="Permanent link">&para;</a></h2>
+<p>For HTTP endpoints, use the ASP.NET Core adapter's filters (<code>TenantEnforcementEndpointFilter</code> or <code>TenantEnforcementActionFilter</code>). They apply the same enforcement rules and can map exceptions to ProblemDetails responses.</p>
 
 
 
@@ -1626,7 +1682,7 @@
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1-2.1-2M12.5 7v5.2l4 2.4-1 1L11 13V7h1.5M11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2v1.8Z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">December 28, 2025</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">January 1, 2026</span>
   </span>
 
     

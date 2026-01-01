@@ -1209,11 +1209,74 @@
   
   
     <li class="md-nav__item">
+      <a href="../reference/caching-options/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Caching options
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../reference/multitenancy-options/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
     Multitenancy options
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/aspnetcore-multitenancy-options/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    AspNetCore multitenancy options
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/efcore-multitenancy-options/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    EF Core multitenancy options
   </span>
   
 
@@ -1390,9 +1453,27 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#style-docs" class="md-nav__link">
+  <a href="#documentation-style" class="md-nav__link">
     <span class="md-ellipsis">
-      Style (docs)
+      Documentation style
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#testing-expectations" class="md-nav__link">
+    <span class="md-ellipsis">
+      Testing expectations
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#local-docs-preview" class="md-nav__link">
+    <span class="md-ellipsis">
+      Local docs preview
     </span>
   </a>
   
@@ -1471,9 +1552,27 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#style-docs" class="md-nav__link">
+  <a href="#documentation-style" class="md-nav__link">
     <span class="md-ellipsis">
-      Style (docs)
+      Documentation style
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#testing-expectations" class="md-nav__link">
+    <span class="md-ellipsis">
+      Testing expectations
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#local-docs-preview" class="md-nav__link">
+    <span class="md-ellipsis">
+      Local docs preview
     </span>
   </a>
   
@@ -1495,36 +1594,38 @@
 
 
 <h1 id="contributing">Contributing<a class="headerlink" href="#contributing" title="Permanent link">&para;</a></h1>
-<p>We keep the upstream Jason Taylor template pristine and ship everything as opt-in packages. Contributions must follow that contract and stay in sync with the docs and samples.</p>
+<p>We keep the upstream template pristine and ship everything as opt-in packages. Contributions must follow that contract and stay in sync with docs and tests.</p>
 <h2 id="principles">Principles<a class="headerlink" href="#principles" title="Permanent link">&para;</a></h2>
 <ul>
-<li>Template-first: mirror Jason Taylor’s conventions (folder layout, naming, MediatR pipeline ordering). Do <strong>not</strong> modify <code>JasonTaylorCleanArchitecture/</code>.</li>
-<li>Extension = opt-in: minimal required config, no surprises; keep dependencies light.</li>
-<li>Docs/samples-first: every behavior change lands with updated docs under <code>docs/</code> and, where applicable, a sample under <code>samples/</code>.</li>
-<li>Tests-close-to-code: add/adjust tests in <code>tests/</code> for the package you touch.</li>
+<li><strong>Template-first</strong>: mirror Jason Taylor's conventions. Do not modify the upstream template.</li>
+<li><strong>Opt-in by default</strong>: minimal required configuration, clear defaults, easy removal.</li>
+<li><strong>Docs and tests</strong>: every behavior change updates docs under <code>docs/</code> and tests under <code>tests/</code>.</li>
+<li><strong>Separation of concerns</strong>: Application stays clean; Infrastructure and host adapt via composition.</li>
 </ul>
 <h2 id="workflow">Workflow<a class="headerlink" href="#workflow" title="Permanent link">&para;</a></h2>
-<ol>
-<li>Pick the design doc: read the matching <code>HighLevelDocs/Domain*/CleanArchitecture.Extensions.*.md</code> before coding.</li>
-<li>Branch in this repo; keep changes inside <code>CleanArchitecture.Extensions/</code> solution (src/tests/samples/docs/build).</li>
-<li>Implement + test: add or update unit/integration tests for your changes.</li>
-<li>Update docs: extension page, recipes, reference, and roadmap if scope changes. Keep nav links valid.</li>
-<li>Preview docs locally (optional):<br />
-   <div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">python</span> <span class="n">-m</span> <span class="n">venv</span> <span class="p">.</span><span class="n">venv</span>
+<p>1) Read the relevant design doc in <code>HighLevelDocs/Domain*/CleanArchitecture.Extensions.*.md</code>.
+2) Make changes inside <code>CleanArchitecture.Extensions/</code> (src/tests/samples/docs/build).
+3) Update docs and ensure navigation links remain valid.
+4) Add or update tests for the package you touched.</p>
+<h2 id="documentation-style">Documentation style<a class="headerlink" href="#documentation-style" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Follow the extension template: overview, when to use, compat, install, usage, troubleshooting.</li>
+<li>Use fenced code blocks with language tags (<code>csharp</code>, <code>powershell</code>, <code>json</code>).</li>
+<li>Prefer short, runnable snippets and keep them under ~30 lines.</li>
+<li>Use Markdown links for external URLs (e.g., <code>[Quickstart](https://...)</code>).</li>
+</ul>
+<h2 id="testing-expectations">Testing expectations<a class="headerlink" href="#testing-expectations" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Add unit tests for behaviors and configuration logic.</li>
+<li>Add integration tests for EF Core and ASP.NET Core adapters when behavior changes.</li>
+<li>Keep test names aligned with existing naming conventions.</li>
+</ul>
+<h2 id="local-docs-preview">Local docs preview<a class="headerlink" href="#local-docs-preview" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">python</span> <span class="n">-m</span> <span class="n">venv</span> <span class="p">.</span><span class="n">venv</span>
 <a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="p">.</span> <span class="p">.</span><span class="n">venv</span><span class="p">/</span><span class="n">Scripts</span><span class="p">/</span><span class="n">Activate</span><span class="p">.</span><span class="n">ps1</span>
 <a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="n">pip</span> <span class="n">install</span> <span class="n">-r</span> <span class="n">docs</span><span class="p">/</span><span class="n">requirements</span><span class="p">.</span><span class="n">txt</span>
 <a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="n">mkdocs</span> <span class="n">serve</span>
-</code></pre></div></li>
-<li>Run relevant samples/tests where applicable and note any manual steps in your PR description.</li>
-</ol>
-<h2 id="style-docs">Style (docs)<a class="headerlink" href="#style-docs" title="Permanent link">&para;</a></h2>
-<ul>
-<li>Follow the documentation strategy templates (overview → when to use → compat → install → usage → troubleshooting → samples/tests).</li>
-<li>Use fenced code blocks with language tags (<code>bash</code>, <code>powershell</code>, <code>csharp</code>, <code>json</code>).</li>
-<li>Prefer snippets from source to avoid drift; keep examples short and runnable.</li>
-<li>Keep compatibility info current (template version, target frameworks, dependencies).</li>
-<li>Format external links as Markdown links, for example <code>- [Roadmap](https://cleanarchitecture-extensions.github.io/CleanArchitecture.Extensions/roadmap/)</code> (avoid <code>Label: URL</code>).</li>
-</ul>
+</code></pre></div>
 
 
 
@@ -1545,7 +1646,7 @@
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1-2.1-2M12.5 7v5.2l4 2.4-1 1L11 13V7h1.5M11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2v1.8Z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">December 28, 2025</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">January 1, 2026</span>
   </span>
 
     

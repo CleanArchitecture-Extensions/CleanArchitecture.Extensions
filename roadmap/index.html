@@ -546,9 +546,18 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#next" class="md-nav__link">
+  <a href="#next-up" class="md-nav__link">
     <span class="md-ellipsis">
-      Next
+      Next up
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#later" class="md-nav__link">
+    <span class="md-ellipsis">
+      Later
     </span>
   </a>
   
@@ -1272,11 +1281,74 @@
   
   
     <li class="md-nav__item">
+      <a href="../reference/caching-options/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Caching options
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../reference/multitenancy-options/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
     Multitenancy options
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/aspnetcore-multitenancy-options/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    AspNetCore multitenancy options
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/efcore-multitenancy-options/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    EF Core multitenancy options
   </span>
   
 
@@ -1458,9 +1530,18 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#next" class="md-nav__link">
+  <a href="#next-up" class="md-nav__link">
     <span class="md-ellipsis">
-      Next
+      Next up
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#later" class="md-nav__link">
+    <span class="md-ellipsis">
+      Later
     </span>
   </a>
   
@@ -1482,17 +1563,25 @@
 
 
 <h1 id="roadmap">Roadmap<a class="headerlink" href="#roadmap" title="Permanent link">&para;</a></h1>
+<p>This roadmap reflects the current focus and order of delivery. Items may shift as new requirements appear.</p>
 <h2 id="shipped-preview">Shipped (preview)<a class="headerlink" href="#shipped-preview" title="Permanent link">&para;</a></h2>
 <ul>
-<li><strong>CleanArchitecture.Extensions.Caching</strong> — cache abstractions, adapters, and query caching behavior.</li>
-<li><strong>Multitenancy Core</strong> — tenant model, resolution providers, enforcement behavior.</li>
-<li><strong>Multitenancy.AspNetCore</strong> — middleware and endpoint enforcement for HTTP.</li>
-<li><strong>Multitenancy.EFCore</strong> — tenant-aware DbContext helpers, filters, and SaveChanges enforcement.</li>
+<li><strong>CleanArchitecture.Extensions.Caching</strong>: cache abstractions, adapters, and query caching behavior.</li>
+<li><strong>Multitenancy Core</strong>: tenant model, resolution providers, enforcement behavior.</li>
+<li><strong>Multitenancy.AspNetCore</strong>: middleware and endpoint enforcement for HTTP.</li>
+<li><strong>Multitenancy.EFCore</strong>: tenant-aware DbContext helpers, filters, and SaveChanges enforcement.</li>
 </ul>
-<h2 id="next">Next<a class="headerlink" href="#next" title="Permanent link">&para;</a></h2>
+<h2 id="next-up">Next up<a class="headerlink" href="#next-up" title="Permanent link">&para;</a></h2>
 <ul>
-<li><strong>Multitenancy adapters</strong> — Identity (planned).</li>
-<li><strong>Caching adapters</strong> — Redis and other distributed stores (planned).</li>
+<li>Multitenancy.Identity adapter (tenant-aware Identity stores).</li>
+<li>Multitenancy.Provisioning adapter (tenant onboarding workflows).</li>
+<li>Caching adapters for Redis and other distributed stores.</li>
+</ul>
+<h2 id="later">Later<a class="headerlink" href="#later" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Sharding, storage, and observability adapters.</li>
+<li>Expanded samples and recipe library.</li>
+<li>API/reference extraction and versioned docs.</li>
 </ul>
 
 

@@ -594,9 +594,9 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#cleanarchitectureextensionsmultitenancyidentity-planned" class="md-nav__link">
+  <a href="#planned-packages" class="md-nav__link">
     <span class="md-ellipsis">
-      CleanArchitecture.Extensions.Multitenancy.Identity (planned)
+      Planned packages
     </span>
   </a>
   
@@ -1299,11 +1299,74 @@
   
   
     <li class="md-nav__item">
+      <a href="../../reference/caching-options/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Caching options
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../reference/multitenancy-options/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
     Multitenancy options
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/aspnetcore-multitenancy-options/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    AspNetCore multitenancy options
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/efcore-multitenancy-options/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    EF Core multitenancy options
   </span>
   
 
@@ -1512,9 +1575,9 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#cleanarchitectureextensionsmultitenancyidentity-planned" class="md-nav__link">
+  <a href="#planned-packages" class="md-nav__link">
     <span class="md-ellipsis">
-      CleanArchitecture.Extensions.Multitenancy.Identity (planned)
+      Planned packages
     </span>
   </a>
   
@@ -1536,61 +1599,57 @@
 
 
 <h1 id="package-blueprints">Package blueprints<a class="headerlink" href="#package-blueprints" title="Permanent link">&para;</a></h1>
+<p>This page summarizes the intent for each package and links to the detailed extension docs.</p>
 <h2 id="cleanarchitectureextensionscaching-shipped">CleanArchitecture.Extensions.Caching (shipped)<a class="headerlink" href="#cleanarchitectureextensionscaching-shipped" title="Permanent link">&para;</a></h2>
-<p>What it provides:</p>
+<p><strong>Purpose</strong></p>
 <ul>
 <li>Cache abstractions with memory and distributed adapters.</li>
 <li>Query caching behavior for MediatR.</li>
-<li>Simple configuration for expiration and cache predicates.</li>
+<li>Deterministic cache key conventions.</li>
 </ul>
-<p>Design notes:</p>
+<p><strong>Docs</strong></p>
 <ul>
-<li>HighLevelDocs/Domain1-CoreArchitectureExtensions/CleanArchitecture.Extensions.Caching.md</li>
-<li>Docs: <a href="../../extensions/caching/">docs/extensions/caching.md</a></li>
+<li><a href="../../extensions/caching/">Caching extension</a></li>
 </ul>
 <h2 id="cleanarchitectureextensionsmultitenancy-shipped">CleanArchitecture.Extensions.Multitenancy (shipped)<a class="headerlink" href="#cleanarchitectureextensionsmultitenancy-shipped" title="Permanent link">&para;</a></h2>
-<p>What it provides:</p>
+<p><strong>Purpose</strong></p>
 <ul>
 <li>Tenant model and current tenant abstraction.</li>
 <li>Resolution providers (header, route, host, claims, default).</li>
-<li>Validation hooks (cache/store) and enforcement behaviors.</li>
-<li>Context serialization and cache scope integration.</li>
+<li>Validation hooks and enforcement behaviors.</li>
 </ul>
-<p>Design notes:</p>
+<p><strong>Docs</strong></p>
 <ul>
-<li>HighLevelDocs/Domain2-Multitenancy/CleanArchitecture.Extensions.Multitenancy.md</li>
-<li>Docs: <a href="../../extensions/multitenancy-core/">docs/extensions/multitenancy-core.md</a></li>
+<li><a href="../../extensions/multitenancy-core/">Multitenancy core</a></li>
 </ul>
 <h2 id="cleanarchitectureextensionsmultitenancyaspnetcore-shipped">CleanArchitecture.Extensions.Multitenancy.AspNetCore (shipped)<a class="headerlink" href="#cleanarchitectureextensionsmultitenancyaspnetcore-shipped" title="Permanent link">&para;</a></h2>
-<p>What it provides:</p>
+<p><strong>Purpose</strong></p>
 <ul>
-<li>Middleware and endpoint helpers for tenant resolution.</li>
+<li>HTTP middleware for resolution.</li>
 <li>Minimal API and MVC enforcement filters.</li>
+<li>ProblemDetails mapping for tenant errors.</li>
 </ul>
-<p>Design notes:</p>
+<p><strong>Docs</strong></p>
 <ul>
-<li>HighLevelDocs/Domain2-Multitenancy/CleanArchitecture.Extensions.Multitenancy.AspNetCore.md</li>
-<li>Docs: <a href="../../extensions/multitenancy-aspnetcore/">docs/extensions/multitenancy-aspnetcore.md</a></li>
+<li><a href="../../extensions/multitenancy-aspnetcore/">Multitenancy.AspNetCore</a></li>
 </ul>
 <h2 id="cleanarchitectureextensionsmultitenancyefcore-shipped">CleanArchitecture.Extensions.Multitenancy.EFCore (shipped)<a class="headerlink" href="#cleanarchitectureextensionsmultitenancyefcore-shipped" title="Permanent link">&para;</a></h2>
-<p>What it provides:</p>
+<p><strong>Purpose</strong></p>
 <ul>
-<li>Tenant-aware DbContext helpers and filters.</li>
-<li>Patterns for shared and schema-per-tenant databases.</li>
+<li>Query filters and SaveChanges enforcement.</li>
+<li>Schema-per-tenant and database-per-tenant helpers.</li>
+<li>Tenant-aware DbContext factory and migration runner.</li>
 </ul>
-<p>Design notes:</p>
+<p><strong>Docs</strong></p>
 <ul>
-<li>HighLevelDocs/Domain2-Multitenancy/CleanArchitecture.Extensions.Multitenancy.EFCore.md</li>
-<li>Docs: <a href="../../extensions/multitenancy-efcore/">docs/extensions/multitenancy-efcore.md</a></li>
+<li><a href="../../extensions/multitenancy-efcore/">Multitenancy.EFCore</a></li>
 </ul>
-<h2 id="cleanarchitectureextensionsmultitenancyidentity-planned">CleanArchitecture.Extensions.Multitenancy.Identity (planned)<a class="headerlink" href="#cleanarchitectureextensionsmultitenancyidentity-planned" title="Permanent link">&para;</a></h2>
-<p>What it will provide:</p>
+<h2 id="planned-packages">Planned packages<a class="headerlink" href="#planned-packages" title="Permanent link">&para;</a></h2>
 <ul>
-<li>Tenant-aware Identity helpers and policies.</li>
-</ul>
-<p>Design notes:</p>
-<ul>
-<li>HighLevelDocs/Domain2-Multitenancy/CleanArchitecture.Extensions.Multitenancy.Identity.md</li>
+<li>Multitenancy.Identity</li>
+<li>Multitenancy.Provisioning</li>
+<li>Multitenancy.Redis</li>
+<li>Multitenancy.Sharding</li>
 </ul>
 
 
