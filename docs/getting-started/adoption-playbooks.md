@@ -1,37 +1,67 @@
 # Adoption playbooks
 
-## Caching-first adoption
+These playbooks describe pragmatic, low-risk ways to adopt extensions in production without refactoring the template.
 
-Use caching for read-heavy queries and expensive lookups.
+## Playbook: caching for read-heavy queries
 
-How to get started:
+**Goal**: reduce latency and database load for expensive reads while keeping handlers clean.
 
-- Identify queries with high read frequency or expensive IO.
-- Add the caching behavior and set a response predicate for what to cache.
-- Add invalidation on command success or relevant domain events.
+**Steps**
 
-Success signals:
+1. Identify queries with high read frequency or expensive IO.
+2. Install caching and add the query caching behavior.
+3. Configure TTLs and a cache predicate (start conservative).
+4. Pick a cache adapter (memory first; distributed later).
+5. Add explicit invalidation on command success or domain events.
 
-- Cache hit ratio climbs without stale data incidents.
-- Latency for cached queries drops measurably.
-- Cache keys are consistent and easy to reason about.
+**Success signals**
 
-## SaaS with tenant isolation (planned)
+- Cache hit ratio increases without stale data incidents.
+- P95 latency improves for the cached queries.
+- Cache keys are predictable and easily traced in logs.
 
-Plan for Multitenancy Core so tenant context is available to caches, storage, and APIs.
+**Risks and mitigations**
 
-How to get started:
+- Stale data: use short TTLs and explicit invalidation.
+- Cache stampede: enable locking and jitter (default).
+- Oversized payloads: set `MaxEntrySizeBytes` and size hints.
 
-- Define tenant resolution rules (header, route, host, claims).
-- Decide where tenant enforcement should occur (middleware, behaviors).
-- Ensure cache keys include tenant identifiers.
+## Playbook: SaaS multitenancy for HTTP APIs
 
-## Event-driven integration (planned)
+**Goal**: resolve tenant context for every request, enforce it in handlers, and isolate data.
 
-Keep caches consistent when integration events flow between services.
+**Steps**
 
-How to get started:
+1. Decide resolution sources (route, header, host, or claim).
+2. Add multitenancy core and the ASP.NET Core adapter.
+3. Configure `MultitenancyOptions` (resolution order, headers, route name).
+4. Add `AddCleanArchitectureMultitenancyPipeline` and mark endpoints as required.
+5. Implement `ITenantInfoStore` and enable validation to prevent spoofing.
+6. (Optional) Add EF Core isolation and enable SaveChanges enforcement.
 
-- Use events to trigger cache invalidation.
-- Track keys or tags so invalidation stays targeted.
-- Keep cross-service cache coupling minimal and explicit.
+**Success signals**
+
+- Requests without tenant identifiers fail fast with clear errors.
+- Tenant ID shows up in logs and traces.
+- Data reads and writes are isolated by tenant.
+
+**Risks and mitigations**
+
+- Claim-based resolution requires authentication to run first; place middleware accordingly.
+- Missing tenant store when validation is enabled will cause enforcement failures; register it early.
+- In database-per-tenant mode, ensure connection strings are resolvable for all tenants.
+
+## Playbook: event-driven invalidation (advanced)
+
+**Goal**: keep caches in sync when data changes across services.
+
+**Steps**
+
+1. Define events for data mutations (commands and integration events).
+2. Invalidate cache keys from event handlers (or a small adapter service).
+3. Keep cache key conventions consistent to avoid global invalidation.
+
+**Success signals**
+
+- Cache invalidations are targeted and low-latency.
+- Cache and database values stay aligned under load tests.

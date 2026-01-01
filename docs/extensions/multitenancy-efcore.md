@@ -1,31 +1,31 @@
 # Extension: Multitenancy.EFCore
 
 ## Overview
-Tenant-aware EF Core helpers that enforce isolation for shared databases, schema-per-tenant, and database-per-tenant configurations. Includes global query filters, SaveChanges enforcement, schema handling, and DbContext factory helpers.
+
+CleanArchitecture.Extensions.Multitenancy.EFCore adds EF Core helpers for tenant isolation: query filters, SaveChanges enforcement, schema handling, and tenant-aware DbContext factories.
 
 ## When to use
-- You want row-level tenant isolation in a shared database.
-- You need schema-per-tenant isolation with model cache separation.
+
+- You want row-level isolation in a shared database.
+- You need schema-per-tenant isolation with separate EF Core model caches.
 - You want SaveChanges to enforce tenant ownership automatically.
 
-## Prereqs & Compatibility
-- Target frameworks: `net10.0`.
-- Dependencies: EF Core `10.0.0`, Microsoft.Extensions.Options `10.0.0`.
+## Prereqs and compatibility
+
+- Target framework: `net10.0`.
+- Dependencies: EF Core `10.0.0`.
 - Requires multitenancy core and a tenant resolver in your host.
 
 ## Install
 
-```bash
+```powershell
 dotnet add src/Infrastructure/Infrastructure.csproj package CleanArchitecture.Extensions.Multitenancy.EFCore
 ```
 
-## Quickstart
-
-### Register services
+## Register services
 
 ```csharp
 using CleanArchitecture.Extensions.Multitenancy.EFCore;
-using CleanArchitecture.Extensions.Multitenancy.EFCore.Interceptors;
 using CleanArchitecture.Extensions.Multitenancy.EFCore.Options;
 
 builder.Services.AddCleanArchitectureMultitenancyEfCore(options =>
@@ -36,9 +36,11 @@ builder.Services.AddCleanArchitectureMultitenancyEfCore(options =>
 });
 ```
 
-### Configure DbContext
+## Configure DbContext
 
 ```csharp
+using CleanArchitecture.Extensions.Multitenancy.EFCore.Interceptors;
+
 builder.Services.AddDbContext<ApplicationDbContext>((sp, options) =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
@@ -46,9 +48,11 @@ builder.Services.AddDbContext<ApplicationDbContext>((sp, options) =>
 });
 ```
 
-If your host already registers `ISaveChangesInterceptor` instances, you can omit the explicit `TenantSaveChangesInterceptor` line and rely on `GetServices<ISaveChangesInterceptor>()`.
+If your host already registers `ISaveChangesInterceptor` instances, you can omit the explicit interceptor registration.
 
-### Option A: Derive from TenantDbContext (non-Identity DbContext)
+## Choose an integration style
+
+### Option A: derive from TenantDbContext (non-Identity DbContext)
 
 ```csharp
 using CleanArchitecture.Extensions.Multitenancy.Abstractions;
@@ -69,7 +73,7 @@ public sealed class ApplicationDbContext : TenantDbContext
 }
 ```
 
-### Option B: Keep IdentityDbContext (template default)
+### Option B: keep IdentityDbContext (template default)
 
 ```csharp
 using System.Reflection;
@@ -111,7 +115,9 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>, ITenantD
 }
 ```
 
-### Tenant entities
+## Tenant entities and global entities
+
+Tenant-scoped entity:
 
 ```csharp
 using CleanArchitecture.Extensions.Multitenancy.EFCore.Abstractions;
@@ -123,9 +129,7 @@ public sealed class Customer : ITenantEntity
 }
 ```
 
-If you already use `BaseAuditableEntity`, you can rely on the shadow `TenantId` property, or implement `ITenantEntity` on your base entity to make the tenant column explicit.
-
-Exclude global entities:
+Exclude global entities from filtering:
 
 ```csharp
 using CleanArchitecture.Extensions.Multitenancy.EFCore.Abstractions;
@@ -137,6 +141,8 @@ public sealed class FeatureFlag
 }
 ```
 
+You can also mark global entities via `IGlobalEntity` or with `EfCoreMultitenancyOptions.GlobalEntityTypes`.
+
 ## Schema-per-tenant setup
 
 ```csharp
@@ -147,16 +153,60 @@ builder.Services.AddCleanArchitectureMultitenancyEfCore(options =>
 });
 ```
 
+In schema-per-tenant mode, the model cache key includes the schema to prevent cross-tenant model reuse.
+
+## Database-per-tenant setup
+
+```csharp
+builder.Services.AddCleanArchitectureMultitenancyEfCore(options =>
+{
+    options.Mode = TenantIsolationMode.DatabasePerTenant;
+    options.ConnectionStringFormat = "Server=.;Database=Tenant_{0};Trusted_Connection=True;TrustServerCertificate=True;";
+});
+
+builder.Services.AddDbContextFactory<ApplicationDbContext>((sp, options) =>
+{
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+});
+
+builder.Services.AddTenantDbContextFactory<ApplicationDbContext>();
+```
+
+For request-scoped DbContext registration, resolve the tenant connection inside `AddDbContext`:
+
+```csharp
+builder.Services.AddDbContext<ApplicationDbContext>((sp, options) =>
+{
+    var currentTenant = sp.GetRequiredService<ICurrentTenant>();
+    var resolver = sp.GetRequiredService<ITenantConnectionResolver>();
+    var connectionString = resolver.ResolveConnectionString(currentTenant.TenantInfo);
+
+    if (string.IsNullOrWhiteSpace(connectionString))
+    {
+        throw new InvalidOperationException("Tenant connection string was not resolved.");
+    }
+
+    options.UseSqlServer(connectionString);
+});
+```
+
+## Migrations per tenant
+
+Use `TenantMigrationRunner<TContext>` to migrate tenants in sequence:
+
+```csharp
+await migrationRunner.RunAsync(tenants, cancellationToken);
+```
+
 ## Key components
 
-- `TenantDbContext` base class, `ITenantDbContext`, and `TenantModelCacheKeyFactory`.
-- `TenantSaveChangesInterceptor` for tenant enforcement on writes.
-- `TenantModelCustomizer` for filters and schema configuration.
-- `TenantMigrationRunner<TContext>` for per-tenant migrations.
+- `TenantDbContext`, `ITenantDbContext`, `TenantModelCustomizer`
+- `TenantSaveChangesInterceptor`
+- `TenantModelCacheKeyFactory`
+- `ITenantDbContextFactory<TContext>` and `TenantMigrationRunner<TContext>`
 
-## Related modules
+## Related docs
 
-- Multitenancy Core (shipped)
-- Multitenancy.AspNetCore (shipped)
-- Multitenancy.Identity (planned)
-- Multitenancy.Provisioning (planned)
+- [Multitenancy core](multitenancy-core.md)
+- [EF Core options](../reference/efcore-multitenancy-options.md)
+- [Troubleshooting](../troubleshooting/multitenancy.md)

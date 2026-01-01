@@ -1,14 +1,22 @@
-# Extensions Catalog
+# Extensions catalog
 
-A small catalog of opt-in extensions designed to plug into Jason Taylor's Clean Architecture template without forking it.
+This catalog lists the extensions that ship today and how they fit into the template.
 
-## Shipped
+## Shipped packages
 
-- **CleanArchitecture.Extensions.Caching** — cache abstractions plus query caching behavior: [Caching](caching.md)
-- **CleanArchitecture.Extensions.Multitenancy** — tenant resolution and enforcement primitives: [Multitenancy Core](multitenancy-core.md)
-- **CleanArchitecture.Extensions.Multitenancy.AspNetCore** — ASP.NET Core middleware and endpoint helpers: [Multitenancy.AspNetCore](multitenancy-aspnetcore.md)
-- **CleanArchitecture.Extensions.Multitenancy.EFCore** — EF Core filters and DbContext helpers: [Multitenancy.EFCore](multitenancy-efcore.md)
+| Package | Purpose | Docs |
+| --- | --- | --- |
+| `CleanArchitecture.Extensions.Caching` | Cache abstractions, adapters, and query caching behavior. | [Caching](caching.md) |
+| `CleanArchitecture.Extensions.Multitenancy` | Core tenant model, resolution pipeline, and MediatR behaviors. | [Multitenancy Core](multitenancy-core.md) |
+| `CleanArchitecture.Extensions.Multitenancy.AspNetCore` | HTTP middleware and endpoint enforcement. | [Multitenancy.AspNetCore](multitenancy-aspnetcore.md) |
+| `CleanArchitecture.Extensions.Multitenancy.EFCore` | EF Core filters, interceptors, and tenant-aware factories. | [Multitenancy.EFCore](multitenancy-efcore.md) |
 
 ## Planned
 
-- Additional modules and adapters (Identity, Redis, Storage, Sharding).
+- Multitenancy.Identity
+- Multitenancy.Provisioning
+- Multitenancy.Redis
+- Multitenancy.Sharding
+- Storage/Search adapters
+
+See the [Roadmap](../roadmap.md) for the current plan.

@@ -1,29 +1,27 @@
 # Extension: Multitenancy.AspNetCore
 
 ## Overview
-ASP.NET Core adapters for the multitenancy core package. This extension provides middleware to populate `TenantResolutionContext`, endpoint filters for tenant enforcement, and helpers for minimal APIs and MVC.
+
+CleanArchitecture.Extensions.Multitenancy.AspNetCore provides HTTP-specific adapters for the multitenancy core. It includes middleware to resolve tenants from `HttpContext`, endpoint filters for enforcement, and helpers for minimal APIs and MVC.
 
 ## When to use
 
-- You need tenant resolution and enforcement for HTTP requests.
-- You want minimal API helpers to mark tenant-required endpoints.
+- You need tenant resolution for HTTP requests.
+- You want tenant enforcement in minimal APIs or MVC without custom filters.
 - You want consistent ProblemDetails responses for multitenancy errors.
 
-## Prereqs & Compatibility
+## Prereqs and compatibility
 
-- Target frameworks: `net10.0`.
-- Dependencies: `CleanArchitecture.Extensions.Multitenancy` and ASP.NET Core (`Microsoft.AspNetCore.App`).
-- Host adapter: use the provided middleware to populate tenant context.
+- Target framework: `net10.0`.
+- Dependencies: `Microsoft.AspNetCore.App` and the multitenancy core package.
 
 ## Install
 
-```bash
-dotnet add src/YourWebProject/YourWebProject.csproj package CleanArchitecture.Extensions.Multitenancy.AspNetCore
+```powershell
+dotnet add src/Web/Web.csproj package CleanArchitecture.Extensions.Multitenancy.AspNetCore
 ```
 
-## Usage
-
-### Register services and middleware
+## Register services and middleware
 
 ```csharp
 using CleanArchitecture.Extensions.Multitenancy.AspNetCore;
@@ -35,7 +33,7 @@ var app = builder.Build();
 app.UseCleanArchitectureMultitenancy();
 ```
 
-### Minimal API enforcement
+## Minimal API enforcement
 
 ```csharp
 using CleanArchitecture.Extensions.Multitenancy.AspNetCore.Routing;
@@ -46,7 +44,12 @@ app.MapGroup("/tenants/{tenantId}")
     .MapGet("/profile", () => Results.Ok());
 ```
 
-### MVC enforcement
+## Tenant requirements for endpoints
+
+- Minimal APIs: use `.RequireTenant()` or `.AllowAnonymousTenant()` on route groups or handlers.
+- MVC: apply `[RequiresTenant]` or `[AllowAnonymousTenant]` to controllers/actions.
+
+## MVC enforcement
 
 ```csharp
 using CleanArchitecture.Extensions.Multitenancy.AspNetCore;
@@ -56,7 +59,7 @@ builder.Services
     .AddMultitenancyEnforcement();
 ```
 
-### Options
+## Options
 
 ```csharp
 using CleanArchitecture.Extensions.Multitenancy.AspNetCore;
@@ -76,6 +79,16 @@ builder.Services.AddCleanArchitectureMultitenancyAspNetCore(
     });
 ```
 
+## Access the resolved tenant
+
+If `StoreTenantInHttpContextItems` is enabled (default), you can read the resolved context:
+
+```csharp
+using CleanArchitecture.Extensions.Multitenancy.AspNetCore.Context;
+
+var tenantContext = httpContext.GetTenantContext();
+```
+
 ## ProblemDetails mapping
 
 ```csharp
@@ -87,20 +100,22 @@ if (TenantProblemDetailsMapper.TryCreate(exception, httpContext, out var details
 }
 ```
 
-## Pipeline ordering
+## Middleware ordering
 
-Recommended middleware order for HTTP pipelines:
-
-- Correlation
-- Localization
-- Multitenancy resolution
-- Authentication
-- Authorization
-- MVC/minimal API handlers
+- Place tenant resolution before authorization and handler execution.
+- If you use claim-based tenant resolution, run authentication before `UseCleanArchitectureMultitenancy` so claims are available.
 
 ## Key components
 
 - `TenantResolutionMiddleware`
 - `TenantEnforcementEndpointFilter` / `TenantEnforcementActionFilter`
 - `EndpointConventionBuilderExtensions`
+- `HttpContextTenantExtensions`
 - `AspNetCoreMultitenancyOptions`
+
+## Related docs
+
+- [Multitenancy core](multitenancy-core.md)
+- [Multitenancy options](../reference/multitenancy-options.md)
+- [AspNetCore options](../reference/aspnetcore-multitenancy-options.md)
+- [Troubleshooting](../troubleshooting/multitenancy.md)

@@ -1,53 +1,81 @@
 # CleanArchitecture.Extensions
 
-CleanArchitecture.Extensions is a small set of opt-in NuGet packages that plug into Jason Taylor's Clean Architecture template without forking it.
+CleanArchitecture.Extensions is a set of opt-in NuGet packages that plug into Jason Taylor's Clean Architecture template without forking it. Each package is designed to be composable, template-aligned, and easy to remove.
 
-## What ships today
+## What you get
 
-- `CleanArchitecture.Extensions.Caching`
-- `CleanArchitecture.Extensions.Multitenancy`
-- `CleanArchitecture.Extensions.Multitenancy.AspNetCore`
+- Caching abstractions and MediatR query caching behavior.
+- Multitenancy core plus ASP.NET Core and EF Core adapters.
+- Extension methods and options that keep integration minimal and explicit.
 
-## Quickstart
+## How it fits the template
 
-Caching:
+- Application layer: pipeline behaviors and abstractions (`ICache`, `ICurrentTenant`).
+- Infrastructure layer: adapters and data-enforcement helpers (EF Core, cache providers).
+- Host layer: middleware and endpoint filters for HTTP workloads.
+
+## Packages (current)
+
+- [CleanArchitecture.Extensions.Caching](extensions/caching.md)
+- [CleanArchitecture.Extensions.Multitenancy (core)](extensions/multitenancy-core.md)
+- [CleanArchitecture.Extensions.Multitenancy.AspNetCore](extensions/multitenancy-aspnetcore.md)
+- [CleanArchitecture.Extensions.Multitenancy.EFCore](extensions/multitenancy-efcore.md)
+
+## Quickstart: caching
 
 ```powershell
-dotnet add package CleanArchitecture.Extensions.Caching
+dotnet add src/Application/Application.csproj package CleanArchitecture.Extensions.Caching
+dotnet add src/Infrastructure/Infrastructure.csproj package CleanArchitecture.Extensions.Caching
 ```
 
 ```csharp
-services.AddCleanArchitectureCaching();
-services.AddMediatR(cfg => cfg.AddCleanArchitectureCachingPipeline());
+using CleanArchitecture.Extensions.Caching;
+
+builder.Services.AddCleanArchitectureCaching();
+
+builder.Services.AddMediatR(cfg =>
+{
+    cfg.RegisterServicesFromAssemblyContaining<Program>();
+    cfg.AddCleanArchitectureCachingPipeline();
+});
 ```
 
-Multitenancy:
+## Quickstart: multitenancy (core + ASP.NET Core)
 
 ```powershell
-dotnet add package CleanArchitecture.Extensions.Multitenancy
+dotnet add src/Application/Application.csproj package CleanArchitecture.Extensions.Multitenancy
+dotnet add src/Infrastructure/Infrastructure.csproj package CleanArchitecture.Extensions.Multitenancy
+dotnet add src/Web/Web.csproj package CleanArchitecture.Extensions.Multitenancy.AspNetCore
 ```
 
 ```csharp
-services.AddCleanArchitectureMultitenancy();
-services.AddMediatR(cfg => cfg.AddCleanArchitectureMultitenancyPipeline());
+using CleanArchitecture.Extensions.Multitenancy;
+using CleanArchitecture.Extensions.Multitenancy.AspNetCore;
+using CleanArchitecture.Extensions.Multitenancy.AspNetCore.Middleware;
+
+builder.Services.AddCleanArchitectureMultitenancyAspNetCore();
+
+builder.Services.AddMediatR(cfg =>
+{
+    cfg.RegisterServicesFromAssemblyContaining<Program>();
+    cfg.AddCleanArchitectureMultitenancyPipeline();
+});
+
+var app = builder.Build();
+app.UseCleanArchitectureMultitenancy();
 ```
 
-Multitenancy.AspNetCore:
+## Documentation map
 
-```powershell
-dotnet add package CleanArchitecture.Extensions.Multitenancy.AspNetCore
-```
+- [Getting started](getting-started/quickstart.md)
+- [Concepts](concepts/architecture-fit.md)
+- [Extensions catalog](extensions/index.md)
+- [Recipes](recipes/caching.md)
+- [Reference](reference/configuration.md)
+- [Troubleshooting](troubleshooting/index.md)
+- [Roadmap](roadmap.md)
 
-```csharp
-services.AddCleanArchitectureMultitenancyAspNetCore();
-```
+## Compatibility
 
-No other template changes required.
-
-## Where to go next
-
-- Caching docs: [extensions/caching.md](extensions/caching.md)
-- Multitenancy docs: [extensions/multitenancy-core.md](extensions/multitenancy-core.md)
-- Multitenancy.AspNetCore docs: [extensions/multitenancy-aspnetcore.md](extensions/multitenancy-aspnetcore.md)
-- Extensions catalog: [extensions/index.md](extensions/index.md)
-- Roadmap: [roadmap.md](roadmap.md)
+- Target frameworks: `net10.0`.
+- Designed to integrate with the Jason Taylor Clean Architecture template without modifying the template repository.

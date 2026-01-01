@@ -1,6 +1,6 @@
-# Multitenancy Core: Context propagation
+# Multitenancy core: context propagation
 
-Tenant context is stored in `AsyncLocal` via `CurrentTenantAccessor`. This page shows how to set and propagate tenant context safely.
+Tenant context is stored in `AsyncLocal` via `CurrentTenantAccessor`. This page shows how to set and propagate tenant context safely across async boundaries.
 
 ## BeginScope for background work
 
@@ -57,7 +57,7 @@ public sealed class TenantMessagePublisher
 }
 ```
 
-On the consumer side:
+Consumer side:
 
 ```csharp
 using CleanArchitecture.Extensions.Multitenancy.Abstractions;
@@ -88,4 +88,4 @@ public sealed class TenantMessageHandler
 
 - Always wrap work in `BeginScope` so contexts are restored.
 - Avoid storing `TenantContext` in static fields.
-- Restore context in background workers and message handlers explicitly.
+- Restore context explicitly in background workers and message handlers.

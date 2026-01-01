@@ -1,62 +1,58 @@
 # Package blueprints
 
+This page summarizes the intent for each package and links to the detailed extension docs.
+
 ## CleanArchitecture.Extensions.Caching (shipped)
 
-What it provides:
+**Purpose**
 
 - Cache abstractions with memory and distributed adapters.
 - Query caching behavior for MediatR.
-- Simple configuration for expiration and cache predicates.
+- Deterministic cache key conventions.
 
-Design notes:
+**Docs**
 
-- HighLevelDocs/Domain1-CoreArchitectureExtensions/CleanArchitecture.Extensions.Caching.md
-- Docs: [docs/extensions/caching.md](../extensions/caching.md)
+- [Caching extension](../extensions/caching.md)
 
 ## CleanArchitecture.Extensions.Multitenancy (shipped)
 
-What it provides:
+**Purpose**
 
 - Tenant model and current tenant abstraction.
 - Resolution providers (header, route, host, claims, default).
-- Validation hooks (cache/store) and enforcement behaviors.
-- Context serialization and cache scope integration.
+- Validation hooks and enforcement behaviors.
 
-Design notes:
+**Docs**
 
-- HighLevelDocs/Domain2-Multitenancy/CleanArchitecture.Extensions.Multitenancy.md
-- Docs: [docs/extensions/multitenancy-core.md](../extensions/multitenancy-core.md)
+- [Multitenancy core](../extensions/multitenancy-core.md)
 
 ## CleanArchitecture.Extensions.Multitenancy.AspNetCore (shipped)
 
-What it provides:
+**Purpose**
 
-- Middleware and endpoint helpers for tenant resolution.
+- HTTP middleware for resolution.
 - Minimal API and MVC enforcement filters.
+- ProblemDetails mapping for tenant errors.
 
-Design notes:
+**Docs**
 
-- HighLevelDocs/Domain2-Multitenancy/CleanArchitecture.Extensions.Multitenancy.AspNetCore.md
-- Docs: [docs/extensions/multitenancy-aspnetcore.md](../extensions/multitenancy-aspnetcore.md)
+- [Multitenancy.AspNetCore](../extensions/multitenancy-aspnetcore.md)
 
 ## CleanArchitecture.Extensions.Multitenancy.EFCore (shipped)
 
-What it provides:
+**Purpose**
 
-- Tenant-aware DbContext helpers and filters.
-- Patterns for shared and schema-per-tenant databases.
+- Query filters and SaveChanges enforcement.
+- Schema-per-tenant and database-per-tenant helpers.
+- Tenant-aware DbContext factory and migration runner.
 
-Design notes:
+**Docs**
 
-- HighLevelDocs/Domain2-Multitenancy/CleanArchitecture.Extensions.Multitenancy.EFCore.md
-- Docs: [docs/extensions/multitenancy-efcore.md](../extensions/multitenancy-efcore.md)
+- [Multitenancy.EFCore](../extensions/multitenancy-efcore.md)
 
-## CleanArchitecture.Extensions.Multitenancy.Identity (planned)
+## Planned packages
 
-What it will provide:
-
-- Tenant-aware Identity helpers and policies.
-
-Design notes:
-
-- HighLevelDocs/Domain2-Multitenancy/CleanArchitecture.Extensions.Multitenancy.Identity.md
+- Multitenancy.Identity
+- Multitenancy.Provisioning
+- Multitenancy.Redis
+- Multitenancy.Sharding

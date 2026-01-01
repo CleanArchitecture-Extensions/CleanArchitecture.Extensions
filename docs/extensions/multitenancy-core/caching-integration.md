@@ -1,6 +1,6 @@
-# Multitenancy Core: Caching integration
+# Multitenancy core: caching integration
 
-Use the caching integration to ensure cache keys include tenant context.
+Use the caching integration to ensure cache keys include the current tenant ID.
 
 ## Setup
 
@@ -12,12 +12,11 @@ Use the caching integration to ensure cache keys include tenant context.
 using CleanArchitecture.Extensions.Caching;
 using CleanArchitecture.Extensions.Multitenancy;
 using CleanArchitecture.Extensions.Multitenancy.Behaviors;
-using MediatR;
 
-services.AddCleanArchitectureCaching();
-services.AddCleanArchitectureMultitenancyCaching();
+builder.Services.AddCleanArchitectureCaching();
+builder.Services.AddCleanArchitectureMultitenancyCaching();
 
-services.AddMediatR(cfg =>
+builder.Services.AddMediatR(cfg =>
 {
     cfg.RegisterServicesFromAssemblyContaining<Program>();
     cfg.AddOpenBehavior(typeof(TenantScopedCacheBehavior<,>));
@@ -27,9 +26,10 @@ services.AddMediatR(cfg =>
 ## What changes
 
 - `TenantCacheScope` replaces `ICacheScope` and includes `TenantId` in generated keys.
-- Cache key shape remains `{namespace}:{tenant}:{resource}:{hash}` as defined by the caching module.
+- Cache key shape remains `{namespace}:{tenant}:{resource}:{hash}`.
+- `TenantScopedCacheBehavior` logs a warning when the cache scope tenant does not match the current tenant.
 
 ## Troubleshooting
 
-- If you see "Cache scope tenant mismatch" warnings, ensure `ITenantAccessor` is set before caching behaviors run.
+- If you see cache scope mismatch warnings, ensure tenant resolution runs before caching behaviors.
 - `AddCleanArchitectureMultitenancyCaching` throws if caching services are not registered first.

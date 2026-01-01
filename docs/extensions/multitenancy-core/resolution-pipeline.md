@@ -1,10 +1,10 @@
-# Multitenancy Core: Resolution pipeline
+# Multitenancy core: resolution pipeline
 
-This page explains how tenant resolution works and how to customize provider order and consensus rules.
+This page explains how `ITenantResolver` evaluates providers and how to customize ordering and consensus rules.
 
 ## Resolution inputs
 
-Tenant resolution is driven by `TenantResolutionContext`, which is populated by your host:
+Tenant resolution is driven by `TenantResolutionContext`, which you populate in your host adapter:
 
 ```csharp
 using CleanArchitecture.Extensions.Multitenancy;
@@ -41,26 +41,25 @@ foreach (var claim in httpContext.User.Claims)
 
 ## Built-in providers
 
-The core package registers the following providers by default:
+The core package registers these providers by default:
 
-- `RouteTenantProvider` - uses `RouteParameterName` and returns high confidence.
-- `HostTenantProvider` - uses `HostTenantSelector` (defaults to first subdomain).
-- `HeaderTenantProvider` - scans `HeaderNames`.
-- `QueryTenantProvider` - uses `QueryParameterName`.
-- `ClaimTenantProvider` - uses `ClaimType`.
-- `DefaultTenantProvider` - uses `FallbackTenant` / `FallbackTenantId`.
+- `RouteTenantProvider` (uses `RouteParameterName`, high confidence)
+- `HostTenantProvider` (uses `HostTenantSelector`, medium confidence)
+- `HeaderTenantProvider` (uses `HeaderNames`, medium confidence)
+- `QueryTenantProvider` (uses `QueryParameterName`, medium confidence)
+- `ClaimTenantProvider` (uses `ClaimType`, medium confidence)
+- `DefaultTenantProvider` (uses `FallbackTenant`/`FallbackTenantId`, low confidence)
 
-Header/query/claim values can contain multiple candidates separated by `,` or `;`. Multiple candidates are treated as ambiguous and will not resolve a tenant.
+Header, query, and claim providers accept multiple candidates separated by `,` or `;`. Multiple candidates are treated as ambiguous and do not resolve a tenant.
 
-## Ordering and consensus
+## Ordering behavior
 
-Resolution order is driven by `MultitenancyOptions.ResolutionOrder`:
+`CompositeTenantResolutionStrategy` orders providers using `MultitenancyOptions.ResolutionOrder`:
 
 ```csharp
-using CleanArchitecture.Extensions.Multitenancy;
 using CleanArchitecture.Extensions.Multitenancy.Configuration;
 
-services.Configure<MultitenancyOptions>(options =>
+builder.Services.Configure<MultitenancyOptions>(options =>
 {
     options.ResolutionOrder = new List<TenantResolutionSource>
     {
@@ -74,18 +73,24 @@ services.Configure<MultitenancyOptions>(options =>
 });
 ```
 
-If `RequireMatchAcrossSources` is enabled, the strategy collects candidates from all providers and resolves only when there is exactly one unique candidate:
+Providers not listed in `ResolutionOrder` are still evaluated when `IncludeUnorderedProviders` is `true` (default).
+
+## Consensus mode
+
+When `RequireMatchAcrossSources` is enabled, the strategy collects candidates from all providers and resolves only if a single unique tenant ID exists:
 
 ```csharp
-services.Configure<MultitenancyOptions>(options =>
+builder.Services.Configure<MultitenancyOptions>(options =>
 {
     options.RequireMatchAcrossSources = true;
 });
 ```
 
+This mode is useful when multiple sources can be present (for example, route + header) and you want strict consistency.
+
 ## Host parsing rules
 
-By default, the host provider uses the first subdomain:
+The default host selector resolves the first subdomain:
 
 - `tenant.app.com` -> `tenant`
 - `localhost` -> not resolved
@@ -94,7 +99,7 @@ By default, the host provider uses the first subdomain:
 Override with a custom selector when needed:
 
 ```csharp
-services.Configure<MultitenancyOptions>(options =>
+builder.Services.Configure<MultitenancyOptions>(options =>
 {
     options.HostTenantSelector = host =>
     {
@@ -111,14 +116,13 @@ services.Configure<MultitenancyOptions>(options =>
 
 ## Custom providers
 
-You can add custom providers for environment-specific resolution:
+Add custom providers for environment-specific resolution:
 
 ```csharp
-using CleanArchitecture.Extensions.Multitenancy;
 using CleanArchitecture.Extensions.Multitenancy.Abstractions;
 using CleanArchitecture.Extensions.Multitenancy.Providers;
 
-services.AddSingleton<ITenantProvider>(
+builder.Services.AddSingleton<ITenantProvider>(
     new DelegateTenantProvider(context =>
     {
         if (context.Items.TryGetValue("tenant_override", out var value))
@@ -130,22 +134,21 @@ services.AddSingleton<ITenantProvider>(
     }, source: TenantResolutionSource.Custom, confidence: TenantResolutionConfidence.High));
 ```
 
-Custom providers not listed in `ResolutionOrder` are still evaluated when `IncludeUnorderedProviders` is true (default).
-
 ## Timeouts and cancellation
 
 Set `ResolutionTimeout` to guard against slow providers:
 
 ```csharp
-services.Configure<MultitenancyOptions>(options =>
+builder.Services.Configure<MultitenancyOptions>(options =>
 {
     options.ResolutionTimeout = TimeSpan.FromMilliseconds(50);
 });
 ```
 
-The composite strategy links this timeout with the request cancellation token.
+The timeout is linked with the request cancellation token.
 
 ## Diagnostics tips
 
-- Log `TenantResolutionResult.Source`, `Confidence`, and `Candidates` for debugging.
-- Ambiguous candidates result in no resolved tenant; tighten your sources or enable consensus.
+- Inspect `TenantResolutionResult.Source`, `Confidence`, and `Candidates` in logs.
+- Ambiguous candidates return `IsAmbiguous == true` and do not resolve a tenant.
+- In consensus mode, a single unique candidate is required.
