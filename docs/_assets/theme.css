@@ -3,6 +3,10 @@
   --md-code-font: "JetBrains Mono", monospace;
 }
 
+html {
+  font-size: 15px;
+}
+
 .md-typeset h1,
 .md-typeset h2,
 .md-typeset h3 {
