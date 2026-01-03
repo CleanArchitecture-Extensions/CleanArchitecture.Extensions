@@ -9,13 +9,13 @@
 | `DefaultEntryOptions` | `CacheEntryOptions` | `CacheEntryOptions.Default` | Default entry options when no overrides are provided. |
 | `StampedePolicy` | `CacheStampedePolicy` | `CacheStampedePolicy.Default` | Locking and jitter defaults. |
 | `MaxEntrySizeBytes` | `long?` | `null` | Maximum payload size in bytes. |
-| `PreferredSerializer` | `string?` | `null` | Preferred serializer name/content type when multiple serializers are registered. |
+| `PreferredSerializer` | `string?` | `null` | Preferred serializer type name or content type when multiple serializers are registered. |
 
 ## QueryCachingBehaviorOptions
 
 | Option | Type | Default | Description |
 | --- | --- | --- | --- |
-| `CachePredicate` | `Func<object,bool>` | Types ending with `Query` | Determines cacheable requests. |
+| `CachePredicate` | `Func<object,bool>` | `ICacheableQuery` or `[CacheableQuery]` | Determines cacheable requests. |
 | `ResourceNameSelector` | `Func<object,string>?` | `null` | Custom resource name for cache keys. |
 | `HashFactory` | `Func<object,string>?` | `null` | Custom hash for cache keys. |
 | `DefaultTtl` | `TimeSpan?` | `00:05:00` | Default TTL for cached queries. |
@@ -40,4 +40,3 @@
 | `EnableLocking` | `bool` | `true` | Enable per-key locking. |
 | `LockTimeout` | `TimeSpan` | `00:00:05` | Max wait for a lock. |
 | `Jitter` | `TimeSpan?` | `00:00:00.050` | Random jitter applied to expirations. |
-| `RefreshAhead` | `TimeSpan?` | `null` | Refresh-ahead interval (provider-dependent). |

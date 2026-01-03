@@ -59,9 +59,24 @@ builder.Services.AddMediatR(cfg =>
 });
 ```
 
-## Step 4 - What to expect
+## Step 4 - Opt-in queries
 
-- Queries (types ending with `Query`) are cached by default; commands are not.
+Only queries that opt in are cached by default. Use the marker interface or attribute:
+
+```csharp
+using CleanArchitecture.Extensions.Caching;
+using CleanArchitecture.Extensions.Caching.Abstractions;
+
+[CacheableQuery]
+public record GetTodosQuery : IRequest<TodosVm>;
+
+// or
+public record GetUserQuery(int Id) : IRequest<UserDto>, ICacheableQuery;
+```
+
+## Step 5 - What to expect
+
+- Only queries marked with `ICacheableQuery` or `[CacheableQuery]` are cached by default.
 - First request is a cache miss; the second identical request is a cache hit.
 - Default TTL is 5 minutes; override with `QueryCachingBehaviorOptions.DefaultTtl` or `TtlByRequestType`.
 - Debug logs show `Cache hit` and `Cache miss` messages when caching is active.
