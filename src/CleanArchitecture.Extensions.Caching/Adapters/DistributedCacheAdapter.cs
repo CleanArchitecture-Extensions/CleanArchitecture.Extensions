@@ -4,6 +4,7 @@ using CleanArchitecture.Extensions.Caching.Keys;
 using CleanArchitecture.Extensions.Caching.Options;
 using CleanArchitecture.Extensions.Caching.Serialization;
 using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
@@ -47,6 +48,7 @@ public sealed class DistributedCacheAdapter : ICache
     /// <param name="options">Caching options.</param>
     /// <param name="timeProvider">Time provider used for timestamps.</param>
     /// <param name="logger">Logger.</param>
+    [ActivatorUtilitiesConstructor]
     public DistributedCacheAdapter(
         IDistributedCache distributedCache,
         IEnumerable<ICacheSerializer> serializers,
