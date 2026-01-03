@@ -67,5 +67,5 @@ await cache.RemoveAsync(cacheScope.Create("GetOrdersQuery", hash));
 ## Pitfalls
 
 - Cache stampede: keep locking enabled and set jitter.
-- Tenant-aware caching: call `AddCleanArchitectureMultitenancyCaching` when multitenancy is enabled.
+- Tenant-aware caching: install `CleanArchitecture.Extensions.Multitenancy.Caching` and call `AddCleanArchitectureMultitenancyCaching` when multitenancy is enabled.
 - Caching error responses: use `ResponseCachePredicate` to skip them.

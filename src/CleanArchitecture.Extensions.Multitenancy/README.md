@@ -17,10 +17,11 @@ dotnet add src/Application/Application.csproj package CleanArchitecture.Extensio
 dotnet add src/Infrastructure/Infrastructure.csproj package CleanArchitecture.Extensions.Multitenancy
 ```
 
-Optional caching integration (requires `CleanArchitecture.Extensions.Caching`):
+Optional caching integration (requires `CleanArchitecture.Extensions.Caching` and `CleanArchitecture.Extensions.Multitenancy.Caching`):
 
 ```powershell
 dotnet add src/Infrastructure/Infrastructure.csproj package CleanArchitecture.Extensions.Caching
+dotnet add src/Infrastructure/Infrastructure.csproj package CleanArchitecture.Extensions.Multitenancy.Caching
 ```
 
 ## Quickstart
@@ -121,7 +122,7 @@ builder.Services.AddMediatR(cfg =>
 
     cfg.AddCleanArchitectureMultitenancyPipeline();
 
-    // Optional: warn when cache scope is missing tenant context
+    // Optional: warn when cache scope is missing tenant context (Multitenancy.Caching package)
     cfg.AddOpenBehavior(typeof(TenantScopedCacheBehavior<,>));
 });
 ```
@@ -251,7 +252,11 @@ Use `AllowHostRequestsAttribute` or `ITenantRequirement` to mark optional endpoi
 
 ## Caching integration
 
-When using `CleanArchitecture.Extensions.Caching`, replace the cache scope so cache keys include `tenantId`:
+When using `CleanArchitecture.Extensions.Caching`, install the multitenancy caching adapter so cache keys include `tenantId`:
+
+```powershell
+dotnet add src/Infrastructure/Infrastructure.csproj package CleanArchitecture.Extensions.Multitenancy.Caching
+```
 
 ```csharp
 using CleanArchitecture.Extensions.Caching;

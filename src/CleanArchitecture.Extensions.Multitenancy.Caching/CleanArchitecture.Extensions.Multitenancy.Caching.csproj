@@ -7,9 +7,9 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <PackageId>CleanArchitecture.Extensions.Multitenancy</PackageId>
-    <Description>Core multitenancy abstractions, resolution pipeline, and MediatR behaviors for Clean Architecture applications.</Description>
-    <PackageTags>clean-architecture;multitenancy;tenant;pipeline;mediatr</PackageTags>
+    <PackageId>CleanArchitecture.Extensions.Multitenancy.Caching</PackageId>
+    <Description>Tenant-aware caching integration for Clean Architecture multitenancy, including cache scope binding and cache-scope warnings.</Description>
+    <PackageTags>clean-architecture;multitenancy;caching;tenant;mediatr</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>
@@ -18,6 +18,11 @@
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging" Version="10.0.0" />
     <PackageReference Include="Microsoft.Extensions.Options" Version="10.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CleanArchitecture.Extensions.Caching\CleanArchitecture.Extensions.Caching.csproj" />
+    <ProjectReference Include="..\CleanArchitecture.Extensions.Multitenancy\CleanArchitecture.Extensions.Multitenancy.csproj" />
   </ItemGroup>
 
   <ItemGroup>
