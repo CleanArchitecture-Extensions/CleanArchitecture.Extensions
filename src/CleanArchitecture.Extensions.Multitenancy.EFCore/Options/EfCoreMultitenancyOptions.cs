@@ -8,6 +8,13 @@ namespace CleanArchitecture.Extensions.Multitenancy.EFCore.Options;
 /// </summary>
 public sealed class EfCoreMultitenancyOptions
 {
+    private bool _useShadowTenantId = true;
+    private bool _useShadowTenantIdSet;
+    private bool _enableQueryFilters = true;
+    private bool _enableQueryFiltersSet;
+    private bool _enableSaveChangesEnforcement = true;
+    private bool _enableSaveChangesEnforcementSet;
+
     /// <summary>
     /// Gets or sets the isolation mode used for tenant data.
     /// </summary>
@@ -20,18 +27,45 @@ public sealed class EfCoreMultitenancyOptions
 
     /// <summary>
     /// Gets or sets a value indicating whether a shadow tenant identifier should be added when missing.
+    /// Defaults to true for shared database mode; false for schema/database per-tenant modes.
     /// </summary>
-    public bool UseShadowTenantId { get; set; } = true;
+    public bool UseShadowTenantId
+    {
+        get => _useShadowTenantIdSet ? _useShadowTenantId : RowLevelDefaultsEnabled;
+        set
+        {
+            _useShadowTenantId = value;
+            _useShadowTenantIdSet = true;
+        }
+    }
 
     /// <summary>
     /// Gets or sets a value indicating whether query filters should be applied for tenant isolation.
+    /// Defaults to true for shared database mode; false for schema/database per-tenant modes.
     /// </summary>
-    public bool EnableQueryFilters { get; set; } = true;
+    public bool EnableQueryFilters
+    {
+        get => _enableQueryFiltersSet ? _enableQueryFilters : RowLevelDefaultsEnabled;
+        set
+        {
+            _enableQueryFilters = value;
+            _enableQueryFiltersSet = true;
+        }
+    }
 
     /// <summary>
     /// Gets or sets a value indicating whether SaveChanges enforcement should run.
+    /// Defaults to true for shared database mode; false for schema/database per-tenant modes.
     /// </summary>
-    public bool EnableSaveChangesEnforcement { get; set; } = true;
+    public bool EnableSaveChangesEnforcement
+    {
+        get => _enableSaveChangesEnforcementSet ? _enableSaveChangesEnforcement : RowLevelDefaultsEnabled;
+        set
+        {
+            _enableSaveChangesEnforcement = value;
+            _enableSaveChangesEnforcementSet = true;
+        }
+    }
 
     /// <summary>
     /// Gets or sets a value indicating whether tenant context is required for write operations.
@@ -82,6 +116,8 @@ public sealed class EfCoreMultitenancyOptions
     /// Gets the default options instance.
     /// </summary>
     public static EfCoreMultitenancyOptions Default => new();
+
+    private bool RowLevelDefaultsEnabled => Mode == TenantIsolationMode.SharedDatabase;
 
     /// <summary>
     /// Resolves the schema name for the specified tenant.
