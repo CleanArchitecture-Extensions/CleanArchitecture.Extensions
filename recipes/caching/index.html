@@ -1634,9 +1634,21 @@
 <a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="p">});</span>
 </code></pre></div>
 <ol>
+<li>Opt in queries to caching.</li>
+</ol>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="k">using</span><span class="w"> </span><span class="nn">CleanArchitecture.Extensions.Caching</span><span class="p">;</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="k">using</span><span class="w"> </span><span class="nn">CleanArchitecture.Extensions.Caching.Abstractions</span><span class="p">;</span>
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>
+<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="na">[CacheableQuery]</span>
+<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="k">public</span><span class="w"> </span><span class="k">record</span><span class="w"> </span><span class="n">GetOrdersQuery</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">IRequest</span><span class="o">&lt;</span><span class="n">OrdersVm</span><span class="o">&gt;</span><span class="p">;</span>
+<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>
+<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="c1">// or</span>
+<a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="k">public</span><span class="w"> </span><span class="k">record</span><span class="w"> </span><span class="nf">GetUserQuery</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">Id</span><span class="p">)</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">IRequest</span><span class="o">&lt;</span><span class="n">UserDto</span><span class="o">&gt;</span><span class="p">,</span><span class="w"> </span><span class="n">ICacheableQuery</span><span class="p">;</span>
+</code></pre></div>
+<ol>
 <li>Add invalidation for write operations (commands or domain events).</li>
 </ol>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="k">await</span><span class="w"> </span><span class="n">cache</span><span class="p">.</span><span class="n">RemoveAsync</span><span class="p">(</span><span class="n">cacheScope</span><span class="p">.</span><span class="n">Create</span><span class="p">(</span><span class="s">&quot;GetOrdersQuery&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">hash</span><span class="p">));</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="k">await</span><span class="w"> </span><span class="n">cache</span><span class="p">.</span><span class="n">RemoveAsync</span><span class="p">(</span><span class="n">cacheScope</span><span class="p">.</span><span class="n">Create</span><span class="p">(</span><span class="s">&quot;GetOrdersQuery&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">hash</span><span class="p">));</span>
 </code></pre></div>
 <h2 id="verify">Verify<a class="headerlink" href="#verify" title="Permanent link">&para;</a></h2>
 <ul>
@@ -1669,7 +1681,7 @@
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1-2.1-2M12.5 7v5.2l4 2.4-1 1L11 13V7h1.5M11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2v1.8Z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">January 1, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">January 3, 2026</span>
   </span>
 
     

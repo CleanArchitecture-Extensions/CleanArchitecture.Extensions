@@ -1858,19 +1858,29 @@
 <h2 id="how-query-caching-works">How query caching works<a class="headerlink" href="#how-query-caching-works" title="Permanent link">&para;</a></h2>
 <p><code>QueryCachingBehavior&lt;TRequest, TResponse&gt;</code> applies cache-aside semantics:</p>
 <ul>
-<li>The default predicate caches request types whose names end with <code>Query</code> (case-insensitive).</li>
+<li>The default predicate caches requests that opt in via <code>ICacheableQuery</code> or <code>[CacheableQuery]</code>.</li>
 <li>The cache key uses the request type name as the resource and a SHA256 hash of the request payload.</li>
 <li>Cache hits short-circuit the handler; cache misses store the handler result.</li>
 </ul>
+<p>Opt-in a query by marker interface or attribute:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="k">using</span><span class="w"> </span><span class="nn">CleanArchitecture.Extensions.Caching</span><span class="p">;</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="k">using</span><span class="w"> </span><span class="nn">CleanArchitecture.Extensions.Caching.Abstractions</span><span class="p">;</span>
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>
+<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="na">[CacheableQuery]</span>
+<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="k">public</span><span class="w"> </span><span class="k">record</span><span class="w"> </span><span class="n">GetTodosQuery</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">IRequest</span><span class="o">&lt;</span><span class="n">TodosVm</span><span class="o">&gt;</span><span class="p">;</span>
+<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>
+<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="c1">// or</span>
+<a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="k">public</span><span class="w"> </span><span class="k">record</span><span class="w"> </span><span class="nf">GetUserQuery</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">Id</span><span class="p">)</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">IRequest</span><span class="o">&lt;</span><span class="n">UserDto</span><span class="o">&gt;</span><span class="p">,</span><span class="w"> </span><span class="n">ICacheableQuery</span><span class="p">;</span>
+</code></pre></div>
 <p>Configure request selection and TTLs via <code>QueryCachingBehaviorOptions</code>:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="n">AddCleanArchitectureCaching</span><span class="p">(</span>
-<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="w">    </span><span class="n">configureQueryCaching</span><span class="p">:</span><span class="w"> </span><span class="n">options</span><span class="w"> </span><span class="o">=&gt;</span>
-<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="w">    </span><span class="p">{</span>
-<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="w">        </span><span class="n">options</span><span class="p">.</span><span class="n">CachePredicate</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">request</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">request</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">ICacheableQuery</span><span class="p">;</span><span class="w"> </span><span class="c1">// your own marker interface</span>
-<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="w">        </span><span class="n">options</span><span class="p">.</span><span class="n">DefaultTtl</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">TimeSpan</span><span class="p">.</span><span class="n">FromMinutes</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span>
-<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="w">        </span><span class="n">options</span><span class="p">.</span><span class="n">TtlByRequestType</span><span class="p">[</span><span class="k">typeof</span><span class="p">(</span><span class="n">GetUserQuery</span><span class="p">)]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">TimeSpan</span><span class="p">.</span><span class="n">FromSeconds</span><span class="p">(</span><span class="mi">30</span><span class="p">);</span>
-<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="w">        </span><span class="n">options</span><span class="p">.</span><span class="n">CacheNullValues</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">false</span><span class="p">;</span>
-<a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="w">    </span><span class="p">});</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="n">AddCleanArchitectureCaching</span><span class="p">(</span>
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="w">    </span><span class="n">configureQueryCaching</span><span class="p">:</span><span class="w"> </span><span class="n">options</span><span class="w"> </span><span class="o">=&gt;</span>
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="w">    </span><span class="p">{</span>
+<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="w">        </span><span class="n">options</span><span class="p">.</span><span class="n">CachePredicate</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">request</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">request</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">ICacheableQuery</span><span class="p">;</span>
+<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="w">        </span><span class="n">options</span><span class="p">.</span><span class="n">DefaultTtl</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">TimeSpan</span><span class="p">.</span><span class="n">FromMinutes</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span>
+<a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="w">        </span><span class="n">options</span><span class="p">.</span><span class="n">TtlByRequestType</span><span class="p">[</span><span class="k">typeof</span><span class="p">(</span><span class="n">GetUserQuery</span><span class="p">)]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">TimeSpan</span><span class="p">.</span><span class="n">FromSeconds</span><span class="p">(</span><span class="mi">30</span><span class="p">);</span>
+<a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="w">        </span><span class="n">options</span><span class="p">.</span><span class="n">CacheNullValues</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">false</span><span class="p">;</span>
+<a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a><span class="w">    </span><span class="p">});</span>
 </code></pre></div>
 <h2 id="cache-keys-and-scopes">Cache keys and scopes<a class="headerlink" href="#cache-keys-and-scopes" title="Permanent link">&para;</a></h2>
 <ul>
@@ -1878,7 +1888,7 @@
 <li><code>DefaultCacheKeyFactory</code> hashes the request payload as JSON (deterministic SHA256).</li>
 <li><code>ICacheScope</code> supplies the namespace and optional tenant segment.</li>
 </ul>
-<p>If you customize keys, keep them deterministic and stable across versions.</p>
+<p>If you customize keys, keep them deterministic and stable across versions. For user-scoped data, include user context in the hash or namespace.</p>
 <h2 id="choose-a-cache-adapter">Choose a cache adapter<a class="headerlink" href="#choose-a-cache-adapter" title="Permanent link">&para;</a></h2>
 <p>The default <code>ICache</code> implementation is <code>MemoryCacheAdapter</code>.</p>
 <div class="admonition note">
@@ -1886,48 +1896,49 @@
 <p>The memory adapter is process-local. In a multi-instance deployment, use a distributed cache.</p>
 </div>
 <p>To use a distributed cache, register <code>IDistributedCache</code> and swap the adapter:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="k">using</span><span class="w"> </span><span class="nn">CleanArchitecture.Extensions.Caching.Adapters</span><span class="p">;</span>
-<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="k">using</span><span class="w"> </span><span class="nn">Microsoft.Extensions.Caching.StackExchangeRedis</span><span class="p">;</span>
-<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>
-<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="n">AddCleanArchitectureCaching</span><span class="p">();</span>
-<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="n">AddStackExchangeRedisCache</span><span class="p">(</span><span class="n">options</span><span class="w"> </span><span class="o">=&gt;</span>
-<a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="p">{</span>
-<a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="w">    </span><span class="n">options</span><span class="p">.</span><span class="n">Configuration</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;&lt;redis-connection-string&gt;&quot;</span><span class="p">;</span>
-<a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a><span class="p">});</span>
-<a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a>
-<a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a><span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="n">AddSingleton</span><span class="o">&lt;</span><span class="n">ICache</span><span class="p">,</span><span class="w"> </span><span class="n">DistributedCacheAdapter</span><span class="o">&gt;</span><span class="p">();</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="k">using</span><span class="w"> </span><span class="nn">CleanArchitecture.Extensions.Caching.Adapters</span><span class="p">;</span>
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="k">using</span><span class="w"> </span><span class="nn">Microsoft.Extensions.Caching.StackExchangeRedis</span><span class="p">;</span>
+<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>
+<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="n">AddCleanArchitectureCaching</span><span class="p">();</span>
+<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="n">AddStackExchangeRedisCache</span><span class="p">(</span><span class="n">options</span><span class="w"> </span><span class="o">=&gt;</span>
+<a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a><span class="p">{</span>
+<a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="w">    </span><span class="n">options</span><span class="p">.</span><span class="n">Configuration</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;&lt;redis-connection-string&gt;&quot;</span><span class="p">;</span>
+<a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a><span class="p">});</span>
+<a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a>
+<a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a><span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="n">AddSingleton</span><span class="o">&lt;</span><span class="n">ICache</span><span class="p">,</span><span class="w"> </span><span class="n">DistributedCacheAdapter</span><span class="o">&gt;</span><span class="p">();</span>
 </code></pre></div>
 <h2 id="serialization">Serialization<a class="headerlink" href="#serialization" title="Permanent link">&para;</a></h2>
 <p>The default serializer is <code>SystemTextJsonCacheSerializer</code>. Replace it when needed:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="k">using</span><span class="w"> </span><span class="nn">CleanArchitecture.Extensions.Caching.Serialization</span><span class="p">;</span>
-<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>
-<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="n">AddSingleton</span><span class="o">&lt;</span><span class="n">ICacheSerializer</span><span class="o">&gt;</span><span class="p">(</span><span class="n">sp</span><span class="w"> </span><span class="o">=&gt;</span>
-<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="nf">SystemTextJsonCacheSerializer</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">JsonSerializerOptions</span><span class="p">(</span><span class="n">JsonSerializerDefaults</span><span class="p">.</span><span class="n">Web</span><span class="p">)));</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="k">using</span><span class="w"> </span><span class="nn">CleanArchitecture.Extensions.Caching.Serialization</span><span class="p">;</span>
+<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>
+<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="n">AddSingleton</span><span class="o">&lt;</span><span class="n">ICacheSerializer</span><span class="o">&gt;</span><span class="p">(</span><span class="n">sp</span><span class="w"> </span><span class="o">=&gt;</span>
+<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="nf">SystemTextJsonCacheSerializer</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">JsonSerializerOptions</span><span class="p">(</span><span class="n">JsonSerializerDefaults</span><span class="p">.</span><span class="n">Web</span><span class="p">)));</span>
 </code></pre></div>
+<p>When multiple serializers are registered, set <code>CachingOptions.PreferredSerializer</code> to a content type or serializer type name.</p>
 <h2 id="stampede-protection-and-entry-options">Stampede protection and entry options<a class="headerlink" href="#stampede-protection-and-entry-options" title="Permanent link">&para;</a></h2>
 <ul>
 <li><code>CachingOptions.StampedePolicy</code> controls locking, timeouts, and jitter.</li>
 <li><code>CachingOptions.DefaultEntryOptions</code> defines expiration, priority, and size hints.</li>
 </ul>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="n">AddCleanArchitectureCaching</span><span class="p">(</span><span class="n">options</span><span class="w"> </span><span class="o">=&gt;</span>
-<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="p">{</span>
-<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="w">    </span><span class="n">options</span><span class="p">.</span><span class="n">StampedePolicy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">CacheStampedePolicy</span>
-<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="w">    </span><span class="p">{</span>
-<a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="w">        </span><span class="n">EnableLocking</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">true</span><span class="p">,</span>
-<a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a><span class="w">        </span><span class="n">LockTimeout</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">TimeSpan</span><span class="p">.</span><span class="n">FromSeconds</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span>
-<a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a><span class="w">        </span><span class="n">Jitter</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">TimeSpan</span><span class="p">.</span><span class="n">FromMilliseconds</span><span class="p">(</span><span class="mi">50</span><span class="p">)</span>
-<a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a><span class="w">    </span><span class="p">};</span>
-<a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a><span class="p">});</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="n">AddCleanArchitectureCaching</span><span class="p">(</span><span class="n">options</span><span class="w"> </span><span class="o">=&gt;</span>
+<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="p">{</span>
+<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="w">    </span><span class="n">options</span><span class="p">.</span><span class="n">StampedePolicy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">CacheStampedePolicy</span>
+<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="w">    </span><span class="p">{</span>
+<a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="w">        </span><span class="n">EnableLocking</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">true</span><span class="p">,</span>
+<a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a><span class="w">        </span><span class="n">LockTimeout</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">TimeSpan</span><span class="p">.</span><span class="n">FromSeconds</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span>
+<a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a><span class="w">        </span><span class="n">Jitter</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">TimeSpan</span><span class="p">.</span><span class="n">FromMilliseconds</span><span class="p">(</span><span class="mi">50</span><span class="p">)</span>
+<a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a><span class="w">    </span><span class="p">};</span>
+<a id="__codelineno-7-9" name="__codelineno-7-9" href="#__codelineno-7-9"></a><span class="p">});</span>
 </code></pre></div>
 <h2 id="invalidation-guidance">Invalidation guidance<a class="headerlink" href="#invalidation-guidance" title="Permanent link">&para;</a></h2>
 <p>Caching is read-through; invalidation is explicit. On command success or domain events, remove keys:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="k">await</span><span class="w"> </span><span class="n">cache</span><span class="p">.</span><span class="n">RemoveAsync</span><span class="p">(</span><span class="n">cacheScope</span><span class="p">.</span><span class="n">Create</span><span class="p">(</span><span class="s">&quot;GetUserQuery&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">hash</span><span class="p">));</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="k">await</span><span class="w"> </span><span class="n">cache</span><span class="p">.</span><span class="n">RemoveAsync</span><span class="p">(</span><span class="n">cacheScope</span><span class="p">.</span><span class="n">Create</span><span class="p">(</span><span class="s">&quot;GetUserQuery&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">hash</span><span class="p">));</span>
 </code></pre></div>
 <p>Keep key conventions stable and consider bumping the namespace for breaking DTO changes.</p>
 <h2 id="multitenancy-integration">Multitenancy integration<a class="headerlink" href="#multitenancy-integration" title="Permanent link">&para;</a></h2>
 <p>If you use multitenancy, call <code>AddCleanArchitectureMultitenancyCaching</code> to include tenant IDs in cache keys:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="n">AddCleanArchitectureCaching</span><span class="p">();</span>
-<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="n">AddCleanArchitectureMultitenancyCaching</span><span class="p">();</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="n">AddCleanArchitectureCaching</span><span class="p">();</span>
+<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="n">AddCleanArchitectureMultitenancyCaching</span><span class="p">();</span>
 </code></pre></div>
 <h2 id="observability">Observability<a class="headerlink" href="#observability" title="Permanent link">&para;</a></h2>
 <ul>
@@ -1966,7 +1977,7 @@
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1-2.1-2M12.5 7v5.2l4 2.4-1 1L11 13V7h1.5M11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2v1.8Z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">January 1, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">January 3, 2026</span>
   </span>
 
     
