@@ -1,4 +1,5 @@
-using System.Globalization;
+using CleanArchitecture.Extensions.Caching.Abstractions;
+using CleanArchitecture.Extensions.Caching;
 
 namespace CleanArchitecture.Extensions.Caching.Options;
 
@@ -11,7 +12,8 @@ public sealed class QueryCachingBehaviorOptions
     /// Gets or sets a predicate used to determine whether a request should be cached.
     /// </summary>
     public Func<object, bool> CachePredicate { get; set; } = request =>
-        request is not null && request.GetType().Name.EndsWith("Query", true, CultureInfo.InvariantCulture);
+        request is ICacheableQuery ||
+        (request is not null && Attribute.IsDefined(request.GetType(), typeof(CacheableQueryAttribute), inherit: true));
 
     /// <summary>
     /// Gets or sets a delegate to derive the resource name used in cache keys.
