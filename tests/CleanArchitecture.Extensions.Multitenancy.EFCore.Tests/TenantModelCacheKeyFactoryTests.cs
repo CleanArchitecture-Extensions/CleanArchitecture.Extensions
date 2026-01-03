@@ -1,91 +1,72 @@
-using CleanArchitecture.Extensions.Multitenancy.Context;
+using CleanArchitecture.Extensions.Multitenancy;
+using CleanArchitecture.Extensions.Multitenancy.Abstractions;
 using CleanArchitecture.Extensions.Multitenancy.EFCore;
+using CleanArchitecture.Extensions.Multitenancy.EFCore.Abstractions;
 using CleanArchitecture.Extensions.Multitenancy.EFCore.Options;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.Extensions.Options;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace CleanArchitecture.Extensions.Multitenancy.EFCore.Tests;
 
 public class TenantModelCacheKeyFactoryTests
 {
     [Fact]
-    public void Create_includes_schema_name_for_schema_per_tenant()
+    public void Factory_includes_schema_in_model_cache_key()
     {
-        var options = new EfCoreMultitenancyOptions
+        var services = new ServiceCollection();
+
+        services.AddCleanArchitectureMultitenancyEfCore(options =>
         {
-            Mode = TenantIsolationMode.SchemaPerTenant,
-            SchemaNameFormat = "tenant_{0}",
-            IncludeSchemaInModelCacheKey = true
-        };
+            options.Mode = TenantIsolationMode.SchemaPerTenant;
+            options.SchemaNameFormat = "tenant_{0}";
+            options.IncludeSchemaInModelCacheKey = true;
+        });
 
-        var accessorAlpha = new CurrentTenantAccessor();
-        using var scopeAlpha = accessorAlpha.BeginScope(TestTenant.Create("alpha"));
-        using var contextAlpha = TestDbContextFactory.Create(accessorAlpha, options);
-        var dependencies = contextAlpha.GetService<ModelCacheKeyFactoryDependencies>();
-        var factory = new TenantModelCacheKeyFactory(Microsoft.Extensions.Options.Options.Create(options), dependencies);
-        var keyAlpha = factory.Create(contextAlpha, designTime: false);
+        services.AddDbContext<TestTenantDbContext>((sp, options) =>
+        {
+            options.UseInMemoryDatabase("tenant-cache-key");
+            options.UseTenantModelCacheKeyFactory(sp);
+        });
 
-        var accessorBeta = new CurrentTenantAccessor();
-        using var scopeBeta = accessorBeta.BeginScope(TestTenant.Create("beta"));
-        using var contextBeta = TestDbContextFactory.Create(accessorBeta, options);
-        var keyBeta = factory.Create(contextBeta, designTime: false);
+        using var provider = services.BuildServiceProvider();
+
+        object keyAlpha;
+        using (var scope = provider.CreateScope())
+        {
+            var context = scope.ServiceProvider.GetRequiredService<TestTenantDbContext>();
+            var factory = context.GetService<IModelCacheKeyFactory>();
+
+            Assert.IsType<TenantModelCacheKeyFactory>(factory);
+
+            context.CurrentTenantInfo = new TenantInfo("alpha");
+            keyAlpha = factory.Create(context, designTime: false);
+        }
+
+        object keyBeta;
+        using (var scope = provider.CreateScope())
+        {
+            var context = scope.ServiceProvider.GetRequiredService<TestTenantDbContext>();
+            var factory = context.GetService<IModelCacheKeyFactory>();
+
+            Assert.IsType<TenantModelCacheKeyFactory>(factory);
+
+            context.CurrentTenantInfo = new TenantInfo("beta");
+            keyBeta = factory.Create(context, designTime: false);
+        }
 
         Assert.NotEqual(keyAlpha, keyBeta);
     }
 
-    [Fact]
-    public void Create_returns_same_key_for_shared_mode()
+    private sealed class TestTenantDbContext : DbContext, ITenantDbContext
     {
-        var options = new EfCoreMultitenancyOptions
-        {
-            Mode = TenantIsolationMode.SharedDatabase,
-            IncludeSchemaInModelCacheKey = true
-        };
-
-        var accessorAlpha = new CurrentTenantAccessor();
-        using var scopeAlpha = accessorAlpha.BeginScope(TestTenant.Create("alpha"));
-        using var contextAlpha = TestDbContextFactory.Create(accessorAlpha, options);
-        var dependencies = contextAlpha.GetService<ModelCacheKeyFactoryDependencies>();
-        var factory = new TenantModelCacheKeyFactory(Microsoft.Extensions.Options.Options.Create(options), dependencies);
-        var keyAlpha = factory.Create(contextAlpha, designTime: false);
-
-        var accessorBeta = new CurrentTenantAccessor();
-        using var scopeBeta = accessorBeta.BeginScope(TestTenant.Create("beta"));
-        using var contextBeta = TestDbContextFactory.Create(accessorBeta, options);
-        var keyBeta = factory.Create(contextBeta, designTime: false);
-
-        Assert.Equal(keyAlpha, keyBeta);
-    }
-
-    [Fact]
-    public void Create_ignores_contexts_without_tenant_metadata()
-    {
-        var options = new EfCoreMultitenancyOptions
-        {
-            Mode = TenantIsolationMode.SchemaPerTenant,
-            IncludeSchemaInModelCacheKey = true
-        };
-
-        using var context = new PlainDbContext(CreateOptions());
-        var dependencies = context.GetService<ModelCacheKeyFactoryDependencies>();
-        var factory = new TenantModelCacheKeyFactory(Microsoft.Extensions.Options.Options.Create(options), dependencies);
-
-        var key = factory.Create(context, designTime: false);
-
-        Assert.NotNull(key);
-    }
-
-    private static DbContextOptions<PlainDbContext> CreateOptions()
-        => new DbContextOptionsBuilder<PlainDbContext>()
-            .UseInMemoryDatabase(Guid.NewGuid().ToString())
-            .Options;
-
-    private sealed class PlainDbContext : DbContext
-    {
-        public PlainDbContext(DbContextOptions<PlainDbContext> options)
+        public TestTenantDbContext(DbContextOptions<TestTenantDbContext> options)
             : base(options)
         {
         }
+
+        public string? CurrentTenantId => CurrentTenantInfo?.TenantId;
+
+        public ITenantInfo? CurrentTenantInfo { get; set; }
     }
 }

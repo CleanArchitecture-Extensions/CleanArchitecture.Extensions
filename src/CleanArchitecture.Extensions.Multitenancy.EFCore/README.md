@@ -29,10 +29,13 @@ builder.Services.AddCleanArchitectureMultitenancyEfCore(options =>
 
 builder.Services.AddDbContext<ApplicationDbContext>((sp, options) =>
 {
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("JaysonTaylorCleanArchitectureBlankDb"));
     options.AddInterceptors(sp.GetRequiredService<TenantSaveChangesInterceptor>());
+    options.UseTenantModelCacheKeyFactory(sp);
 });
 ```
+
+Call `options.UseTenantModelCacheKeyFactory(sp)` when configuring your DbContext to enable tenant-aware model cache keys. If you need a custom `IModelCacheKeyFactory`, call `ReplaceService` after this line.
 
 If you already register `ISaveChangesInterceptor` instances (as the template does), you can omit the explicit `TenantSaveChangesInterceptor` line and rely on `GetServices<ISaveChangesInterceptor>()`.
 
@@ -161,7 +164,7 @@ builder.Services.AddCleanArchitectureMultitenancyEfCore(options =>
 
 builder.Services.AddDbContextFactory<ApplicationDbContext>((sp, options) =>
 {
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("JaysonTaylorCleanArchitectureBlankDb"));
 });
 
 builder.Services.AddTenantDbContextFactory<ApplicationDbContext>();
@@ -191,5 +194,5 @@ builder.Services.AddDbContext<ApplicationDbContext>((sp, options) =>
 
 - Shared database mode automatically adds a tenant filter (`TenantId`) to all tenant-scoped entities.
 - SaveChanges enforces tenant ownership and rejects cross-tenant updates.
-- Schema-per-tenant mode applies the tenant schema and isolates EF Core model caching.
+- Schema-per-tenant mode applies the tenant schema and isolates EF Core model caching when `UseTenantModelCacheKeyFactory(sp)` is enabled.
 - Global entities are excluded when they implement `IGlobalEntity` or use `[GlobalEntity]`.

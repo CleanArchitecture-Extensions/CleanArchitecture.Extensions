@@ -31,6 +31,7 @@
 ## Notes
 
 - `SchemaNameProvider` and `ConnectionStringProvider` are delegates and must be set in code.
+- Enable tenant-aware model cache keys by calling `options.UseTenantModelCacheKeyFactory(sp)` when configuring your DbContext.
 - For database-per-tenant, the DbContext factory sets the connection string per tenant and requires a relational provider.
 - Row-level filtering/enforcement defaults to off for schema/database-per-tenant; set `UseShadowTenantId`, `EnableQueryFilters`, and `EnableSaveChangesEnforcement` to `true` to opt in.
 - Identity entities are treated as global by default; set `TreatIdentityEntitiesAsGlobal` to `false` to opt into tenant-scoped Identity.

@@ -3,7 +3,6 @@ using CleanArchitecture.Extensions.Multitenancy.EFCore.Interceptors;
 using CleanArchitecture.Extensions.Multitenancy.EFCore.Migrations;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.EntityFrameworkCore.Infrastructure;
 
 namespace CleanArchitecture.Extensions.Multitenancy.EFCore.Tests;
 
@@ -18,7 +17,6 @@ public class DependencyInjectionExtensionsTests
 
         Assert.Contains(services, descriptor => descriptor.ServiceType == typeof(ITenantModelCustomizer));
         Assert.Contains(services, descriptor => descriptor.ServiceType == typeof(ITenantConnectionResolver));
-        Assert.Contains(services, descriptor => descriptor.ServiceType == typeof(IModelCacheKeyFactory));
         Assert.Contains(services, descriptor => descriptor.ServiceType == typeof(TenantSaveChangesInterceptor));
         Assert.Contains(services, descriptor => descriptor.ServiceType == typeof(ISaveChangesInterceptor));
     }

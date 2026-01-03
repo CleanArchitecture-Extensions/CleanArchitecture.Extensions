@@ -36,6 +36,8 @@ builder.Services.AddCleanArchitectureMultitenancyEfCore(options =>
 });
 ```
 
+Call `options.UseTenantModelCacheKeyFactory(sp)` when configuring your DbContext to enable tenant-aware model cache keys. If you need a custom `IModelCacheKeyFactory`, call `ReplaceService` after this line.
+
 Row-level filtering/enforcement defaults to shared database mode. For schema/database-per-tenant setups, set `UseShadowTenantId`, `EnableQueryFilters`, and `EnableSaveChangesEnforcement` to `true` if you want row-level defense-in-depth.
 
 ## Configure DbContext
@@ -45,8 +47,9 @@ using CleanArchitecture.Extensions.Multitenancy.EFCore.Interceptors;
 
 builder.Services.AddDbContext<ApplicationDbContext>((sp, options) =>
 {
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("JaysonTaylorCleanArchitectureBlankDb"));
     options.AddInterceptors(sp.GetRequiredService<TenantSaveChangesInterceptor>());
+    options.UseTenantModelCacheKeyFactory(sp);
 });
 ```
 
@@ -159,7 +162,7 @@ builder.Services.AddCleanArchitectureMultitenancyEfCore(options =>
 });
 ```
 
-In schema-per-tenant mode, the model cache key includes the schema to prevent cross-tenant model reuse.
+In schema-per-tenant mode, the model cache key includes the schema when `UseTenantModelCacheKeyFactory(sp)` is enabled.
 
 ## Database-per-tenant setup
 
@@ -172,7 +175,7 @@ builder.Services.AddCleanArchitectureMultitenancyEfCore(options =>
 
 builder.Services.AddDbContextFactory<ApplicationDbContext>((sp, options) =>
 {
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("JaysonTaylorCleanArchitectureBlankDb"));
 });
 
 builder.Services.AddTenantDbContextFactory<ApplicationDbContext>();
