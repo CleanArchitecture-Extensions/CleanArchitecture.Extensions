@@ -47,8 +47,10 @@ public static class DependencyInjectionExtensions
         services.TryAddSingleton<ICacheKeyFactory, DefaultCacheKeyFactory>();
         // Call AddCleanArchitectureMultitenancyCaching to bind cache scopes to tenant context.
         services.TryAddScoped<ICacheScope, DefaultCacheScope>();
-        services.TryAddSingleton<ICache, MemoryCacheAdapter>();
-        services.TryAddSingleton<DistributedCacheAdapter>();
+        services.TryAddSingleton<ICache>(sp =>
+            ActivatorUtilities.CreateInstance<MemoryCacheAdapter>(sp, sp.GetServices<ICacheSerializer>()));
+        services.TryAddSingleton<DistributedCacheAdapter>(sp =>
+            ActivatorUtilities.CreateInstance<DistributedCacheAdapter>(sp, sp.GetServices<ICacheSerializer>()));
 
         return services;
     }
