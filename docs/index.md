@@ -58,6 +58,7 @@ builder.Services.AddCleanArchitectureMultitenancyAspNetCore();
 builder.Services.AddMediatR(cfg =>
 {
     cfg.RegisterServicesFromAssemblyContaining<Program>();
+    cfg.AddCleanArchitectureMultitenancyCorrelationPreProcessor();
     cfg.AddCleanArchitectureMultitenancyPipeline();
 });
 
@@ -65,6 +66,7 @@ var app = builder.Build();
 app.UseCleanArchitectureMultitenancy();
 ```
 
+If you use MediatR request logging pre-processors (template default), register `AddCleanArchitectureMultitenancyCorrelationPreProcessor` before logging so request logs include tenant context.
 In the Jason Taylor template, keep the multitenancy pipeline after authorization behaviors so authorization runs first.
 
 ## Documentation map

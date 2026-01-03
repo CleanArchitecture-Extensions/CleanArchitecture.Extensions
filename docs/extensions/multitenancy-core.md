@@ -101,15 +101,18 @@ public sealed class TenantResolutionMiddleware
 builder.Services.AddMediatR(cfg =>
 {
     cfg.RegisterServicesFromAssemblyContaining<Program>();
+    cfg.AddCleanArchitectureMultitenancyCorrelationPreProcessor();
     cfg.AddCleanArchitectureMultitenancyPipeline();
 });
 ```
 
+If you use MediatR request logging pre-processors (template default), register `AddCleanArchitectureMultitenancyCorrelationPreProcessor` before logging so request logs include tenant context.
 In the Jason Taylor template, keep the multitenancy pipeline after authorization behaviors so authorization runs first.
 
 The pipeline includes:
 
 - `TenantCorrelationBehavior` (adds tenant ID to logs and activity baggage)
+- `TenantCorrelationPreProcessor` (adds tenant ID before request logging pre-processors)
 - `TenantValidationBehavior` (optional validation against cache or store)
 - `TenantEnforcementBehavior` (enforces resolution and lifecycle)
 

@@ -65,4 +65,18 @@ public static class DependencyInjectionExtensions
         configuration.AddOpenBehavior(typeof(TenantEnforcementBehavior<,>));
         return configuration;
     }
+
+    /// <summary>
+    /// Adds the multitenancy request correlation pre-processor to the pipeline.
+    /// Register before logging pre-processors to ensure request logs include tenant context.
+    /// </summary>
+    /// <param name="configuration">MediatR service configuration.</param>
+    public static MediatRServiceConfiguration AddCleanArchitectureMultitenancyCorrelationPreProcessor(
+        this MediatRServiceConfiguration configuration)
+    {
+        ArgumentNullException.ThrowIfNull(configuration);
+
+        configuration.AddOpenRequestPreProcessor(typeof(TenantCorrelationPreProcessor<>));
+        return configuration;
+    }
 }

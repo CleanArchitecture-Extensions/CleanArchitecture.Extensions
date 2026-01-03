@@ -1,29 +1,29 @@
 using System.Diagnostics;
 using CleanArchitecture.Extensions.Multitenancy.Abstractions;
 using CleanArchitecture.Extensions.Multitenancy.Configuration;
-using MediatR;
+using MediatR.Pipeline;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
 namespace CleanArchitecture.Extensions.Multitenancy.Behaviors;
 
 /// <summary>
-/// MediatR behavior that enriches logging and activity scopes with tenant identifiers.
+/// MediatR pre-processor that enriches logging and activity scopes with tenant identifiers.
 /// </summary>
-public sealed class TenantCorrelationBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
-    where TRequest : IRequest<TResponse>
+public sealed class TenantCorrelationPreProcessor<TRequest> : IRequestPreProcessor<TRequest>
+    where TRequest : notnull
 {
     private readonly ICurrentTenant _currentTenant;
     private readonly MultitenancyOptions _options;
-    private readonly ILogger<TenantCorrelationBehavior<TRequest, TResponse>> _logger;
+    private readonly ILogger<TenantCorrelationPreProcessor<TRequest>> _logger;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="TenantCorrelationBehavior{TRequest, TResponse}"/> class.
+    /// Initializes a new instance of the <see cref="TenantCorrelationPreProcessor{TRequest}"/> class.
     /// </summary>
-    public TenantCorrelationBehavior(
+    public TenantCorrelationPreProcessor(
         ICurrentTenant currentTenant,
         IOptions<MultitenancyOptions> options,
-        ILogger<TenantCorrelationBehavior<TRequest, TResponse>> logger)
+        ILogger<TenantCorrelationPreProcessor<TRequest>> logger)
     {
         _currentTenant = currentTenant ?? throw new ArgumentNullException(nameof(currentTenant));
         _options = options?.Value ?? throw new ArgumentNullException(nameof(options));
@@ -31,21 +31,13 @@ public sealed class TenantCorrelationBehavior<TRequest, TResponse> : IPipelineBe
     }
 
     /// <inheritdoc />
-    public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
+    public Task Process(TRequest request, CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
 
-        var existingScope = TenantCorrelationScope.Current;
-        if (existingScope is not null)
+        if (TenantCorrelationScope.Current is not null)
         {
-            try
-            {
-                return await next().ConfigureAwait(false);
-            }
-            finally
-            {
-                TenantCorrelationScope.Clear()?.Dispose();
-            }
+            return Task.CompletedTask;
         }
 
         var tenantId = _currentTenant.TenantId;
@@ -60,19 +52,12 @@ public sealed class TenantCorrelationBehavior<TRequest, TResponse> : IPipelineBe
 
         if (!_options.AddTenantToLogScope)
         {
-            return await next().ConfigureAwait(false);
+            return Task.CompletedTask;
         }
 
         var scope = _logger.BeginScope(new Dictionary<string, object?> { [scopeKey] = tenantId });
         TenantCorrelationScope.Set(scope);
 
-        try
-        {
-            return await next().ConfigureAwait(false);
-        }
-        finally
-        {
-            TenantCorrelationScope.Clear()?.Dispose();
-        }
+        return Task.CompletedTask;
     }
 }
