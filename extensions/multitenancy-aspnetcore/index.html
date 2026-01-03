@@ -975,6 +975,15 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#template-defaults-jaysontaylorcleanarchitectureblank" class="md-nav__link">
+    <span class="md-ellipsis">
+      Template defaults (JaysonTaylorCleanArchitectureBlank)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#key-components" class="md-nav__link">
     <span class="md-ellipsis">
       Key components
@@ -1731,6 +1740,15 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#template-defaults-jaysontaylorcleanarchitectureblank" class="md-nav__link">
+    <span class="md-ellipsis">
+      Template defaults (JaysonTaylorCleanArchitectureBlank)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#key-components" class="md-nav__link">
     <span class="md-ellipsis">
       Key components
@@ -1782,13 +1800,13 @@
 </code></pre></div>
 <h2 id="register-services-and-middleware">Register services and middleware<a class="headerlink" href="#register-services-and-middleware" title="Permanent link">&para;</a></h2>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="k">using</span><span class="w"> </span><span class="nn">CleanArchitecture.Extensions.Multitenancy.AspNetCore</span><span class="p">;</span>
-<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="k">using</span><span class="w"> </span><span class="nn">CleanArchitecture.Extensions.Multitenancy.AspNetCore.Middleware</span><span class="p">;</span>
-<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>
-<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="n">AddCleanArchitectureMultitenancyAspNetCore</span><span class="p">();</span>
-<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>
-<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="kt">var</span><span class="w"> </span><span class="n">app</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">builder</span><span class="p">.</span><span class="n">Build</span><span class="p">();</span>
-<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="n">app</span><span class="p">.</span><span class="n">UseCleanArchitectureMultitenancy</span><span class="p">();</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="n">AddCleanArchitectureMultitenancyAspNetCore</span><span class="p">(</span><span class="n">autoUseMiddleware</span><span class="p">:</span><span class="w"> </span><span class="k">true</span><span class="p">);</span>
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="kt">var</span><span class="w"> </span><span class="n">app</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">builder</span><span class="p">.</span><span class="n">Build</span><span class="p">();</span>
 </code></pre></div>
+<p>Use <code>autoUseMiddleware</code> when header or host resolution is enough. For claim- or route-based resolution, disable it and place <code>app.UseCleanArchitectureMultitenancy()</code> after authentication or routing.</p>
+<p>If you prefer manual wiring, call <code>app.UseCleanArchitectureMultitenancy()</code> instead of enabling <code>autoUseMiddleware</code>.</p>
 <h2 id="minimal-api-enforcement">Minimal API enforcement<a class="headerlink" href="#minimal-api-enforcement" title="Permanent link">&para;</a></h2>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="k">using</span><span class="w"> </span><span class="nn">CleanArchitecture.Extensions.Multitenancy.AspNetCore.Routing</span><span class="p">;</span>
 <a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>
@@ -1832,6 +1850,7 @@
 <a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>
 <a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="kt">var</span><span class="w"> </span><span class="n">tenantContext</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">httpContext</span><span class="p">.</span><span class="n">GetTenantContext</span><span class="p">();</span>
 </code></pre></div>
+<p><code>GetTenantContext()</code> respects <code>AspNetCoreMultitenancyOptions.HttpContextItemKey</code> when options are registered.</p>
 <h2 id="problemdetails-mapping">ProblemDetails mapping<a class="headerlink" href="#problemdetails-mapping" title="Permanent link">&para;</a></h2>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="k">using</span><span class="w"> </span><span class="nn">CleanArchitecture.Extensions.Multitenancy.AspNetCore.ProblemDetails</span><span class="p">;</span>
 <a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>
@@ -1845,7 +1864,17 @@
 <ul>
 <li>Place tenant resolution before authorization and handler execution.</li>
 <li>If you use claim-based tenant resolution, run authentication before <code>UseCleanArchitectureMultitenancy</code> so claims are available.</li>
+<li>Route-based resolution requires routing middleware before tenant resolution; prefer header/host when you cannot adjust the pipeline.</li>
 </ul>
+<h2 id="template-defaults-jaysontaylorcleanarchitectureblank">Template defaults (JaysonTaylorCleanArchitectureBlank)<a class="headerlink" href="#template-defaults-jaysontaylorcleanarchitectureblank" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Prefer header or host resolution to keep the template unchanged.</li>
+<li>If you opt into route-based tenancy, insert routing before the multitenancy middleware.</li>
+</ul>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="n">app</span><span class="p">.</span><span class="n">UseRouting</span><span class="p">();</span>
+<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="n">app</span><span class="p">.</span><span class="n">UseCleanArchitectureMultitenancy</span><span class="p">();</span>
+<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="n">app</span><span class="p">.</span><span class="n">MapEndpoints</span><span class="p">();</span>
+</code></pre></div>
 <h2 id="key-components">Key components<a class="headerlink" href="#key-components" title="Permanent link">&para;</a></h2>
 <ul>
 <li><code>TenantResolutionMiddleware</code></li>

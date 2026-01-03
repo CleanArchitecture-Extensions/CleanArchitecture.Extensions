@@ -981,6 +981,21 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="Tenant entities and global entities">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#identity-entities" class="md-nav__link">
+    <span class="md-ellipsis">
+      Identity entities
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
         <li class="md-nav__item">
@@ -1731,6 +1746,21 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="Tenant entities and global entities">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#identity-entities" class="md-nav__link">
+    <span class="md-ellipsis">
+      Identity entities
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
         <li class="md-nav__item">
@@ -1822,15 +1852,17 @@
 <a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="w">    </span><span class="n">options</span><span class="p">.</span><span class="n">UseShadowTenantId</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">true</span><span class="p">;</span>
 <a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="p">});</span>
 </code></pre></div>
+<p>Call <code>options.UseTenantModelCacheKeyFactory(sp)</code> when configuring your DbContext to enable tenant-aware model cache keys. If you need a custom <code>IModelCacheKeyFactory</code>, call <code>ReplaceService</code> after this line.</p>
 <p>Row-level filtering/enforcement defaults to shared database mode. For schema/database-per-tenant setups, set <code>UseShadowTenantId</code>, <code>EnableQueryFilters</code>, and <code>EnableSaveChangesEnforcement</code> to <code>true</code> if you want row-level defense-in-depth.</p>
 <h2 id="configure-dbcontext">Configure DbContext<a class="headerlink" href="#configure-dbcontext" title="Permanent link">&para;</a></h2>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="k">using</span><span class="w"> </span><span class="nn">CleanArchitecture.Extensions.Multitenancy.EFCore.Interceptors</span><span class="p">;</span>
 <a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>
 <a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="n">AddDbContext</span><span class="o">&lt;</span><span class="n">ApplicationDbContext</span><span class="o">&gt;</span><span class="p">((</span><span class="n">sp</span><span class="p">,</span><span class="w"> </span><span class="n">options</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span>
 <a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="p">{</span>
-<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="w">    </span><span class="n">options</span><span class="p">.</span><span class="n">UseSqlServer</span><span class="p">(</span><span class="n">builder</span><span class="p">.</span><span class="n">Configuration</span><span class="p">.</span><span class="n">GetConnectionString</span><span class="p">(</span><span class="s">&quot;DefaultConnection&quot;</span><span class="p">));</span>
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="w">    </span><span class="n">options</span><span class="p">.</span><span class="n">UseSqlServer</span><span class="p">(</span><span class="n">builder</span><span class="p">.</span><span class="n">Configuration</span><span class="p">.</span><span class="n">GetConnectionString</span><span class="p">(</span><span class="s">&quot;JaysonTaylorCleanArchitectureBlankDb&quot;</span><span class="p">));</span>
 <a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="w">    </span><span class="n">options</span><span class="p">.</span><span class="n">AddInterceptors</span><span class="p">(</span><span class="n">sp</span><span class="p">.</span><span class="n">GetRequiredService</span><span class="o">&lt;</span><span class="n">TenantSaveChangesInterceptor</span><span class="o">&gt;</span><span class="p">());</span>
-<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="p">});</span>
+<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="w">    </span><span class="n">options</span><span class="p">.</span><span class="n">UseTenantModelCacheKeyFactory</span><span class="p">(</span><span class="n">sp</span><span class="p">);</span>
+<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="p">});</span>
 </code></pre></div>
 <p>If your host already registers <code>ISaveChangesInterceptor</code> instances, you can omit the explicit interceptor registration.</p>
 <h2 id="choose-an-integration-style">Choose an integration style<a class="headerlink" href="#choose-an-integration-style" title="Permanent link">&para;</a></h2>
@@ -1911,6 +1943,8 @@
 <a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a><span class="p">}</span>
 </code></pre></div>
 <p>You can also mark global entities via <code>IGlobalEntity</code> or with <code>EfCoreMultitenancyOptions.GlobalEntityTypes</code>.</p>
+<h3 id="identity-entities">Identity entities<a class="headerlink" href="#identity-entities" title="Permanent link">&para;</a></h3>
+<p>By default, ASP.NET Core Identity entities are treated as global to keep the template working without extra changes. Set <code>TreatIdentityEntitiesAsGlobal = false</code> if you want tenant-scoped identity and add a tenant identifier to your Identity entities or custom stores.</p>
 <h2 id="schema-per-tenant-setup">Schema-per-tenant setup<a class="headerlink" href="#schema-per-tenant-setup" title="Permanent link">&para;</a></h2>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="n">AddCleanArchitectureMultitenancyEfCore</span><span class="p">(</span><span class="n">options</span><span class="w"> </span><span class="o">=&gt;</span>
 <a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="p">{</span>
@@ -1918,7 +1952,7 @@
 <a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="w">    </span><span class="n">options</span><span class="p">.</span><span class="n">SchemaNameFormat</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;tenant_{0}&quot;</span><span class="p">;</span>
 <a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="p">});</span>
 </code></pre></div>
-<p>In schema-per-tenant mode, the model cache key includes the schema to prevent cross-tenant model reuse.</p>
+<p>In schema-per-tenant mode, the model cache key includes the schema when <code>UseTenantModelCacheKeyFactory(sp)</code> is enabled.</p>
 <h2 id="database-per-tenant-setup">Database-per-tenant setup<a class="headerlink" href="#database-per-tenant-setup" title="Permanent link">&para;</a></h2>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="n">AddCleanArchitectureMultitenancyEfCore</span><span class="p">(</span><span class="n">options</span><span class="w"> </span><span class="o">=&gt;</span>
 <a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="p">{</span>
@@ -1928,7 +1962,7 @@
 <a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a>
 <a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a><span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="n">AddDbContextFactory</span><span class="o">&lt;</span><span class="n">ApplicationDbContext</span><span class="o">&gt;</span><span class="p">((</span><span class="n">sp</span><span class="p">,</span><span class="w"> </span><span class="n">options</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span>
 <a id="__codelineno-8-8" name="__codelineno-8-8" href="#__codelineno-8-8"></a><span class="p">{</span>
-<a id="__codelineno-8-9" name="__codelineno-8-9" href="#__codelineno-8-9"></a><span class="w">    </span><span class="n">options</span><span class="p">.</span><span class="n">UseSqlServer</span><span class="p">(</span><span class="n">builder</span><span class="p">.</span><span class="n">Configuration</span><span class="p">.</span><span class="n">GetConnectionString</span><span class="p">(</span><span class="s">&quot;DefaultConnection&quot;</span><span class="p">));</span>
+<a id="__codelineno-8-9" name="__codelineno-8-9" href="#__codelineno-8-9"></a><span class="w">    </span><span class="n">options</span><span class="p">.</span><span class="n">UseSqlServer</span><span class="p">(</span><span class="n">builder</span><span class="p">.</span><span class="n">Configuration</span><span class="p">.</span><span class="n">GetConnectionString</span><span class="p">(</span><span class="s">&quot;JaysonTaylorCleanArchitectureBlankDb&quot;</span><span class="p">));</span>
 <a id="__codelineno-8-10" name="__codelineno-8-10" href="#__codelineno-8-10"></a><span class="p">});</span>
 <a id="__codelineno-8-11" name="__codelineno-8-11" href="#__codelineno-8-11"></a>
 <a id="__codelineno-8-12" name="__codelineno-8-12" href="#__codelineno-8-12"></a><span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="n">AddTenantDbContextFactory</span><span class="o">&lt;</span><span class="n">ApplicationDbContext</span><span class="o">&gt;</span><span class="p">();</span>

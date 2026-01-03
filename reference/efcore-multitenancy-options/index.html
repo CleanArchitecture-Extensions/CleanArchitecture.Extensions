@@ -1618,6 +1618,12 @@
 <td>Includes schema in model cache key for schema-per-tenant mode.</td>
 </tr>
 <tr>
+<td><code>TreatIdentityEntitiesAsGlobal</code></td>
+<td><code>bool</code></td>
+<td><code>true</code></td>
+<td>Treats ASP.NET Core Identity entities as global (excluded from tenant filtering).</td>
+</tr>
+<tr>
 <td><code>DefaultSchema</code></td>
 <td><code>string?</code></td>
 <td><code>null</code></td>
@@ -1670,8 +1676,10 @@
 <h2 id="notes">Notes<a class="headerlink" href="#notes" title="Permanent link">&para;</a></h2>
 <ul>
 <li><code>SchemaNameProvider</code> and <code>ConnectionStringProvider</code> are delegates and must be set in code.</li>
+<li>Enable tenant-aware model cache keys by calling <code>options.UseTenantModelCacheKeyFactory(sp)</code> when configuring your DbContext.</li>
 <li>For database-per-tenant, the DbContext factory sets the connection string per tenant and requires a relational provider.</li>
 <li>Row-level filtering/enforcement defaults to off for schema/database-per-tenant; set <code>UseShadowTenantId</code>, <code>EnableQueryFilters</code>, and <code>EnableSaveChangesEnforcement</code> to <code>true</code> to opt in.</li>
+<li>Identity entities are treated as global by default; set <code>TreatIdentityEntitiesAsGlobal</code> to <code>false</code> to opt into tenant-scoped Identity.</li>
 </ul>
 
 

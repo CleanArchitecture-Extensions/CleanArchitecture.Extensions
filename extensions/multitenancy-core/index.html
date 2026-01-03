@@ -1835,13 +1835,17 @@
 <div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="n">AddMediatR</span><span class="p">(</span><span class="n">cfg</span><span class="w"> </span><span class="o">=&gt;</span>
 <a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="p">{</span>
 <a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="w">    </span><span class="n">cfg</span><span class="p">.</span><span class="n">RegisterServicesFromAssemblyContaining</span><span class="o">&lt;</span><span class="n">Program</span><span class="o">&gt;</span><span class="p">();</span>
-<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="w">    </span><span class="n">cfg</span><span class="p">.</span><span class="n">AddCleanArchitectureMultitenancyPipeline</span><span class="p">();</span>
-<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="p">});</span>
+<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="w">    </span><span class="n">cfg</span><span class="p">.</span><span class="n">AddCleanArchitectureMultitenancyCorrelationPreProcessor</span><span class="p">();</span>
+<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="w">    </span><span class="n">cfg</span><span class="p">.</span><span class="n">AddCleanArchitectureMultitenancyPipeline</span><span class="p">();</span>
+<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="p">});</span>
 </code></pre></div>
-<p>In the Jason Taylor template, keep the multitenancy pipeline after authorization behaviors so authorization runs first.</p>
+<p>If you use MediatR request logging pre-processors (template default), register <code>AddCleanArchitectureMultitenancyCorrelationPreProcessor</code> before logging so request logs include tenant context.
+In the Jason Taylor template, keep the multitenancy pipeline after authorization behaviors so authorization runs first.
+The correlation pre-processor registers a matching post-processor to clean up log scopes.</p>
 <p>The pipeline includes:</p>
 <ul>
 <li><code>TenantCorrelationBehavior</code> (adds tenant ID to logs and activity baggage)</li>
+<li><code>TenantCorrelationPreProcessor</code> + <code>TenantCorrelationPostProcessor</code> (adds tenant ID before request logging pre-processors and cleans up scopes)</li>
 <li><code>TenantValidationBehavior</code> (optional validation against cache or store)</li>
 <li><code>TenantEnforcementBehavior</code> (enforces resolution and lifecycle)</li>
 </ul>
