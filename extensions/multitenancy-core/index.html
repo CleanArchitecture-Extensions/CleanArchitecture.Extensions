@@ -1838,6 +1838,7 @@
 <a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="w">    </span><span class="n">cfg</span><span class="p">.</span><span class="n">AddCleanArchitectureMultitenancyPipeline</span><span class="p">();</span>
 <a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="p">});</span>
 </code></pre></div>
+<p>In the Jason Taylor template, keep the multitenancy pipeline after authorization behaviors so authorization runs first.</p>
 <p>The pipeline includes:</p>
 <ul>
 <li><code>TenantCorrelationBehavior</code> (adds tenant ID to logs and activity baggage)</li>
