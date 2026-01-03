@@ -8,6 +8,7 @@ This catalog lists the extensions that ship today and how they fit into the temp
 | --- | --- | --- |
 | `CleanArchitecture.Extensions.Caching` | Cache abstractions, adapters, and query caching behavior. | [Caching](caching.md) |
 | `CleanArchitecture.Extensions.Multitenancy` | Core tenant model, resolution pipeline, and MediatR behaviors. | [Multitenancy Core](multitenancy-core.md) |
+| `CleanArchitecture.Extensions.Multitenancy.Caching` | Tenant-aware cache scoping and cache-scope warnings. | [Caching integration](multitenancy-core/caching-integration.md) |
 | `CleanArchitecture.Extensions.Multitenancy.AspNetCore` | HTTP middleware and endpoint enforcement. | [Multitenancy.AspNetCore](multitenancy-aspnetcore.md) |
 | `CleanArchitecture.Extensions.Multitenancy.EFCore` | EF Core filters, interceptors, and tenant-aware factories. | [Multitenancy.EFCore](multitenancy-efcore.md) |
 

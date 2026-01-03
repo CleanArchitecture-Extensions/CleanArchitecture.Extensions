@@ -138,7 +138,11 @@ Implement `ITenantInfoStore` and (optional) `ITenantInfoCache` to back validatio
 
 ## Caching integration
 
-If you use the caching package, replace the cache scope so keys include `tenantId`:
+If you use the caching package, install the adapter and add the multitenancy caching scope so keys include `tenantId`:
+
+```powershell
+dotnet add src/Infrastructure/Infrastructure.csproj package CleanArchitecture.Extensions.Multitenancy.Caching
+```
 
 ```csharp
 builder.Services.AddCleanArchitectureCaching();

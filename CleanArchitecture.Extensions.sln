@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CleanArchitecture.Extension
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CleanArchitecture.Extensions.Multitenancy", "src\CleanArchitecture.Extensions.Multitenancy\CleanArchitecture.Extensions.Multitenancy.csproj", "{7BDC1575-CD40-4EF2-9135-BFA17AD07D27}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CleanArchitecture.Extensions.Multitenancy.Caching", "src\CleanArchitecture.Extensions.Multitenancy.Caching\CleanArchitecture.Extensions.Multitenancy.Caching.csproj", "{45B70C9B-2963-4FD1-9667-99073BA4B4C2}"
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CleanArchitecture.Extensions.Multitenancy.AspNetCore", "src\CleanArchitecture.Extensions.Multitenancy.AspNetCore\CleanArchitecture.Extensions.Multitenancy.AspNetCore.csproj", "{D4F0A6A8-3B56-4837-9D3D-CFD8527778AA}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CleanArchitecture.Extensions.Multitenancy.EFCore", "src\CleanArchitecture.Extensions.Multitenancy.EFCore\CleanArchitecture.Extensions.Multitenancy.EFCore.csproj", "{8DC750DE-50DF-4D4B-8403-B7EF42669159}"
@@ -18,6 +20,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CleanArchitecture.Extensions.Caching.Tests", "tests\CleanArchitecture.Extensions.Caching.Tests\CleanArchitecture.Extensions.Caching.Tests.csproj", "{2A74C87A-317B-4BF2-9AF9-6568E1151272}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CleanArchitecture.Extensions.Multitenancy.Tests", "tests\CleanArchitecture.Extensions.Multitenancy.Tests\CleanArchitecture.Extensions.Multitenancy.Tests.csproj", "{9195674F-4AB8-4869-852E-735D861A207E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CleanArchitecture.Extensions.Multitenancy.Caching.Tests", "tests\CleanArchitecture.Extensions.Multitenancy.Caching.Tests\CleanArchitecture.Extensions.Multitenancy.Caching.Tests.csproj", "{E8DCFDF7-CBCD-41BC-8C1C-DB924184B2E2}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CleanArchitecture.Extensions.Multitenancy.AspNetCore.Tests", "tests\CleanArchitecture.Extensions.Multitenancy.AspNetCore.Tests\CleanArchitecture.Extensions.Multitenancy.AspNetCore.Tests.csproj", "{C8D1ECAF-DA00-4805-88E1-84B68DC2144C}"
 EndProject
@@ -57,6 +61,18 @@ Global
 		{7BDC1575-CD40-4EF2-9135-BFA17AD07D27}.Release|x64.Build.0 = Release|Any CPU
 		{7BDC1575-CD40-4EF2-9135-BFA17AD07D27}.Release|x86.ActiveCfg = Release|Any CPU
 		{7BDC1575-CD40-4EF2-9135-BFA17AD07D27}.Release|x86.Build.0 = Release|Any CPU
+		{45B70C9B-2963-4FD1-9667-99073BA4B4C2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{45B70C9B-2963-4FD1-9667-99073BA4B4C2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{45B70C9B-2963-4FD1-9667-99073BA4B4C2}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{45B70C9B-2963-4FD1-9667-99073BA4B4C2}.Debug|x64.Build.0 = Debug|Any CPU
+		{45B70C9B-2963-4FD1-9667-99073BA4B4C2}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{45B70C9B-2963-4FD1-9667-99073BA4B4C2}.Debug|x86.Build.0 = Debug|Any CPU
+		{45B70C9B-2963-4FD1-9667-99073BA4B4C2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{45B70C9B-2963-4FD1-9667-99073BA4B4C2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{45B70C9B-2963-4FD1-9667-99073BA4B4C2}.Release|x64.ActiveCfg = Release|Any CPU
+		{45B70C9B-2963-4FD1-9667-99073BA4B4C2}.Release|x64.Build.0 = Release|Any CPU
+		{45B70C9B-2963-4FD1-9667-99073BA4B4C2}.Release|x86.ActiveCfg = Release|Any CPU
+		{45B70C9B-2963-4FD1-9667-99073BA4B4C2}.Release|x86.Build.0 = Release|Any CPU
 		{D4F0A6A8-3B56-4837-9D3D-CFD8527778AA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{D4F0A6A8-3B56-4837-9D3D-CFD8527778AA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D4F0A6A8-3B56-4837-9D3D-CFD8527778AA}.Debug|x64.ActiveCfg = Debug|Any CPU
@@ -105,6 +121,18 @@ Global
 		{9195674F-4AB8-4869-852E-735D861A207E}.Release|x64.Build.0 = Release|Any CPU
 		{9195674F-4AB8-4869-852E-735D861A207E}.Release|x86.ActiveCfg = Release|Any CPU
 		{9195674F-4AB8-4869-852E-735D861A207E}.Release|x86.Build.0 = Release|Any CPU
+		{E8DCFDF7-CBCD-41BC-8C1C-DB924184B2E2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E8DCFDF7-CBCD-41BC-8C1C-DB924184B2E2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E8DCFDF7-CBCD-41BC-8C1C-DB924184B2E2}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{E8DCFDF7-CBCD-41BC-8C1C-DB924184B2E2}.Debug|x64.Build.0 = Debug|Any CPU
+		{E8DCFDF7-CBCD-41BC-8C1C-DB924184B2E2}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{E8DCFDF7-CBCD-41BC-8C1C-DB924184B2E2}.Debug|x86.Build.0 = Debug|Any CPU
+		{E8DCFDF7-CBCD-41BC-8C1C-DB924184B2E2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E8DCFDF7-CBCD-41BC-8C1C-DB924184B2E2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E8DCFDF7-CBCD-41BC-8C1C-DB924184B2E2}.Release|x64.ActiveCfg = Release|Any CPU
+		{E8DCFDF7-CBCD-41BC-8C1C-DB924184B2E2}.Release|x64.Build.0 = Release|Any CPU
+		{E8DCFDF7-CBCD-41BC-8C1C-DB924184B2E2}.Release|x86.ActiveCfg = Release|Any CPU
+		{E8DCFDF7-CBCD-41BC-8C1C-DB924184B2E2}.Release|x86.Build.0 = Release|Any CPU
 		{C8D1ECAF-DA00-4805-88E1-84B68DC2144C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{C8D1ECAF-DA00-4805-88E1-84B68DC2144C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C8D1ECAF-DA00-4805-88E1-84B68DC2144C}.Debug|x64.ActiveCfg = Debug|Any CPU
@@ -136,10 +164,12 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{E7ACB986-43D3-44C6-8433-DC14311B4430} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{7BDC1575-CD40-4EF2-9135-BFA17AD07D27} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{45B70C9B-2963-4FD1-9667-99073BA4B4C2} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{D4F0A6A8-3B56-4837-9D3D-CFD8527778AA} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{8DC750DE-50DF-4D4B-8403-B7EF42669159} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{2A74C87A-317B-4BF2-9AF9-6568E1151272} = {F62B4342-26E9-4045-A3CE-E5F1407D7B7C}
 		{9195674F-4AB8-4869-852E-735D861A207E} = {F62B4342-26E9-4045-A3CE-E5F1407D7B7C}
+		{E8DCFDF7-CBCD-41BC-8C1C-DB924184B2E2} = {F62B4342-26E9-4045-A3CE-E5F1407D7B7C}
 		{C8D1ECAF-DA00-4805-88E1-84B68DC2144C} = {F62B4342-26E9-4045-A3CE-E5F1407D7B7C}
 		{9049413F-0007-4D5E-91A5-BEC08A39A91A} = {F62B4342-26E9-4045-A3CE-E5F1407D7B7C}
 	EndGlobalSection

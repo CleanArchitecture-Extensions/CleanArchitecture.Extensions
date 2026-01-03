@@ -54,7 +54,7 @@ The pipeline includes:
 - `TenantEnforcementBehavior` - enforces resolution and lifecycle checks.
 - `TenantCorrelationBehavior` - enriches logs and activity with tenant ID.
 
-`TenantScopedCacheBehavior` is optional and warns when cache scope does not align with the current tenant.
+`TenantScopedCacheBehavior` (from the Multitenancy.Caching package) is optional and warns when cache scope does not align with the current tenant.
 
 ## Enforcement rules
 

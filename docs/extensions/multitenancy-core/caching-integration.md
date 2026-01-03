@@ -4,9 +4,14 @@ Use the caching integration to ensure cache keys include the current tenant ID.
 
 ## Setup
 
-1) Register caching services.
-2) Replace the cache scope with `TenantCacheScope`.
-3) (Optional) add `TenantScopedCacheBehavior` to warn about mismatches.
+1) Install `CleanArchitecture.Extensions.Multitenancy.Caching`.
+2) Register caching services.
+3) Replace the cache scope with `TenantCacheScope`.
+4) (Optional) add `TenantScopedCacheBehavior` to warn about mismatches.
+
+```powershell
+dotnet add src/Infrastructure/Infrastructure.csproj package CleanArchitecture.Extensions.Multitenancy.Caching
+```
 
 ```csharp
 using CleanArchitecture.Extensions.Caching;

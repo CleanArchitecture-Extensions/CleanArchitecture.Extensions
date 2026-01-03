@@ -58,7 +58,7 @@ Common multitenancy issues and fixes across core, ASP.NET Core, and EF Core adap
 
 **Fixes**
 
-- Call `AddCleanArchitectureMultitenancyCaching` after `AddCleanArchitectureCaching`.
+- Install `CleanArchitecture.Extensions.Multitenancy.Caching` and call `AddCleanArchitectureMultitenancyCaching` after `AddCleanArchitectureCaching`.
 - Ensure tenant resolution runs before caching behaviors.
 
 ## Tenant context lost in background jobs

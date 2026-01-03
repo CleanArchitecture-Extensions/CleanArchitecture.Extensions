@@ -154,7 +154,11 @@ Keep key conventions stable and consider bumping the namespace for breaking DTO 
 
 ## Multitenancy integration
 
-If you use multitenancy, call `AddCleanArchitectureMultitenancyCaching` to include tenant IDs in cache keys:
+If you use multitenancy, install the adapter and call `AddCleanArchitectureMultitenancyCaching` to include tenant IDs in cache keys:
+
+```powershell
+dotnet add src/Infrastructure/Infrastructure.csproj package CleanArchitecture.Extensions.Multitenancy.Caching
+```
 
 ```csharp
 builder.Services.AddCleanArchitectureCaching();
@@ -169,7 +173,7 @@ builder.Services.AddCleanArchitectureMultitenancyCaching();
 ## Troubleshooting
 
 - Cache is never hit: ensure the request type matches the cache predicate and the behavior is registered.
-- Missing tenant in keys: call `AddCleanArchitectureMultitenancyCaching` after caching registration.
+- Missing tenant in keys: install `CleanArchitecture.Extensions.Multitenancy.Caching` and call `AddCleanArchitectureMultitenancyCaching` after caching registration.
 - Large payloads: raise `MaxEntrySizeBytes` or skip caching via `ResponseCachePredicate`.
 
 ## Samples and tests

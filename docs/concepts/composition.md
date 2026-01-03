@@ -36,7 +36,7 @@ If you rely on claim-based tenant resolution, place authentication before the te
 
 ## Cross-extension integration
 
-- **Multitenancy + caching**: call `AddCleanArchitectureMultitenancyCaching` to include tenant IDs in cache keys.
+- **Multitenancy + caching**: install `CleanArchitecture.Extensions.Multitenancy.Caching`, then call `AddCleanArchitectureMultitenancyCaching` to include tenant IDs in cache keys.
 - **Multitenancy + EF Core**: ensure `TenantSaveChangesInterceptor` is registered and your DbContext uses tenant-aware model customization.
 
 ## Compatibility notes
