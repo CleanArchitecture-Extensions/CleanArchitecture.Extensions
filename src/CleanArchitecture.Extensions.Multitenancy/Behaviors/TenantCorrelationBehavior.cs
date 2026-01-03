@@ -35,24 +35,22 @@ public sealed class TenantCorrelationBehavior<TRequest, TResponse> : IPipelineBe
     {
         cancellationToken.ThrowIfCancellationRequested();
 
+        var tenantId = _currentTenant.TenantId;
+        var scopeKey = string.IsNullOrWhiteSpace(_options.LogScopeKey) ? "tenant_id" : _options.LogScopeKey;
+        var activity = Activity.Current;
+
+        if (_options.AddTenantToActivity && activity is not null)
+        {
+            activity.SetBaggage(scopeKey, tenantId ?? string.Empty);
+            activity.SetTag(scopeKey, tenantId);
+        }
+
         if (!_options.AddTenantToLogScope)
         {
             return await next().ConfigureAwait(false);
         }
 
-        var tenantId = _currentTenant.TenantId;
-        var scopeKey = string.IsNullOrWhiteSpace(_options.LogScopeKey) ? "tenant_id" : _options.LogScopeKey;
-
-        using (_logger.BeginScope(new Dictionary<string, object?> { [scopeKey] = tenantId }))
-        {
-            var activity = Activity.Current;
-            if (_options.AddTenantToActivity && activity is not null)
-            {
-                activity.SetBaggage(scopeKey, tenantId ?? string.Empty);
-                activity.SetTag(scopeKey, tenantId);
-            }
-
-            return await next().ConfigureAwait(false);
-        }
+        using var scope = _logger.BeginScope(new Dictionary<string, object?> { [scopeKey] = tenantId });
+        return await next().ConfigureAwait(false);
     }
 }

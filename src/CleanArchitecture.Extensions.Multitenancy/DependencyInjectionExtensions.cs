@@ -59,9 +59,9 @@ public static class DependencyInjectionExtensions
     {
         ArgumentNullException.ThrowIfNull(configuration);
 
+        configuration.AddOpenBehavior(typeof(TenantCorrelationBehavior<,>));
         configuration.AddOpenBehavior(typeof(TenantValidationBehavior<,>));
         configuration.AddOpenBehavior(typeof(TenantEnforcementBehavior<,>));
-        configuration.AddOpenBehavior(typeof(TenantCorrelationBehavior<,>));
         return configuration;
     }
 }

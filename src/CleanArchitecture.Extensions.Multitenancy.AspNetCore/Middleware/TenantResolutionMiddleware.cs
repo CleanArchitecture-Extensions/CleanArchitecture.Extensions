@@ -74,16 +74,9 @@ public sealed class TenantResolutionMiddleware
 
     private IDisposable? BeginLoggingScope(string? tenantId)
     {
-        if (!_options.AddTenantToLogScope)
-        {
-            return null;
-        }
-
         var scopeKey = string.IsNullOrWhiteSpace(_options.LogScopeKey)
             ? "tenant_id"
             : _options.LogScopeKey;
-
-        var scope = _logger.BeginScope(new Dictionary<string, object?> { [scopeKey] = tenantId });
 
         if (_options.AddTenantToActivity)
         {
@@ -95,6 +88,11 @@ public sealed class TenantResolutionMiddleware
             }
         }
 
-        return scope;
+        if (!_options.AddTenantToLogScope)
+        {
+            return null;
+        }
+
+        return _logger.BeginScope(new Dictionary<string, object?> { [scopeKey] = tenantId });
     }
 }
