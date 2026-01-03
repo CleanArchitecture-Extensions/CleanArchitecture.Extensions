@@ -136,6 +136,10 @@ public sealed class FeatureFlag
 }
 ```
 
+### Identity entities
+
+By default, ASP.NET Core Identity entities are treated as global to keep the template working without extra changes. Set `TreatIdentityEntitiesAsGlobal = false` if you want tenant-scoped identity and add a tenant identifier to your Identity entities or custom stores.
+
 ## Schema-per-tenant setup
 
 ```csharp
