@@ -51,13 +51,14 @@ builder.Services.AddMediatR(cfg =>
 
 If you use MediatR request logging pre-processors (template default), register `AddCleanArchitectureMultitenancyCorrelationPreProcessor` before logging so request logs include tenant context.
 In the Jason Taylor template, keep the multitenancy pipeline after authorization behaviors so authorization runs first.
+The correlation pre-processor registers a matching post-processor to clean up log scopes.
 
 The pipeline includes:
 
 - `TenantValidationBehavior` - validates tenant metadata against cache/store when enabled.
 - `TenantEnforcementBehavior` - enforces resolution and lifecycle checks.
 - `TenantCorrelationBehavior` - enriches logs and activity with tenant ID.
-- `TenantCorrelationPreProcessor` - enriches logs before request logging pre-processors.
+- `TenantCorrelationPreProcessor` + `TenantCorrelationPostProcessor` - enriches logs before request logging pre-processors and cleans up scopes.
 
 `TenantScopedCacheBehavior` (from the Multitenancy.Caching package) is optional and warns when cache scope does not align with the current tenant.
 
@@ -78,6 +79,8 @@ These rules are evaluated against `TenantInfo` fields: `IsActive`, `IsSoftDelete
 
 - Log scopes (key is `MultitenancyOptions.LogScopeKey`)
 - Activity tags and baggage when `AddTenantToActivity` is enabled
+
+`TenantCorrelationPostProcessor` cleans up the log scope when the pre-processor is used.
 
 ## HTTP enforcement
 
