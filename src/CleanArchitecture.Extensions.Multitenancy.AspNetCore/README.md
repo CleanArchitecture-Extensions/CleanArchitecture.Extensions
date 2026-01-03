@@ -9,6 +9,7 @@ ASP.NET Core adapter for CleanArchitecture.Extensions.Multitenancy. It provides 
 - MVC action filter (`TenantEnforcementActionFilter`).
 - Endpoint metadata helpers (`RequireTenant`, `AllowAnonymousTenant`, `WithTenantHeader`, `WithTenantRoute`).
 - ProblemDetails mapping for multitenancy exceptions.
+- Exception handler integration (`TenantExceptionHandler`) for consistent ProblemDetails responses.
 
 ## Install
 
@@ -94,3 +95,4 @@ if (TenantProblemDetailsMapper.TryCreate(exception, httpContext, out var details
 - This adapter depends on the core multitenancy package and wires its services automatically.
 - MediatR behaviors still live in the core package (`AddCleanArchitectureMultitenancyPipeline`).
 - The middleware stores the resolved `TenantContext` in `HttpContext.Items` by default.
+- `AddCleanArchitectureMultitenancyAspNetCore` registers `TenantExceptionHandler` so `UseExceptionHandler` can map multitenancy exceptions to ProblemDetails.

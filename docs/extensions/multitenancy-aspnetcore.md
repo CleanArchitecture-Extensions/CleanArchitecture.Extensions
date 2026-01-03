@@ -100,6 +100,8 @@ if (TenantProblemDetailsMapper.TryCreate(exception, httpContext, out var details
 }
 ```
 
+`AddCleanArchitectureMultitenancyAspNetCore` also registers `TenantExceptionHandler` so `UseExceptionHandler` can emit consistent ProblemDetails responses for multitenancy exceptions.
+
 ## Middleware ordering
 
 - Place tenant resolution before authorization and handler execution.
@@ -112,6 +114,7 @@ if (TenantProblemDetailsMapper.TryCreate(exception, httpContext, out var details
 - `EndpointConventionBuilderExtensions`
 - `HttpContextTenantExtensions`
 - `AspNetCoreMultitenancyOptions`
+- `TenantExceptionHandler`
 
 ## Related docs
 
