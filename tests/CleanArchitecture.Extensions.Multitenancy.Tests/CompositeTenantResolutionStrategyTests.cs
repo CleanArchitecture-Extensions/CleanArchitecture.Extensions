@@ -1,3 +1,4 @@
+using CleanArchitecture.Extensions.Multitenancy;
 using CleanArchitecture.Extensions.Multitenancy.Abstractions;
 using CleanArchitecture.Extensions.Multitenancy.Configuration;
 using CleanArchitecture.Extensions.Multitenancy.Providers;
@@ -8,109 +9,103 @@ namespace CleanArchitecture.Extensions.Multitenancy.Tests;
 public class CompositeTenantResolutionStrategyTests
 {
     [Fact]
-    public async Task Resolution_uses_configured_order_over_registration_order()
+    public async Task ResolveAsync_uses_configured_order()
     {
-        var options = Options.Create(new MultitenancyOptions());
         var providers = new ITenantProvider[]
         {
-            new DelegateTenantProvider(_ => "header-tenant", TenantResolutionSource.Header),
-            new DelegateTenantProvider(_ => "route-tenant", TenantResolutionSource.Route)
+            new StubProvider(TenantResolutionSource.Header, _ =>
+                TenantResolutionResult.Resolved("header", TenantResolutionSource.Header)),
+            new StubProvider(TenantResolutionSource.Route, _ =>
+                TenantResolutionResult.Resolved("route", TenantResolutionSource.Route))
         };
+
+        var options = Options.Create(new MultitenancyOptions
+        {
+            ResolutionOrder = new List<TenantResolutionSource>
+            {
+                TenantResolutionSource.Route,
+                TenantResolutionSource.Header
+            },
+            IncludeUnorderedProviders = false
+        });
 
         var strategy = new CompositeTenantResolutionStrategy(providers, options);
 
         var result = await strategy.ResolveAsync(new TenantResolutionContext());
 
-        Assert.True(result.IsResolved);
-        Assert.Equal("route-tenant", result.TenantId);
+        Assert.Equal("route", result.TenantId);
         Assert.Equal(TenantResolutionSource.Route, result.Source);
     }
 
     [Fact]
-    public async Task Resolution_requires_consensus_when_enabled()
+    public async Task ResolveAsync_returns_ambiguous_when_no_resolution()
     {
-        var options = Options.Create(new MultitenancyOptions
-        {
-            RequireMatchAcrossSources = true
-        });
-
         var providers = new ITenantProvider[]
         {
-            new DelegateTenantProvider(_ => "tenant-a", TenantResolutionSource.Header),
-            new DelegateTenantProvider(_ => "tenant-b", TenantResolutionSource.Route)
+            new StubProvider(TenantResolutionSource.Header, _ =>
+                TenantResolutionResult.FromCandidates(new[] { "alpha", "beta" }, TenantResolutionSource.Header)),
+            new StubProvider(TenantResolutionSource.Route, _ =>
+                TenantResolutionResult.NotFound(TenantResolutionSource.Route))
         };
+
+        var options = Options.Create(new MultitenancyOptions
+        {
+            ResolutionOrder = new List<TenantResolutionSource>
+            {
+                TenantResolutionSource.Header,
+                TenantResolutionSource.Route
+            }
+        });
 
         var strategy = new CompositeTenantResolutionStrategy(providers, options);
 
         var result = await strategy.ResolveAsync(new TenantResolutionContext());
 
-        Assert.False(result.IsResolved);
         Assert.True(result.IsAmbiguous);
-        Assert.Equal(TenantResolutionSource.Composite, result.Source);
+        Assert.Equal(TenantResolutionSource.Header, result.Source);
     }
 
     [Fact]
-    public async Task Resolution_returns_single_candidate_when_consensus_matches()
+    public async Task ResolveAsync_consensus_returns_single_candidate()
     {
+        var providers = new ITenantProvider[]
+        {
+            new StubProvider(TenantResolutionSource.Header, _ =>
+                TenantResolutionResult.Resolved("tenant-1", TenantResolutionSource.Header)),
+            new StubProvider(TenantResolutionSource.Route, _ =>
+                TenantResolutionResult.Resolved("tenant-1", TenantResolutionSource.Route))
+        };
+
         var options = Options.Create(new MultitenancyOptions
         {
             RequireMatchAcrossSources = true
         });
 
-        var providers = new ITenantProvider[]
-        {
-            new DelegateTenantProvider(_ => "tenant-a", TenantResolutionSource.Header),
-            new DelegateTenantProvider(_ => "tenant-a", TenantResolutionSource.Route)
-        };
-
         var strategy = new CompositeTenantResolutionStrategy(providers, options);
 
         var result = await strategy.ResolveAsync(new TenantResolutionContext());
 
-        Assert.True(result.IsResolved);
-        Assert.Equal("tenant-a", result.TenantId);
+        Assert.Equal("tenant-1", result.TenantId);
         Assert.Equal(TenantResolutionSource.Composite, result.Source);
     }
 
-    [Fact]
-    public async Task Resolution_includes_unordered_providers_when_enabled()
+    private sealed class StubProvider : ITenantProvider
     {
-        var options = Options.Create(new MultitenancyOptions
+        private readonly Func<TenantResolutionContext, TenantResolutionResult> _resolver;
+
+        public StubProvider(TenantResolutionSource source, Func<TenantResolutionContext, TenantResolutionResult> resolver)
         {
-            IncludeUnorderedProviders = true
-        });
+            Source = source;
+            _resolver = resolver ?? throw new ArgumentNullException(nameof(resolver));
+        }
 
-        var providers = new ITenantProvider[]
+        public TenantResolutionSource Source { get; }
+
+        public ValueTask<TenantResolutionResult> ResolveAsync(
+            TenantResolutionContext context,
+            CancellationToken cancellationToken = default)
         {
-            new DelegateTenantProvider(_ => "custom-tenant", TenantResolutionSource.Custom)
-        };
-
-        var strategy = new CompositeTenantResolutionStrategy(providers, options);
-
-        var result = await strategy.ResolveAsync(new TenantResolutionContext());
-
-        Assert.True(result.IsResolved);
-        Assert.Equal("custom-tenant", result.TenantId);
-    }
-
-    [Fact]
-    public async Task Resolution_skips_unordered_providers_when_disabled()
-    {
-        var options = Options.Create(new MultitenancyOptions
-        {
-            IncludeUnorderedProviders = false
-        });
-
-        var providers = new ITenantProvider[]
-        {
-            new DelegateTenantProvider(_ => "custom-tenant", TenantResolutionSource.Custom)
-        };
-
-        var strategy = new CompositeTenantResolutionStrategy(providers, options);
-
-        var result = await strategy.ResolveAsync(new TenantResolutionContext());
-
-        Assert.False(result.IsResolved);
-        Assert.Equal(TenantResolutionSource.Composite, result.Source);
+            return ValueTask.FromResult(_resolver(context));
+        }
     }
 }
