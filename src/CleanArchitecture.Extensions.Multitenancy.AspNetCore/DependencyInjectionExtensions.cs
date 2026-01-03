@@ -6,6 +6,7 @@ using CleanArchitecture.Extensions.Multitenancy.AspNetCore.Options;
 using CleanArchitecture.Extensions.Multitenancy.AspNetCore.ProblemDetails;
 using CleanArchitecture.Extensions.Multitenancy.Configuration;
 using Microsoft.AspNetCore.Diagnostics;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -23,10 +24,12 @@ public static class DependencyInjectionExtensions
     /// <param name="services">Service collection.</param>
     /// <param name="configureCore">Optional callback to configure <see cref="MultitenancyOptions"/>.</param>
     /// <param name="configureAspNetCore">Optional callback to configure <see cref="AspNetCoreMultitenancyOptions"/>.</param>
+    /// <param name="autoUseMiddleware">Whether to add the multitenancy middleware automatically.</param>
     public static IServiceCollection AddCleanArchitectureMultitenancyAspNetCore(
         this IServiceCollection services,
         Action<MultitenancyOptions>? configureCore = null,
-        Action<AspNetCoreMultitenancyOptions>? configureAspNetCore = null)
+        Action<AspNetCoreMultitenancyOptions>? configureAspNetCore = null,
+        bool autoUseMiddleware = false)
     {
         ArgumentNullException.ThrowIfNull(services);
 
@@ -42,6 +45,10 @@ public static class DependencyInjectionExtensions
         services.TryAddScoped<TenantEnforcementEndpointFilter>();
         services.TryAddScoped<TenantEnforcementActionFilter>();
         services.TryAddEnumerable(ServiceDescriptor.Singleton<IExceptionHandler, TenantExceptionHandler>());
+        if (autoUseMiddleware)
+        {
+            services.TryAddEnumerable(ServiceDescriptor.Singleton<IStartupFilter, TenantResolutionStartupFilter>());
+        }
 
         return services;
     }

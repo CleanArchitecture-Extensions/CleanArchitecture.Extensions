@@ -7,6 +7,8 @@ namespace CleanArchitecture.Extensions.Multitenancy.AspNetCore.Middleware;
 /// </summary>
 public static class ApplicationBuilderExtensions
 {
+    private const string MiddlewareRegisteredKey = "CleanArchitecture.Extensions.Multitenancy.MiddlewareRegistered";
+
     /// <summary>
     /// Adds the multitenancy resolution middleware to the pipeline.
     /// </summary>
@@ -15,6 +17,12 @@ public static class ApplicationBuilderExtensions
     {
         ArgumentNullException.ThrowIfNull(app);
 
+        if (app.Properties.ContainsKey(MiddlewareRegisteredKey))
+        {
+            return app;
+        }
+
+        app.Properties[MiddlewareRegisteredKey] = true;
         return app.UseMiddleware<TenantResolutionMiddleware>();
     }
 }

@@ -10,6 +10,7 @@ ASP.NET Core adapter for CleanArchitecture.Extensions.Multitenancy. It provides 
 - Endpoint metadata helpers (`RequireTenant`, `AllowAnonymousTenant`, `WithTenantHeader`, `WithTenantRoute`).
 - ProblemDetails mapping for multitenancy exceptions.
 - Exception handler integration (`TenantExceptionHandler`) for consistent ProblemDetails responses.
+- Optional startup filter to auto-add the middleware when you cannot modify `Program.cs`.
 
 ## Install
 
@@ -24,16 +25,20 @@ dotnet add package CleanArchitecture.Extensions.Multitenancy.AspNetCore
 ```csharp
 using CleanArchitecture.Extensions.Multitenancy.AspNetCore;
 
-builder.Services.AddCleanArchitectureMultitenancyAspNetCore();
+builder.Services.AddCleanArchitectureMultitenancyAspNetCore(autoUseMiddleware: true);
 ```
 
-### 2) Add the middleware
+Use `autoUseMiddleware` when header or host resolution is enough. For claim- or route-based resolution, disable it and place `app.UseCleanArchitectureMultitenancy()` after authentication or routing.
+
+### 2) Add the middleware (manual)
 
 ```csharp
 using CleanArchitecture.Extensions.Multitenancy.AspNetCore.Middleware;
 
 app.UseCleanArchitectureMultitenancy();
 ```
+
+Skip this step when you enable `autoUseMiddleware`.
 
 ### 3) Enforce tenancy (minimal APIs)
 
@@ -77,6 +82,19 @@ builder.Services.AddCleanArchitectureMultitenancyAspNetCore(
     });
 ```
 
+## Template defaults (JaysonTaylorCleanArchitectureBlank)
+
+- Prefer header or host resolution to keep the template unchanged.
+- Route-based tenancy requires routing middleware before multitenancy; opt in only if you can adjust the pipeline.
+
+Example for route-based tenants:
+
+```csharp
+app.UseRouting();
+app.UseCleanArchitectureMultitenancy();
+app.MapEndpoints();
+```
+
 ## ProblemDetails mapping
 
 Use `TenantProblemDetailsMapper` when you want to turn multitenancy exceptions into HTTP responses:
@@ -95,4 +113,5 @@ if (TenantProblemDetailsMapper.TryCreate(exception, httpContext, out var details
 - This adapter depends on the core multitenancy package and wires its services automatically.
 - MediatR behaviors still live in the core package (`AddCleanArchitectureMultitenancyPipeline`).
 - The middleware stores the resolved `TenantContext` in `HttpContext.Items` by default.
+- `GetTenantContext()` respects the configured `AspNetCoreMultitenancyOptions.HttpContextItemKey` when available.
 - `AddCleanArchitectureMultitenancyAspNetCore` registers `TenantExceptionHandler` so `UseExceptionHandler` can map multitenancy exceptions to ProblemDetails.
