@@ -1,5 +1,5 @@
-using System.Collections.Concurrent;
 using CleanArchitecture.Extensions.Caching.Abstractions;
+using CleanArchitecture.Extensions.Caching.Internal;
 using CleanArchitecture.Extensions.Caching.Keys;
 using CleanArchitecture.Extensions.Caching.Options;
 using CleanArchitecture.Extensions.Caching.Serialization;
@@ -19,7 +19,7 @@ public sealed class MemoryCacheAdapter : ICache
     private readonly ILogger<MemoryCacheAdapter> _logger;
     private readonly TimeProvider _timeProvider;
     private readonly CachingOptions _options;
-    private readonly ConcurrentDictionary<string, SemaphoreSlim> _locks = new();
+    private readonly KeyedLock _locks = new();
 
     /// <summary>
     /// Initializes a new instance of the <see cref="MemoryCacheAdapter"/> class.
@@ -35,12 +35,30 @@ public sealed class MemoryCacheAdapter : ICache
         TimeProvider timeProvider,
         IOptions<CachingOptions> options,
         ILogger<MemoryCacheAdapter> logger)
+        : this(memoryCache, new[] { serializer }, timeProvider, options, logger)
+    {
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="MemoryCacheAdapter"/> class.
+    /// </summary>
+    /// <param name="memoryCache">Memory cache instance.</param>
+    /// <param name="serializers">Serializers registered for cache payloads.</param>
+    /// <param name="timeProvider">Time provider used for timestamps.</param>
+    /// <param name="options">Caching options.</param>
+    /// <param name="logger">Logger.</param>
+    public MemoryCacheAdapter(
+        IMemoryCache memoryCache,
+        IEnumerable<ICacheSerializer> serializers,
+        TimeProvider timeProvider,
+        IOptions<CachingOptions> options,
+        ILogger<MemoryCacheAdapter> logger)
     {
         _memoryCache = memoryCache ?? throw new ArgumentNullException(nameof(memoryCache));
-        _serializer = serializer ?? throw new ArgumentNullException(nameof(serializer));
         _timeProvider = timeProvider ?? throw new ArgumentNullException(nameof(timeProvider));
         _options = options?.Value ?? throw new ArgumentNullException(nameof(options));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        _serializer = CacheSerializerSelector.Select(serializers, _options);
     }
 
     /// <inheritdoc />
@@ -120,8 +138,8 @@ public sealed class MemoryCacheAdapter : ICache
 
         if (policy.EnableLocking)
         {
-            var gate = GetLock(key.FullKey);
-            if (!gate.Wait(policy.LockTimeout))
+            var gate = _locks.TryAcquire(key.FullKey, policy.LockTimeout);
+            if (gate is null)
             {
                 _logger.LogWarning("Failed to acquire cache lock for {Key} within {Timeout}ms; bypassing cache.", key.FullKey, policy.LockTimeout.TotalMilliseconds);
                 return factory();
@@ -141,7 +159,7 @@ public sealed class MemoryCacheAdapter : ICache
             }
             finally
             {
-                gate.Release();
+                gate.Value.Dispose();
             }
         }
         else
@@ -173,8 +191,8 @@ public sealed class MemoryCacheAdapter : ICache
 
         if (policy.EnableLocking)
         {
-            var gate = GetLock(key.FullKey);
-            if (!await gate.WaitAsync(policy.LockTimeout, cancellationToken).ConfigureAwait(false))
+            var gate = await _locks.TryAcquireAsync(key.FullKey, policy.LockTimeout, cancellationToken).ConfigureAwait(false);
+            if (gate is null)
             {
                 _logger.LogWarning("Failed to acquire cache lock for {Key} within {Timeout}ms; bypassing cache.", key.FullKey, policy.LockTimeout.TotalMilliseconds);
                 return await factory(cancellationToken).ConfigureAwait(false);
@@ -194,7 +212,7 @@ public sealed class MemoryCacheAdapter : ICache
             }
             finally
             {
-                gate.Release();
+                gate.Value.Dispose();
             }
         }
         else
@@ -307,8 +325,6 @@ public sealed class MemoryCacheAdapter : ICache
         var offsetMs = Random.Shared.NextDouble() * jitterMilliseconds;
         return baseValue.Value + TimeSpan.FromMilliseconds(offsetMs);
     }
-
-    private SemaphoreSlim GetLock(string key) => _locks.GetOrAdd(key, _ => new SemaphoreSlim(1, 1));
 
     private sealed record StoredCacheEntry(byte[] Payload, string? ContentType, DateTimeOffset CreatedAt, DateTimeOffset? ExpiresAt, CacheEntryOptions Options, object? Value);
 }

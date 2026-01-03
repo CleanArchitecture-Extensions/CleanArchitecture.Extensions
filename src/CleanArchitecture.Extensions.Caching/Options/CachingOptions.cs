@@ -31,7 +31,7 @@ public sealed class CachingOptions
     public long? MaxEntrySizeBytes { get; set; }
 
     /// <summary>
-    /// Gets or sets the preferred serializer name/content type to use when multiple serializers are registered.
+    /// Gets or sets the preferred serializer type name or content type to use when multiple serializers are registered.
     /// </summary>
     public string? PreferredSerializer { get; set; }
 

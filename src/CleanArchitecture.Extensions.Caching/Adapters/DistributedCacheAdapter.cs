@@ -1,5 +1,5 @@
-using System.Collections.Concurrent;
 using CleanArchitecture.Extensions.Caching.Abstractions;
+using CleanArchitecture.Extensions.Caching.Internal;
 using CleanArchitecture.Extensions.Caching.Keys;
 using CleanArchitecture.Extensions.Caching.Options;
 using CleanArchitecture.Extensions.Caching.Serialization;
@@ -19,7 +19,7 @@ public sealed class DistributedCacheAdapter : ICache
     private readonly ILogger<DistributedCacheAdapter> _logger;
     private readonly TimeProvider _timeProvider;
     private readonly CachingOptions _options;
-    private readonly ConcurrentDictionary<string, SemaphoreSlim> _locks = new();
+    private readonly KeyedLock _locks = new();
 
     /// <summary>
     /// Initializes a new instance of the <see cref="DistributedCacheAdapter"/> class.
@@ -35,12 +35,30 @@ public sealed class DistributedCacheAdapter : ICache
         IOptions<CachingOptions> options,
         TimeProvider timeProvider,
         ILogger<DistributedCacheAdapter> logger)
+        : this(distributedCache, new[] { serializer }, options, timeProvider, logger)
+    {
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="DistributedCacheAdapter"/> class.
+    /// </summary>
+    /// <param name="distributedCache">Distributed cache instance.</param>
+    /// <param name="serializers">Serializers registered for cache payloads.</param>
+    /// <param name="options">Caching options.</param>
+    /// <param name="timeProvider">Time provider used for timestamps.</param>
+    /// <param name="logger">Logger.</param>
+    public DistributedCacheAdapter(
+        IDistributedCache distributedCache,
+        IEnumerable<ICacheSerializer> serializers,
+        IOptions<CachingOptions> options,
+        TimeProvider timeProvider,
+        ILogger<DistributedCacheAdapter> logger)
     {
         _distributedCache = distributedCache ?? throw new ArgumentNullException(nameof(distributedCache));
-        _serializer = serializer ?? throw new ArgumentNullException(nameof(serializer));
         _options = options?.Value ?? throw new ArgumentNullException(nameof(options));
         _timeProvider = timeProvider ?? throw new ArgumentNullException(nameof(timeProvider));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        _serializer = CacheSerializerSelector.Select(serializers, _options);
     }
 
     /// <inheritdoc />
@@ -155,8 +173,8 @@ public sealed class DistributedCacheAdapter : ICache
 
         if (policy.EnableLocking)
         {
-            var gate = GetLock(key.FullKey);
-            if (!gate.Wait(policy.LockTimeout))
+            var gate = _locks.TryAcquire(key.FullKey, policy.LockTimeout);
+            if (gate is null)
             {
                 _logger.LogWarning("Failed to acquire distributed cache lock for {Key} within {Timeout}ms; bypassing cache.", key.FullKey, policy.LockTimeout.TotalMilliseconds);
                 return factory();
@@ -176,7 +194,7 @@ public sealed class DistributedCacheAdapter : ICache
             }
             finally
             {
-                gate.Release();
+                gate.Value.Dispose();
             }
         }
 
@@ -206,8 +224,8 @@ public sealed class DistributedCacheAdapter : ICache
 
         if (policy.EnableLocking)
         {
-            var gate = GetLock(key.FullKey);
-            if (!await gate.WaitAsync(policy.LockTimeout, cancellationToken).ConfigureAwait(false))
+            var gate = await _locks.TryAcquireAsync(key.FullKey, policy.LockTimeout, cancellationToken).ConfigureAwait(false);
+            if (gate is null)
             {
                 _logger.LogWarning("Failed to acquire distributed cache lock for {Key} within {Timeout}ms; bypassing cache.", key.FullKey, policy.LockTimeout.TotalMilliseconds);
                 return await factory(cancellationToken).ConfigureAwait(false);
@@ -227,7 +245,7 @@ public sealed class DistributedCacheAdapter : ICache
             }
             finally
             {
-                gate.Release();
+                gate.Value.Dispose();
             }
         }
 
@@ -270,7 +288,7 @@ public sealed class DistributedCacheAdapter : ICache
             expiresAt = createdAt.Add(options.AbsoluteExpirationRelativeToNow.Value);
         }
 
-        return new DistributedStoredEntry<T>(value, createdAt, expiresAt, options);
+        return new DistributedStoredEntry<T>(value, createdAt, expiresAt, options, _serializer.ContentType);
     }
 
     private DistributedStoredEntry<T>? DeserializeStored<T>(byte[] bytes)
@@ -285,8 +303,6 @@ public sealed class DistributedCacheAdapter : ICache
             return null;
         }
     }
-
-    private SemaphoreSlim GetLock(string key) => _locks.GetOrAdd(key, _ => new SemaphoreSlim(1, 1));
 
     private static TimeSpan? ApplyJitter(TimeSpan? baseValue, TimeSpan? jitter)
     {
@@ -305,8 +321,5 @@ public sealed class DistributedCacheAdapter : ICache
         return baseValue.Value + TimeSpan.FromMilliseconds(offsetMs);
     }
 
-    private sealed record DistributedStoredEntry<T>(T? Value, DateTimeOffset CreatedAt, DateTimeOffset? ExpiresAt, CacheEntryOptions Options)
-    {
-        public string? ContentType => "application/json";
-    }
+    private sealed record DistributedStoredEntry<T>(T? Value, DateTimeOffset CreatedAt, DateTimeOffset? ExpiresAt, CacheEntryOptions Options, string? ContentType);
 }

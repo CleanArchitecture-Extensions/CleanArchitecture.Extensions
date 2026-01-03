@@ -21,11 +21,6 @@ public sealed class CacheStampedePolicy
     public TimeSpan? Jitter { get; set; } = TimeSpan.FromMilliseconds(50);
 
     /// <summary>
-    /// Gets or sets a refresh-ahead interval when supported by providers.
-    /// </summary>
-    public TimeSpan? RefreshAhead { get; set; }
-
-    /// <summary>
     /// Gets the default stampede policy.
     /// </summary>
     public static CacheStampedePolicy Default => new();

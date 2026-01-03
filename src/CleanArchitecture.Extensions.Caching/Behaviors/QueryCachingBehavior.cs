@@ -1,4 +1,5 @@
 using CleanArchitecture.Extensions.Caching.Abstractions;
+using CleanArchitecture.Extensions.Caching.Internal;
 using CleanArchitecture.Extensions.Caching.Keys;
 using CleanArchitecture.Extensions.Caching.Options;
 using MediatR;
@@ -13,6 +14,7 @@ namespace CleanArchitecture.Extensions.Caching.Behaviors;
 public sealed class QueryCachingBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
     where TRequest : IRequest<TResponse>
 {
+    private static readonly KeyedLock Locks = new();
     private readonly ICache _cache;
     private readonly ICacheKeyFactory _keyFactory;
     private readonly ICacheScope _cacheScope;
@@ -55,6 +57,42 @@ public sealed class QueryCachingBehavior<TRequest, TResponse> : IPipelineBehavio
         {
             _logger.LogDebug("Cache hit for {Request} ({Key})", typeof(TRequest).Name, key.FullKey);
             return cached.Value!;
+        }
+
+        var policy = _cachingOptions.StampedePolicy ?? CacheStampedePolicy.Default;
+        if (policy.EnableLocking)
+        {
+            var gate = await Locks.TryAcquireAsync(key.FullKey, policy.LockTimeout, cancellationToken).ConfigureAwait(false);
+            if (gate is null)
+            {
+                _logger.LogWarning("Failed to acquire cache lock for {Key} within {Timeout}ms; bypassing cache.", key.FullKey, policy.LockTimeout.TotalMilliseconds);
+                return await next().ConfigureAwait(false);
+            }
+
+            try
+            {
+                cached = await _cache.GetAsync<TResponse>(key, cancellationToken).ConfigureAwait(false);
+                if (cached is not null)
+                {
+                    _logger.LogDebug("Cache hit for {Request} ({Key})", typeof(TRequest).Name, key.FullKey);
+                    return cached.Value!;
+                }
+
+                _logger.LogDebug("Cache miss for {Request} ({Key})", typeof(TRequest).Name, key.FullKey);
+                var lockedResponse = await next().ConfigureAwait(false);
+                if (!ShouldStore(request, lockedResponse))
+                {
+                    return lockedResponse;
+                }
+
+                var lockedEntryOptions = ResolveEntryOptions();
+                await _cache.SetAsync(key, lockedResponse!, lockedEntryOptions, cancellationToken).ConfigureAwait(false);
+                return lockedResponse;
+            }
+            finally
+            {
+                gate.Value.Dispose();
+            }
         }
 
         _logger.LogDebug("Cache miss for {Request} ({Key})", typeof(TRequest).Name, key.FullKey);
