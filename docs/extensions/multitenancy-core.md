@@ -107,9 +107,9 @@ builder.Services.AddMediatR(cfg =>
 
 The pipeline includes:
 
+- `TenantCorrelationBehavior` (adds tenant ID to logs and activity baggage)
 - `TenantValidationBehavior` (optional validation against cache or store)
 - `TenantEnforcementBehavior` (enforces resolution and lifecycle)
-- `TenantCorrelationBehavior` (adds tenant ID to logs and activity baggage)
 
 ## Tenant requirements
 

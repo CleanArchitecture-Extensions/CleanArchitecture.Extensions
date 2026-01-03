@@ -197,7 +197,7 @@ public class TenantValidationBehaviorTests
 public class TenantCorrelationBehaviorTests
 {
     [Fact]
-    public async Task Handle_skips_scope_when_disabled()
+    public async Task Handle_sets_activity_when_log_scope_disabled()
     {
         var currentTenant = new CurrentTenantAccessor
         {
@@ -217,8 +217,8 @@ public class TenantCorrelationBehaviorTests
 
         await behavior.Handle(new DefaultRequest(), _ => Task.FromResult("ok"), CancellationToken.None);
 
-        Assert.Null(activity.GetBaggageItem("tenant_id"));
-        Assert.Null(activity.GetTagItem("tenant_id"));
+        Assert.Equal("tenant-1", activity.GetBaggageItem("tenant_id"));
+        Assert.Equal("tenant-1", activity.GetTagItem("tenant_id"));
         activity.Stop();
     }
 
