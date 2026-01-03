@@ -47,13 +47,16 @@ dotnet add src/Web/Web.csproj package CleanArchitecture.Extensions.Multitenancy.
 
 ```csharp
 using CleanArchitecture.Extensions.Multitenancy.AspNetCore;
-using CleanArchitecture.Extensions.Multitenancy.AspNetCore.Middleware;
 
-builder.Services.AddCleanArchitectureMultitenancyAspNetCore();
+builder.Services.AddCleanArchitectureMultitenancyAspNetCore(autoUseMiddleware: true);
 
 var app = builder.Build();
-app.UseCleanArchitectureMultitenancy();
 ```
+
+If you prefer manual wiring, call `app.UseCleanArchitectureMultitenancy()` instead of enabling `autoUseMiddleware`.
+Use manual wiring when you need claim- or route-based resolution so you can place the middleware after authentication or routing.
+
+Template-friendly default: use header or host resolution. Route-based extraction requires routing middleware before the multitenancy middleware.
 
 ### 3) Add the multitenancy pipeline behaviors
 

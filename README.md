@@ -63,9 +63,9 @@ Quick links:
    ```
 2. Register:
    ```csharp
-   services.AddCleanArchitectureMultitenancyAspNetCore();
+   services.AddCleanArchitectureMultitenancyAspNetCore(autoUseMiddleware: true);
    ```
-3. Add middleware:
+3. If you prefer manual wiring, add middleware:
    ```csharp
    app.UseCleanArchitectureMultitenancy();
    ```

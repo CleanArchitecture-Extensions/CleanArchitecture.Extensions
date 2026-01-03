@@ -50,6 +50,9 @@ builder.Services.AddCleanArchitectureMultitenancyAspNetCore();
 builder.Services.AddCleanArchitectureMultitenancyEfCore();
 ```
 
+Tip: pass `autoUseMiddleware: true` to `AddCleanArchitectureMultitenancyAspNetCore` when you cannot modify `Program.cs`.
+Prefer manual middleware wiring for claim- or route-based resolution so you can control authentication/routing order.
+
 Add pipeline behaviors in Application:
 
 ```csharp

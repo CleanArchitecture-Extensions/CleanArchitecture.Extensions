@@ -51,9 +51,8 @@ dotnet add src/Web/Web.csproj package CleanArchitecture.Extensions.Multitenancy.
 ```csharp
 using CleanArchitecture.Extensions.Multitenancy;
 using CleanArchitecture.Extensions.Multitenancy.AspNetCore;
-using CleanArchitecture.Extensions.Multitenancy.AspNetCore.Middleware;
 
-builder.Services.AddCleanArchitectureMultitenancyAspNetCore();
+builder.Services.AddCleanArchitectureMultitenancyAspNetCore(autoUseMiddleware: true);
 
 builder.Services.AddMediatR(cfg =>
 {
@@ -63,11 +62,13 @@ builder.Services.AddMediatR(cfg =>
 });
 
 var app = builder.Build();
-app.UseCleanArchitectureMultitenancy();
 ```
+
+Use manual middleware wiring when you need claim- or route-based resolution so you can place the middleware after authentication or routing.
 
 If you use MediatR request logging pre-processors (template default), register `AddCleanArchitectureMultitenancyCorrelationPreProcessor` before logging so request logs include tenant context.
 In the Jason Taylor template, keep the multitenancy pipeline after authorization behaviors so authorization runs first.
+The correlation pre-processor registers a matching post-processor to clean up log scopes.
 
 ## Documentation map
 
