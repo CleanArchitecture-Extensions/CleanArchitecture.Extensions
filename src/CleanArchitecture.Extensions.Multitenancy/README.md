@@ -131,6 +131,7 @@ builder.Services.AddMediatR(cfg =>
 
 If you use MediatR request logging pre-processors (template default), register `AddCleanArchitectureMultitenancyCorrelationPreProcessor` before logging so request logs include tenant context.
 In the Jason Taylor template, keep the multitenancy pipeline after authorization behaviors so authorization runs first.
+The correlation pre-processor registers a matching post-processor to clean up log scopes.
 
 ### 4) Use tenant context in handlers or jobs
 

@@ -77,6 +77,7 @@ public static class DependencyInjectionExtensions
         ArgumentNullException.ThrowIfNull(configuration);
 
         configuration.AddOpenRequestPreProcessor(typeof(TenantCorrelationPreProcessor<>));
+        configuration.AddOpenRequestPostProcessor(typeof(TenantCorrelationPostProcessor<,>));
         return configuration;
     }
 }
