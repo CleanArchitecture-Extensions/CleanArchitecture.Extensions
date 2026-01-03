@@ -1,3 +1,4 @@
+using System.Text.Json;
 using CleanArchitecture.Extensions.Caching.Abstractions;
 using CleanArchitecture.Extensions.Caching.Adapters;
 using CleanArchitecture.Extensions.Caching.Keys;
@@ -6,16 +7,15 @@ using CleanArchitecture.Extensions.Caching.Serialization;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging.Abstractions;
-using Microsoft.Extensions.Options;
 using MOptions = Microsoft.Extensions.Options.Options;
 
 namespace CleanArchitecture.Extensions.Caching.Tests;
 
 public class DistributedCacheAdapterTests
 {
-    private static DistributedCacheAdapter CreateAdapter(CachingOptions? options = null)
+    private static DistributedCacheAdapter CreateAdapter(CachingOptions? options = null, ICacheSerializer? serializer = null)
     {
-        var serializer = new SystemTextJsonCacheSerializer();
+        serializer ??= new SystemTextJsonCacheSerializer();
         var distributed = new MemoryDistributedCache(MOptions.Create(new MemoryDistributedCacheOptions()));
         var cachingOptions = options ?? CachingOptions.Default;
         return new DistributedCacheAdapter(
@@ -84,5 +84,32 @@ public class DistributedCacheAdapterTests
         adapter.Set(key, "toolarge");
 
         Assert.Null(adapter.Get<string>(key));
+    }
+
+    [Fact]
+    public async Task Uses_serializer_content_type()
+    {
+        var adapter = CreateAdapter(serializer: new TestCacheSerializer());
+        var key = new CacheKey("ns", "Resource", "content");
+
+        await adapter.SetAsync(key, "value");
+        var cached = await adapter.GetAsync<string>(key);
+
+        Assert.NotNull(cached);
+        Assert.Equal("application/test+json", cached!.ContentType);
+    }
+
+    private sealed class TestCacheSerializer : ICacheSerializer
+    {
+        private static readonly JsonSerializerOptions SerializerOptions = new(JsonSerializerDefaults.Web)
+        {
+            WriteIndented = false
+        };
+
+        public string ContentType => "application/test+json";
+
+        public byte[] Serialize<T>(T? value) => JsonSerializer.SerializeToUtf8Bytes(value, SerializerOptions);
+
+        public T? Deserialize<T>(ReadOnlySpan<byte> payload) => JsonSerializer.Deserialize<T>(payload, SerializerOptions);
     }
 }
