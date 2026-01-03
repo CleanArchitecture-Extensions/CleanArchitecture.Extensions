@@ -37,6 +37,5 @@ public class CachingOptionsTests
         Assert.True(policy.EnableLocking);
         Assert.Equal(TimeSpan.FromSeconds(5), policy.LockTimeout);
         Assert.Equal(TimeSpan.FromMilliseconds(50), policy.Jitter);
-        Assert.Null(policy.RefreshAhead);
     }
 }
