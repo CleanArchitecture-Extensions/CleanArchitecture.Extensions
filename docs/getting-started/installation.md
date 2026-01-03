@@ -61,6 +61,8 @@ builder.Services.AddMediatR(cfg =>
 });
 ```
 
+In the Jason Taylor template, register the multitenancy pipeline after authorization behaviors so authorization runs first.
+
 ## Uninstall
 
 ```powershell

@@ -65,6 +65,8 @@ builder.Services.AddMediatR(cfg =>
 });
 ```
 
+Keep the multitenancy pipeline after authorization behaviors in the Jason Taylor template so authorization runs first.
+
 ### 4) Mark tenant-required endpoints
 
 ```csharp
@@ -92,6 +94,8 @@ builder.Services.AddCleanArchitectureMultitenancyEfCore(options =>
     options.UseShadowTenantId = true;
 });
 ```
+
+Row-level filtering/enforcement defaults to shared database mode. For schema/database-per-tenant setups, explicitly set `UseShadowTenantId`, `EnableQueryFilters`, and `EnableSaveChangesEnforcement` to `true` if you want row-level defense-in-depth.
 
 Next steps:
 - [Installation guide](installation.md)

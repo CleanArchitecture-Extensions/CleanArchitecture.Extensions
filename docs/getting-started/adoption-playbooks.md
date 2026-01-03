@@ -35,7 +35,7 @@ These playbooks describe pragmatic, low-risk ways to adopt extensions in product
 1. Decide resolution sources (route, header, host, or claim).
 2. Add multitenancy core and the ASP.NET Core adapter.
 3. Configure `MultitenancyOptions` (resolution order, headers, route name).
-4. Add `AddCleanArchitectureMultitenancyPipeline` and mark endpoints as required.
+4. Add `AddCleanArchitectureMultitenancyPipeline` after authorization behaviors and mark endpoints as required.
 5. Implement `ITenantInfoStore` and enable validation to prevent spoofing.
 6. (Optional) Add EF Core isolation and enable SaveChanges enforcement.
 

@@ -8,9 +8,9 @@
 | --- | --- | --- | --- |
 | `Mode` | `TenantIsolationMode` | `SharedDatabase` | Shared database, schema-per-tenant, or database-per-tenant. |
 | `TenantIdPropertyName` | `string` | `"TenantId"` | Name of the tenant ID property. |
-| `UseShadowTenantId` | `bool` | `true` | Adds a shadow tenant ID when missing. |
-| `EnableQueryFilters` | `bool` | `true` | Enables tenant query filters. |
-| `EnableSaveChangesEnforcement` | `bool` | `true` | Enables SaveChanges enforcement. |
+| `UseShadowTenantId` | `bool` | `SharedDatabase: true; otherwise false` | Adds a shadow tenant ID when missing. |
+| `EnableQueryFilters` | `bool` | `SharedDatabase: true; otherwise false` | Enables tenant query filters. |
+| `EnableSaveChangesEnforcement` | `bool` | `SharedDatabase: true; otherwise false` | Enables SaveChanges enforcement. |
 | `RequireTenantForWrites` | `bool` | `true` | Requires tenant context for writes. |
 | `IncludeSchemaInModelCacheKey` | `bool` | `true` | Includes schema in model cache key for schema-per-tenant mode. |
 | `DefaultSchema` | `string?` | `null` | Default schema when no tenant is resolved. |
@@ -31,3 +31,4 @@
 
 - `SchemaNameProvider` and `ConnectionStringProvider` are delegates and must be set in code.
 - For database-per-tenant, the DbContext factory sets the connection string per tenant and requires a relational provider.
+- Row-level filtering/enforcement defaults to off for schema/database-per-tenant; set `UseShadowTenantId`, `EnableQueryFilters`, and `EnableSaveChangesEnforcement` to `true` to opt in.

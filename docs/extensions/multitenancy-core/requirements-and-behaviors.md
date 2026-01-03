@@ -48,6 +48,8 @@ builder.Services.AddMediatR(cfg =>
 });
 ```
 
+In the Jason Taylor template, keep the multitenancy pipeline after authorization behaviors so authorization runs first.
+
 The pipeline includes:
 
 - `TenantValidationBehavior` - validates tenant metadata against cache/store when enabled.
