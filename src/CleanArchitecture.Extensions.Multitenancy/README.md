@@ -8,6 +8,7 @@ Core multitenancy primitives and MediatR behaviors for Jason Taylor's Clean Arch
 - Resolution pipeline with built-in providers (route/host/header/query/claim/default) and customizable ordering.
 - Validation hooks (`ITenantInfoStore`, `ITenantInfoCache`) with cache-or-repository validation.
 - MediatR behaviors for validation, enforcement, correlation, and cache scope alignment.
+- MediatR pre-processor for tenant correlation when request logging runs before behaviors.
 - AsyncLocal current-tenant accessor and JSON serializer for background jobs and messages.
 
 ## Install
@@ -120,6 +121,7 @@ builder.Services.AddMediatR(cfg =>
     // cfg.AddOpenBehavior(typeof(AuthorizationBehaviour<,>));
     // cfg.AddOpenBehavior(typeof(ValidationBehaviour<,>));
 
+    cfg.AddCleanArchitectureMultitenancyCorrelationPreProcessor();
     cfg.AddCleanArchitectureMultitenancyPipeline();
 
     // Optional: warn when cache scope is missing tenant context (Multitenancy.Caching package)
@@ -127,6 +129,7 @@ builder.Services.AddMediatR(cfg =>
 });
 ```
 
+If you use MediatR request logging pre-processors (template default), register `AddCleanArchitectureMultitenancyCorrelationPreProcessor` before logging so request logs include tenant context.
 In the Jason Taylor template, keep the multitenancy pipeline after authorization behaviors so authorization runs first.
 
 ### 4) Use tenant context in handlers or jobs
@@ -317,10 +320,14 @@ public sealed class TenantJob
 - `TenantInactiveException` - tenant is inactive, expired, deleted, or soft-deleted.
 - `TenantSuspendedException` - tenant is suspended.
 
-## Related modules (planned)
+## Related modules
 
 - `CleanArchitecture.Extensions.Multitenancy.AspNetCore`
 - `CleanArchitecture.Extensions.Multitenancy.EFCore`
+- `CleanArchitecture.Extensions.Multitenancy.Caching`
+
+## Planned modules
+
 - `CleanArchitecture.Extensions.Multitenancy.Identity`
 - `CleanArchitecture.Extensions.Multitenancy.Provisioning`
 - `CleanArchitecture.Extensions.Multitenancy.Redis`
