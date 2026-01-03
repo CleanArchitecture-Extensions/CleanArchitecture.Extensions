@@ -36,6 +36,8 @@ builder.Services.AddDbContext<ApplicationDbContext>((sp, options) =>
 
 If you already register `ISaveChangesInterceptor` instances (as the template does), you can omit the explicit `TenantSaveChangesInterceptor` line and rely on `GetServices<ISaveChangesInterceptor>()`.
 
+Row-level filtering/enforcement defaults to shared database mode. For schema/database-per-tenant setups, set `UseShadowTenantId`, `EnableQueryFilters`, and `EnableSaveChangesEnforcement` to `true` if you want defense-in-depth at the row level.
+
 ## Step 3 - Wire tenant context into your DbContext
 
 ### Option A: use the tenant-aware base class (non-Identity DbContext)

@@ -65,6 +65,8 @@ var app = builder.Build();
 app.UseCleanArchitectureMultitenancy();
 ```
 
+In the Jason Taylor template, keep the multitenancy pipeline after authorization behaviors so authorization runs first.
+
 ## Documentation map
 
 - [Getting started](getting-started/quickstart.md)

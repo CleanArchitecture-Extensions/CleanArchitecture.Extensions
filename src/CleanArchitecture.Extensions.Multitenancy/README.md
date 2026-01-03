@@ -127,6 +127,8 @@ builder.Services.AddMediatR(cfg =>
 });
 ```
 
+In the Jason Taylor template, keep the multitenancy pipeline after authorization behaviors so authorization runs first.
+
 ### 4) Use tenant context in handlers or jobs
 
 ```csharp

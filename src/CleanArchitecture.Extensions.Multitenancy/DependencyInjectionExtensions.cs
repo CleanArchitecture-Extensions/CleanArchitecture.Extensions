@@ -52,6 +52,7 @@ public static class DependencyInjectionExtensions
 
     /// <summary>
     /// Adds the multitenancy MediatR behaviors to the pipeline.
+    /// Register after authorization behaviors when you want authorization to run before tenant enforcement.
     /// </summary>
     /// <param name="configuration">MediatR service configuration.</param>
     public static MediatRServiceConfiguration AddCleanArchitectureMultitenancyPipeline(

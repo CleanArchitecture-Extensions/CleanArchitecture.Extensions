@@ -105,6 +105,8 @@ builder.Services.AddMediatR(cfg =>
 });
 ```
 
+In the Jason Taylor template, keep the multitenancy pipeline after authorization behaviors so authorization runs first.
+
 The pipeline includes:
 
 - `TenantCorrelationBehavior` (adds tenant ID to logs and activity baggage)
