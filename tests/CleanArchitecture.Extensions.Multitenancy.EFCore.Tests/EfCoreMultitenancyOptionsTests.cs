@@ -6,6 +6,48 @@ namespace CleanArchitecture.Extensions.Multitenancy.EFCore.Tests;
 public class EfCoreMultitenancyOptionsTests
 {
     [Fact]
+    public void Defaults_enable_row_level_for_shared_database()
+    {
+        var options = new EfCoreMultitenancyOptions
+        {
+            Mode = TenantIsolationMode.SharedDatabase
+        };
+
+        Assert.True(options.UseShadowTenantId);
+        Assert.True(options.EnableQueryFilters);
+        Assert.True(options.EnableSaveChangesEnforcement);
+    }
+
+    [Fact]
+    public void Defaults_disable_row_level_for_schema_per_tenant()
+    {
+        var options = new EfCoreMultitenancyOptions
+        {
+            Mode = TenantIsolationMode.SchemaPerTenant
+        };
+
+        Assert.False(options.UseShadowTenantId);
+        Assert.False(options.EnableQueryFilters);
+        Assert.False(options.EnableSaveChangesEnforcement);
+    }
+
+    [Fact]
+    public void Explicit_row_level_settings_override_mode_defaults()
+    {
+        var options = new EfCoreMultitenancyOptions
+        {
+            Mode = TenantIsolationMode.DatabasePerTenant,
+            UseShadowTenantId = true,
+            EnableQueryFilters = true,
+            EnableSaveChangesEnforcement = true
+        };
+
+        Assert.True(options.UseShadowTenantId);
+        Assert.True(options.EnableQueryFilters);
+        Assert.True(options.EnableSaveChangesEnforcement);
+    }
+
+    [Fact]
     public void ResolveSchemaName_uses_provider_when_configured()
     {
         var options = new EfCoreMultitenancyOptions
