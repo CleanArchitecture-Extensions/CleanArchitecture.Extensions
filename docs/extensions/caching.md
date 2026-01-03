@@ -52,9 +52,22 @@ builder.Services.AddMediatR(cfg =>
 
 `QueryCachingBehavior<TRequest, TResponse>` applies cache-aside semantics:
 
-- The default predicate caches request types whose names end with `Query` (case-insensitive).
+- The default predicate caches requests that opt in via `ICacheableQuery` or `[CacheableQuery]`.
 - The cache key uses the request type name as the resource and a SHA256 hash of the request payload.
 - Cache hits short-circuit the handler; cache misses store the handler result.
+
+Opt-in a query by marker interface or attribute:
+
+```csharp
+using CleanArchitecture.Extensions.Caching;
+using CleanArchitecture.Extensions.Caching.Abstractions;
+
+[CacheableQuery]
+public record GetTodosQuery : IRequest<TodosVm>;
+
+// or
+public record GetUserQuery(int Id) : IRequest<UserDto>, ICacheableQuery;
+```
 
 Configure request selection and TTLs via `QueryCachingBehaviorOptions`:
 
@@ -62,7 +75,7 @@ Configure request selection and TTLs via `QueryCachingBehaviorOptions`:
 builder.Services.AddCleanArchitectureCaching(
     configureQueryCaching: options =>
     {
-        options.CachePredicate = request => request is ICacheableQuery; // your own marker interface
+        options.CachePredicate = request => request is ICacheableQuery;
         options.DefaultTtl = TimeSpan.FromMinutes(2);
         options.TtlByRequestType[typeof(GetUserQuery)] = TimeSpan.FromSeconds(30);
         options.CacheNullValues = false;
@@ -75,7 +88,7 @@ builder.Services.AddCleanArchitectureCaching(
 - `DefaultCacheKeyFactory` hashes the request payload as JSON (deterministic SHA256).
 - `ICacheScope` supplies the namespace and optional tenant segment.
 
-If you customize keys, keep them deterministic and stable across versions.
+If you customize keys, keep them deterministic and stable across versions. For user-scoped data, include user context in the hash or namespace.
 
 ## Choose a cache adapter
 
@@ -109,6 +122,8 @@ using CleanArchitecture.Extensions.Caching.Serialization;
 builder.Services.AddSingleton<ICacheSerializer>(sp =>
     new SystemTextJsonCacheSerializer(new JsonSerializerOptions(JsonSerializerDefaults.Web)));
 ```
+
+When multiple serializers are registered, set `CachingOptions.PreferredSerializer` to a content type or serializer type name.
 
 ## Stampede protection and entry options
 

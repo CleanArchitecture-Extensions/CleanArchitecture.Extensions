@@ -40,7 +40,20 @@ builder.Services.AddMediatR(cfg =>
 });
 ```
 
-4. Add invalidation for write operations (commands or domain events).
+4. Opt in queries to caching.
+
+```csharp
+using CleanArchitecture.Extensions.Caching;
+using CleanArchitecture.Extensions.Caching.Abstractions;
+
+[CacheableQuery]
+public record GetOrdersQuery : IRequest<OrdersVm>;
+
+// or
+public record GetUserQuery(int Id) : IRequest<UserDto>, ICacheableQuery;
+```
+
+5. Add invalidation for write operations (commands or domain events).
 
 ```csharp
 await cache.RemoveAsync(cacheScope.Create("GetOrdersQuery", hash));
