@@ -32,6 +32,14 @@ public class EfCoreMultitenancyOptionsTests
     }
 
     [Fact]
+    public void Defaults_treat_identity_entities_as_global()
+    {
+        var options = new EfCoreMultitenancyOptions();
+
+        Assert.True(options.TreatIdentityEntitiesAsGlobal);
+    }
+
+    [Fact]
     public void Explicit_row_level_settings_override_mode_defaults()
     {
         var options = new EfCoreMultitenancyOptions

@@ -23,6 +23,11 @@ internal static class TenantEntityMetadata
 
     public static bool IsGlobalEntity(Type clrType, EfCoreMultitenancyOptions options)
     {
+        if (options.TreatIdentityEntitiesAsGlobal && IsIdentityEntity(clrType))
+        {
+            return true;
+        }
+
         if (typeof(IGlobalEntity).IsAssignableFrom(clrType))
         {
             return true;
@@ -44,5 +49,21 @@ internal static class TenantEntityMetadata
         }
 
         return !string.IsNullOrWhiteSpace(clrType.Name) && options.GlobalEntityTypeNames.Contains(clrType.Name);
+    }
+
+    private static bool IsIdentityEntity(Type clrType)
+    {
+        const string identityNamespace = "Microsoft.AspNetCore.Identity";
+
+        for (var current = clrType; current is not null; current = current.BaseType)
+        {
+            var ns = current.Namespace;
+            if (!string.IsNullOrWhiteSpace(ns) && ns.StartsWith(identityNamespace, StringComparison.Ordinal))
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

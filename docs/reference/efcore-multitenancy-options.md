@@ -13,6 +13,7 @@
 | `EnableSaveChangesEnforcement` | `bool` | `SharedDatabase: true; otherwise false` | Enables SaveChanges enforcement. |
 | `RequireTenantForWrites` | `bool` | `true` | Requires tenant context for writes. |
 | `IncludeSchemaInModelCacheKey` | `bool` | `true` | Includes schema in model cache key for schema-per-tenant mode. |
+| `TreatIdentityEntitiesAsGlobal` | `bool` | `true` | Treats ASP.NET Core Identity entities as global (excluded from tenant filtering). |
 | `DefaultSchema` | `string?` | `null` | Default schema when no tenant is resolved. |
 | `SchemaNameFormat` | `string` | `"tenant_{0}"` | Schema format string for schema-per-tenant. |
 | `SchemaNameProvider` | `Func<ITenantInfo?,string?>?` | `null` | Custom schema resolver (set in code). |
@@ -32,3 +33,4 @@
 - `SchemaNameProvider` and `ConnectionStringProvider` are delegates and must be set in code.
 - For database-per-tenant, the DbContext factory sets the connection string per tenant and requires a relational provider.
 - Row-level filtering/enforcement defaults to off for schema/database-per-tenant; set `UseShadowTenantId`, `EnableQueryFilters`, and `EnableSaveChangesEnforcement` to `true` to opt in.
+- Identity entities are treated as global by default; set `TreatIdentityEntitiesAsGlobal` to `false` to opt into tenant-scoped Identity.

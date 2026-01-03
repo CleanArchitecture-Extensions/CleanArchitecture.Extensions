@@ -78,6 +78,11 @@ public sealed class EfCoreMultitenancyOptions
     public bool IncludeSchemaInModelCacheKey { get; set; } = true;
 
     /// <summary>
+    /// Gets or sets a value indicating whether ASP.NET Core Identity entities are treated as global.
+    /// </summary>
+    public bool TreatIdentityEntitiesAsGlobal { get; set; } = true;
+
+    /// <summary>
     /// Gets or sets the default schema to use when no tenant is resolved.
     /// </summary>
     public string? DefaultSchema { get; set; }
