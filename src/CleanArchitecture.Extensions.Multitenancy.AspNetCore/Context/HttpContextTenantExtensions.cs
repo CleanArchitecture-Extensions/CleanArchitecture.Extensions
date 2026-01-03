@@ -1,5 +1,7 @@
 using CleanArchitecture.Extensions.Multitenancy.AspNetCore.Options;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 namespace CleanArchitecture.Extensions.Multitenancy.AspNetCore.Context;
 
@@ -17,9 +19,21 @@ public static class HttpContextTenantExtensions
     {
         ArgumentNullException.ThrowIfNull(httpContext);
 
-        var key = string.IsNullOrWhiteSpace(itemKey)
-            ? AspNetCoreMultitenancyDefaults.TenantContextItemKey
-            : itemKey;
+        var key = itemKey;
+        if (string.IsNullOrWhiteSpace(key))
+        {
+            var services = httpContext.RequestServices;
+            if (services is not null)
+            {
+                var options = services.GetService<IOptions<AspNetCoreMultitenancyOptions>>();
+                key = options?.Value?.HttpContextItemKey;
+            }
+        }
+
+        if (string.IsNullOrWhiteSpace(key))
+        {
+            key = AspNetCoreMultitenancyDefaults.TenantContextItemKey;
+        }
 
         return httpContext.Items.TryGetValue(key, out var value)
             ? value as TenantContext
