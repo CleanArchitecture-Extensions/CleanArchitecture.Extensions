@@ -6,7 +6,6 @@ using CleanArchitecture.Extensions.Multitenancy.EFCore.Migrations;
 using CleanArchitecture.Extensions.Multitenancy.EFCore.Options;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
-using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
@@ -36,8 +35,6 @@ public static class DependencyInjectionExtensions
 
         services.TryAddSingleton<ITenantModelCustomizer, TenantModelCustomizer>();
         services.TryAddSingleton<ITenantConnectionResolver, DefaultTenantConnectionResolver>();
-        services.TryAddSingleton<IModelCacheKeyFactory, TenantModelCacheKeyFactory>();
-
         services.TryAddScoped<TenantSaveChangesInterceptor>();
         services.TryAddEnumerable(ServiceDescriptor.Scoped<ISaveChangesInterceptor, TenantSaveChangesInterceptor>());
 
