@@ -1658,7 +1658,7 @@
 <h2 id="pitfalls">Pitfalls<a class="headerlink" href="#pitfalls" title="Permanent link">&para;</a></h2>
 <ul>
 <li>Cache stampede: keep locking enabled and set jitter.</li>
-<li>Tenant-aware caching: call <code>AddCleanArchitectureMultitenancyCaching</code> when multitenancy is enabled.</li>
+<li>Tenant-aware caching: install <code>CleanArchitecture.Extensions.Multitenancy.Caching</code> and call <code>AddCleanArchitectureMultitenancyCaching</code> when multitenancy is enabled.</li>
 <li>Caching error responses: use <code>ResponseCachePredicate</code> to skip them.</li>
 </ul>
 

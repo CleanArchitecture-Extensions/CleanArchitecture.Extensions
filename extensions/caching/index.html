@@ -1936,9 +1936,11 @@
 </code></pre></div>
 <p>Keep key conventions stable and consider bumping the namespace for breaking DTO changes.</p>
 <h2 id="multitenancy-integration">Multitenancy integration<a class="headerlink" href="#multitenancy-integration" title="Permanent link">&para;</a></h2>
-<p>If you use multitenancy, call <code>AddCleanArchitectureMultitenancyCaching</code> to include tenant IDs in cache keys:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="n">AddCleanArchitectureCaching</span><span class="p">();</span>
-<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="n">AddCleanArchitectureMultitenancyCaching</span><span class="p">();</span>
+<p>If you use multitenancy, install the adapter and call <code>AddCleanArchitectureMultitenancyCaching</code> to include tenant IDs in cache keys:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="n">dotnet</span> <span class="n">add</span> <span class="n">src</span><span class="p">/</span><span class="n">Infrastructure</span><span class="p">/</span><span class="n">Infrastructure</span><span class="p">.</span><span class="n">csproj</span> <span class="n">package</span> <span class="n">CleanArchitecture</span><span class="p">.</span><span class="n">Extensions</span><span class="p">.</span><span class="n">Multitenancy</span><span class="p">.</span><span class="n">Caching</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="n">AddCleanArchitectureCaching</span><span class="p">();</span>
+<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="n">AddCleanArchitectureMultitenancyCaching</span><span class="p">();</span>
 </code></pre></div>
 <h2 id="observability">Observability<a class="headerlink" href="#observability" title="Permanent link">&para;</a></h2>
 <ul>
@@ -1948,7 +1950,7 @@
 <h2 id="troubleshooting">Troubleshooting<a class="headerlink" href="#troubleshooting" title="Permanent link">&para;</a></h2>
 <ul>
 <li>Cache is never hit: ensure the request type matches the cache predicate and the behavior is registered.</li>
-<li>Missing tenant in keys: call <code>AddCleanArchitectureMultitenancyCaching</code> after caching registration.</li>
+<li>Missing tenant in keys: install <code>CleanArchitecture.Extensions.Multitenancy.Caching</code> and call <code>AddCleanArchitectureMultitenancyCaching</code> after caching registration.</li>
 <li>Large payloads: raise <code>MaxEntrySizeBytes</code> or skip caching via <code>ResponseCachePredicate</code>.</li>
 </ul>
 <h2 id="samples-and-tests">Samples and tests<a class="headerlink" href="#samples-and-tests" title="Permanent link">&para;</a></h2>
