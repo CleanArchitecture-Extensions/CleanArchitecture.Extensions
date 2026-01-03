@@ -8,6 +8,22 @@ edit_uri: ""
 theme:
   name: material
   language: en
+  font:
+    text: Outfit
+    code: JetBrains Mono
+  palette:
+    - scheme: default
+      primary: indigo
+      accent: amber
+      toggle:
+        icon: material/weather-night
+        name: Switch to dark mode
+    - scheme: slate
+      primary: indigo
+      accent: amber
+      toggle:
+        icon: material/white-balance-sunny
+        name: Switch to light mode
   features:
     - navigation.tabs
     - navigation.sections
@@ -61,6 +77,9 @@ plugins:
   - search
   - git-revision-date-localized:
       fallback_to_build_date: true
+
+extra_css:
+  - _assets/theme.css
 
 markdown_extensions:
   - admonition
