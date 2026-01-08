@@ -2,6 +2,7 @@ using System.Diagnostics;
 using CleanArchitecture.Extensions.Multitenancy.Abstractions;
 using CleanArchitecture.Extensions.Multitenancy.AspNetCore.Context;
 using CleanArchitecture.Extensions.Multitenancy.AspNetCore.Options;
+using CleanArchitecture.Extensions.Multitenancy.Behaviors;
 using CleanArchitecture.Extensions.Multitenancy.Configuration;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
@@ -21,6 +22,7 @@ public sealed class TenantResolutionMiddleware
     private readonly AspNetCoreMultitenancyOptions _aspNetCoreOptions;
     private readonly MultitenancyOptions _options;
     private readonly ILogger<TenantResolutionMiddleware> _logger;
+    private readonly ITenantCorrelationScopeAccessor _scopeAccessor;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="TenantResolutionMiddleware"/> class.
@@ -32,6 +34,7 @@ public sealed class TenantResolutionMiddleware
     /// <param name="aspNetCoreOptions">ASP.NET Core multitenancy options.</param>
     /// <param name="options">Core multitenancy options.</param>
     /// <param name="logger">Logger.</param>
+    /// <param name="scopeAccessor">Correlation scope accessor.</param>
     public TenantResolutionMiddleware(
         RequestDelegate next,
         ITenantResolver resolver,
@@ -39,7 +42,8 @@ public sealed class TenantResolutionMiddleware
         ITenantResolutionContextFactory contextFactory,
         IOptions<AspNetCoreMultitenancyOptions> aspNetCoreOptions,
         IOptions<MultitenancyOptions> options,
-        ILogger<TenantResolutionMiddleware> logger)
+        ILogger<TenantResolutionMiddleware> logger,
+        ITenantCorrelationScopeAccessor scopeAccessor)
     {
         _next = next ?? throw new ArgumentNullException(nameof(next));
         _resolver = resolver ?? throw new ArgumentNullException(nameof(resolver));
@@ -48,6 +52,7 @@ public sealed class TenantResolutionMiddleware
         _aspNetCoreOptions = aspNetCoreOptions?.Value ?? throw new ArgumentNullException(nameof(aspNetCoreOptions));
         _options = options?.Value ?? throw new ArgumentNullException(nameof(options));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        _scopeAccessor = scopeAccessor ?? throw new ArgumentNullException(nameof(scopeAccessor));
     }
 
     /// <summary>
@@ -67,9 +72,33 @@ public sealed class TenantResolutionMiddleware
         }
 
         using var tenantScope = _accessor.BeginScope(tenantContext);
-        using var logScope = BeginLoggingScope(tenantContext?.TenantId);
 
-        await _next(httpContext).ConfigureAwait(false);
+        IDisposable? logScope = null;
+        var shouldClearScope = _scopeAccessor.CurrentScope is null;
+        if (shouldClearScope)
+        {
+            logScope = BeginLoggingScope(tenantContext?.TenantId);
+            _scopeAccessor.SetScope(logScope, owned: false);
+        }
+
+        try
+        {
+            await _next(httpContext).ConfigureAwait(false);
+        }
+        finally
+        {
+            if (shouldClearScope)
+            {
+                if (ReferenceEquals(_scopeAccessor.CurrentScope, logScope))
+                {
+                    _scopeAccessor.ClearScope()?.Dispose();
+                }
+                else
+                {
+                    logScope?.Dispose();
+                }
+            }
+        }
     }
 
     private IDisposable? BeginLoggingScope(string? tenantId)

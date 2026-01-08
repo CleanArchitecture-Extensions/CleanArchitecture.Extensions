@@ -16,6 +16,7 @@ public sealed class TenantCorrelationBehavior<TRequest, TResponse> : IPipelineBe
     private readonly ICurrentTenant _currentTenant;
     private readonly MultitenancyOptions _options;
     private readonly ILogger<TenantCorrelationBehavior<TRequest, TResponse>> _logger;
+    private readonly ITenantCorrelationScopeAccessor _scopeAccessor;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="TenantCorrelationBehavior{TRequest, TResponse}"/> class.
@@ -23,11 +24,13 @@ public sealed class TenantCorrelationBehavior<TRequest, TResponse> : IPipelineBe
     public TenantCorrelationBehavior(
         ICurrentTenant currentTenant,
         IOptions<MultitenancyOptions> options,
-        ILogger<TenantCorrelationBehavior<TRequest, TResponse>> logger)
+        ILogger<TenantCorrelationBehavior<TRequest, TResponse>> logger,
+        ITenantCorrelationScopeAccessor scopeAccessor)
     {
         _currentTenant = currentTenant ?? throw new ArgumentNullException(nameof(currentTenant));
         _options = options?.Value ?? throw new ArgumentNullException(nameof(options));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        _scopeAccessor = scopeAccessor ?? throw new ArgumentNullException(nameof(scopeAccessor));
     }
 
     /// <inheritdoc />
@@ -35,17 +38,10 @@ public sealed class TenantCorrelationBehavior<TRequest, TResponse> : IPipelineBe
     {
         cancellationToken.ThrowIfCancellationRequested();
 
-        var existingScope = TenantCorrelationScope.Current;
+        var existingScope = _scopeAccessor.CurrentScope;
         if (existingScope is not null)
         {
-            try
-            {
-                return await next().ConfigureAwait(false);
-            }
-            finally
-            {
-                TenantCorrelationScope.Clear()?.Dispose();
-            }
+            return await next().ConfigureAwait(false);
         }
 
         var tenantId = _currentTenant.TenantId;
@@ -64,7 +60,7 @@ public sealed class TenantCorrelationBehavior<TRequest, TResponse> : IPipelineBe
         }
 
         var scope = _logger.BeginScope(new Dictionary<string, object?> { [scopeKey] = tenantId });
-        TenantCorrelationScope.Set(scope);
+        _scopeAccessor.SetScope(scope, owned: true);
 
         try
         {
@@ -72,7 +68,7 @@ public sealed class TenantCorrelationBehavior<TRequest, TResponse> : IPipelineBe
         }
         finally
         {
-            TenantCorrelationScope.Clear()?.Dispose();
+            _scopeAccessor.ClearScope(onlyIfOwned: true)?.Dispose();
         }
     }
 }
