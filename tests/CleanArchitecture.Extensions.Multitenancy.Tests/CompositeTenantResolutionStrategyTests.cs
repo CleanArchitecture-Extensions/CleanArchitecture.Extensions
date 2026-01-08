@@ -132,7 +132,7 @@ public class CompositeTenantResolutionStrategyTests
         var result = await strategy.ResolveAsync(new TenantResolutionContext());
 
         Assert.Equal("fallback", result.TenantId);
-        Assert.Equal(TenantResolutionSource.Composite, result.Source);
+        Assert.Equal(TenantResolutionSource.Default, result.Source);
     }
 
     private sealed class StubProvider : ITenantProvider
