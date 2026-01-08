@@ -55,7 +55,7 @@ public class TenantModelCustomizerTests
     }
 
     [Fact]
-    public void Customize_skips_shadow_property_when_disabled()
+    public void Customize_throws_when_tenant_property_missing_in_shared_database()
     {
         var accessor = new CurrentTenantAccessor();
         using var scope = accessor.BeginScope(TestTenant.Create("alpha"));
@@ -66,11 +66,13 @@ public class TenantModelCustomizerTests
             EnableQueryFilters = true
         };
 
-        using var dbContext = ShadowDisabledTestDbContextFactory.Create(accessor, options);
-        var entityType = dbContext.Model.FindEntityType(typeof(ShadowWidget));
+        var exception = Assert.Throws<InvalidOperationException>(() =>
+        {
+            using var dbContext = ShadowDisabledTestDbContextFactory.Create(accessor, options);
+            _ = dbContext.Model.FindEntityType(typeof(ShadowWidget));
+        });
 
-        Assert.NotNull(entityType);
-        Assert.Empty(entityType!.GetDeclaredQueryFilters());
+        Assert.Contains("Tenant property", exception.Message);
     }
 
     [Fact]
