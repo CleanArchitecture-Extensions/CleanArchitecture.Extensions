@@ -85,19 +85,23 @@ public sealed class CompositeTenantResolutionStrategy : ITenantResolutionStrateg
         }
 
         var resolvedCandidates = candidates.Count > 0 ? candidates : fallbackCandidates;
+        var resolvedFromFallback = candidates.Count == 0 && fallbackCandidates.Count > 0;
 
         if (resolvedCandidates.Count == 0)
         {
             return TenantResolutionResult.NotFound(TenantResolutionSource.Composite);
         }
 
+        var source = resolvedFromFallback ? TenantResolutionSource.Default : TenantResolutionSource.Composite;
+
         if (resolvedCandidates.Count == 1)
         {
             var tenantId = resolvedCandidates.First();
-            return TenantResolutionResult.Resolved(tenantId, TenantResolutionSource.Composite, TenantResolutionConfidence.Medium);
+            var confidence = resolvedFromFallback ? TenantResolutionConfidence.Low : TenantResolutionConfidence.Medium;
+            return TenantResolutionResult.Resolved(tenantId, source, confidence);
         }
 
-        return TenantResolutionResult.FromCandidates(resolvedCandidates, TenantResolutionSource.Composite, TenantResolutionConfidence.Low);
+        return TenantResolutionResult.FromCandidates(resolvedCandidates, source, TenantResolutionConfidence.Low);
     }
 
     private IReadOnlyList<ITenantProvider> OrderProviders()
