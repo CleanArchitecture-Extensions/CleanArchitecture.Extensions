@@ -68,21 +68,32 @@ public sealed class TenantEnforcementBehavior<TRequest, TResponse> : IPipelineBe
 
     private TenantRequirementMode ResolveRequirement(TRequest request)
     {
-        if (request is ITenantRequirement requirement)
+        TenantRequirementMode? requirement = null;
+
+        if (request is ITenantRequirement requirementProvider)
         {
-            return requirement.Requirement;
+            requirement = requirementProvider.Requirement;
+        }
+        else
+        {
+            var requestType = request.GetType();
+            var attributes = requestType.GetCustomAttributes(true).OfType<ITenantRequirement>().ToList();
+            if (attributes.Count > 0)
+            {
+                requirement = attributes.Any(attribute => attribute.Requirement == TenantRequirementMode.Required)
+                    ? TenantRequirementMode.Required
+                    : TenantRequirementMode.Optional;
+            }
         }
 
-        var requestType = request.GetType();
-        var attributes = requestType.GetCustomAttributes(true).OfType<ITenantRequirement>().ToList();
-        if (attributes.Count > 0)
+        if (requirement.HasValue)
         {
-            return attributes.Any(attribute => attribute.Requirement == TenantRequirementMode.Required)
+            return requirement == TenantRequirementMode.Optional && !_options.AllowAnonymous
                 ? TenantRequirementMode.Required
-                : TenantRequirementMode.Optional;
+                : requirement.Value;
         }
 
-        return _options.RequireTenantByDefault && !_options.AllowAnonymous
+        return _options.RequireTenantByDefault
             ? TenantRequirementMode.Required
             : TenantRequirementMode.Optional;
     }
