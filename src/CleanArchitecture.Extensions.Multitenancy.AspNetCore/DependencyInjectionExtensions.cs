@@ -24,7 +24,10 @@ public static class DependencyInjectionExtensions
     /// <param name="services">Service collection.</param>
     /// <param name="configureCore">Optional callback to configure <see cref="MultitenancyOptions"/>.</param>
     /// <param name="configureAspNetCore">Optional callback to configure <see cref="AspNetCoreMultitenancyOptions"/>.</param>
-    /// <param name="autoUseMiddleware">Whether to add the multitenancy middleware automatically.</param>
+    /// <param name="autoUseMiddleware">
+    /// Whether to add the multitenancy middleware automatically. Use only for host/header resolution.
+    /// Route/claim resolution requires manual ordering after routing/authentication.
+    /// </param>
     public static IServiceCollection AddCleanArchitectureMultitenancyAspNetCore(
         this IServiceCollection services,
         Action<MultitenancyOptions>? configureCore = null,

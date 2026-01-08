@@ -28,7 +28,7 @@ using CleanArchitecture.Extensions.Multitenancy.AspNetCore;
 builder.Services.AddCleanArchitectureMultitenancyAspNetCore(autoUseMiddleware: true);
 ```
 
-Use `autoUseMiddleware` when header or host resolution is enough. For claim- or route-based resolution, disable it and place `app.UseCleanArchitectureMultitenancy()` after authentication or routing.
+Use `autoUseMiddleware` when header or host resolution is enough and you do not depend on route values. For claim- or route-based resolution, disable it and place `app.UseCleanArchitectureMultitenancy()` after authentication or routing. If you want tenant resolution exceptions to flow through your global exception handler, place it after `app.UseExceptionHandler(...)`.
 
 ### 2) Add the middleware (manual)
 
