@@ -16,6 +16,7 @@ public sealed class TenantCorrelationPreProcessor<TRequest> : IRequestPreProcess
     private readonly ICurrentTenant _currentTenant;
     private readonly MultitenancyOptions _options;
     private readonly ILogger<TenantCorrelationPreProcessor<TRequest>> _logger;
+    private readonly ITenantCorrelationScopeAccessor _scopeAccessor;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="TenantCorrelationPreProcessor{TRequest}"/> class.
@@ -23,11 +24,13 @@ public sealed class TenantCorrelationPreProcessor<TRequest> : IRequestPreProcess
     public TenantCorrelationPreProcessor(
         ICurrentTenant currentTenant,
         IOptions<MultitenancyOptions> options,
-        ILogger<TenantCorrelationPreProcessor<TRequest>> logger)
+        ILogger<TenantCorrelationPreProcessor<TRequest>> logger,
+        ITenantCorrelationScopeAccessor scopeAccessor)
     {
         _currentTenant = currentTenant ?? throw new ArgumentNullException(nameof(currentTenant));
         _options = options?.Value ?? throw new ArgumentNullException(nameof(options));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        _scopeAccessor = scopeAccessor ?? throw new ArgumentNullException(nameof(scopeAccessor));
     }
 
     /// <inheritdoc />
@@ -35,7 +38,7 @@ public sealed class TenantCorrelationPreProcessor<TRequest> : IRequestPreProcess
     {
         cancellationToken.ThrowIfCancellationRequested();
 
-        if (TenantCorrelationScope.Current is not null)
+        if (_scopeAccessor.CurrentScope is not null)
         {
             return Task.CompletedTask;
         }
@@ -56,7 +59,7 @@ public sealed class TenantCorrelationPreProcessor<TRequest> : IRequestPreProcess
         }
 
         var scope = _logger.BeginScope(new Dictionary<string, object?> { [scopeKey] = tenantId });
-        TenantCorrelationScope.Set(scope);
+        _scopeAccessor.SetScope(scope, owned: true);
 
         return Task.CompletedTask;
     }

@@ -89,6 +89,52 @@ public class CompositeTenantResolutionStrategyTests
         Assert.Equal(TenantResolutionSource.Composite, result.Source);
     }
 
+    [Fact]
+    public async Task ResolveAsync_consensus_ignores_default_when_other_candidates_exist()
+    {
+        var providers = new ITenantProvider[]
+        {
+            new StubProvider(TenantResolutionSource.Default, _ =>
+                TenantResolutionResult.Resolved("fallback", TenantResolutionSource.Default)),
+            new StubProvider(TenantResolutionSource.Header, _ =>
+                TenantResolutionResult.Resolved("tenant-1", TenantResolutionSource.Header))
+        };
+
+        var options = Options.Create(new MultitenancyOptions
+        {
+            RequireMatchAcrossSources = true
+        });
+
+        var strategy = new CompositeTenantResolutionStrategy(providers, options);
+
+        var result = await strategy.ResolveAsync(new TenantResolutionContext());
+
+        Assert.Equal("tenant-1", result.TenantId);
+        Assert.Equal(TenantResolutionSource.Composite, result.Source);
+    }
+
+    [Fact]
+    public async Task ResolveAsync_consensus_uses_default_when_only_source()
+    {
+        var providers = new ITenantProvider[]
+        {
+            new StubProvider(TenantResolutionSource.Default, _ =>
+                TenantResolutionResult.Resolved("fallback", TenantResolutionSource.Default))
+        };
+
+        var options = Options.Create(new MultitenancyOptions
+        {
+            RequireMatchAcrossSources = true
+        });
+
+        var strategy = new CompositeTenantResolutionStrategy(providers, options);
+
+        var result = await strategy.ResolveAsync(new TenantResolutionContext());
+
+        Assert.Equal("fallback", result.TenantId);
+        Assert.Equal(TenantResolutionSource.Composite, result.Source);
+    }
+
     private sealed class StubProvider : ITenantProvider
     {
         private readonly Func<TenantResolutionContext, TenantResolutionResult> _resolver;

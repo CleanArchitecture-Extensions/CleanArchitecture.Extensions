@@ -208,10 +208,12 @@ public class TenantCorrelationBehaviorTests
             AddTenantToLogScope = false,
             AddTenantToActivity = true
         });
+        var scopeAccessor = new TenantCorrelationScopeAccessor();
         var behavior = new TenantCorrelationBehavior<DefaultRequest, string>(
             currentTenant,
             options,
-            NullLogger<TenantCorrelationBehavior<DefaultRequest, string>>.Instance);
+            NullLogger<TenantCorrelationBehavior<DefaultRequest, string>>.Instance,
+            scopeAccessor);
         var activity = new Activity("test");
         activity.Start();
 
@@ -235,10 +237,12 @@ public class TenantCorrelationBehaviorTests
             AddTenantToActivity = true,
             LogScopeKey = "tenant"
         });
+        var scopeAccessor = new TenantCorrelationScopeAccessor();
         var behavior = new TenantCorrelationBehavior<DefaultRequest, string>(
             currentTenant,
             options,
-            NullLogger<TenantCorrelationBehavior<DefaultRequest, string>>.Instance);
+            NullLogger<TenantCorrelationBehavior<DefaultRequest, string>>.Instance,
+            scopeAccessor);
         var activity = new Activity("test");
         activity.Start();
 

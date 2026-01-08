@@ -3,6 +3,7 @@ using CleanArchitecture.Extensions.Multitenancy.Abstractions;
 using CleanArchitecture.Extensions.Multitenancy.AspNetCore.Context;
 using CleanArchitecture.Extensions.Multitenancy.AspNetCore.Middleware;
 using CleanArchitecture.Extensions.Multitenancy.AspNetCore.Options;
+using CleanArchitecture.Extensions.Multitenancy.Behaviors;
 using CleanArchitecture.Extensions.Multitenancy.Configuration;
 using CleanArchitecture.Extensions.Multitenancy.Context;
 using Microsoft.AspNetCore.Http;
@@ -40,7 +41,8 @@ public class TenantResolutionMiddlewareTests
             factory,
             aspNetOptions,
             coreOptions,
-            logger);
+            logger,
+            new TenantCorrelationScopeAccessor());
 
         var httpContext = new DefaultHttpContext();
         httpContext.Request.Headers["X-Tenant-ID"] = "tenant-1";

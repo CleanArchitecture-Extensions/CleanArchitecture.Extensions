@@ -36,8 +36,9 @@ public static class DependencyInjectionExtensions
         services.TryAddSingleton<ITenantAccessor>(sp => sp.GetRequiredService<CurrentTenantAccessor>());
         services.TryAddSingleton<ICurrentTenant>(sp => sp.GetRequiredService<CurrentTenantAccessor>());
         services.TryAddSingleton<ITenantContextSerializer, SystemTextJsonTenantContextSerializer>();
+        services.TryAddSingleton<ITenantCorrelationScopeAccessor, TenantCorrelationScopeAccessor>();
 
-        services.TryAddSingleton<ITenantResolutionStrategy, CompositeTenantResolutionStrategy>();
+        services.TryAddScoped<ITenantResolutionStrategy, CompositeTenantResolutionStrategy>();
         services.TryAddScoped<ITenantResolver, TenantResolver>();
 
         services.TryAddEnumerable(ServiceDescriptor.Singleton<ITenantProvider, RouteTenantProvider>());

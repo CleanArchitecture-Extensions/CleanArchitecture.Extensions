@@ -68,30 +68,36 @@ public sealed class CompositeTenantResolutionStrategy : ITenantResolutionStrateg
         CancellationToken cancellationToken)
     {
         var candidates = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        var fallbackCandidates = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
         foreach (var provider in orderedProviders)
         {
             cancellationToken.ThrowIfCancellationRequested();
 
             var result = await provider.ResolveAsync(context, cancellationToken).ConfigureAwait(false);
+            var target = provider.Source == TenantResolutionSource.Default
+                ? fallbackCandidates
+                : candidates;
             foreach (var candidate in result.Candidates)
             {
-                candidates.Add(candidate);
+                target.Add(candidate);
             }
         }
 
-        if (candidates.Count == 0)
+        var resolvedCandidates = candidates.Count > 0 ? candidates : fallbackCandidates;
+
+        if (resolvedCandidates.Count == 0)
         {
             return TenantResolutionResult.NotFound(TenantResolutionSource.Composite);
         }
 
-        if (candidates.Count == 1)
+        if (resolvedCandidates.Count == 1)
         {
-            var tenantId = candidates.First();
+            var tenantId = resolvedCandidates.First();
             return TenantResolutionResult.Resolved(tenantId, TenantResolutionSource.Composite, TenantResolutionConfidence.Medium);
         }
 
-        return TenantResolutionResult.FromCandidates(candidates, TenantResolutionSource.Composite, TenantResolutionConfidence.Low);
+        return TenantResolutionResult.FromCandidates(resolvedCandidates, TenantResolutionSource.Composite, TenantResolutionConfidence.Low);
     }
 
     private IReadOnlyList<ITenantProvider> OrderProviders()
