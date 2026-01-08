@@ -49,6 +49,12 @@ public sealed class TenantModelCustomizer : ITenantModelCustomizer
                     builder.Property<string>(options.TenantIdPropertyName);
                     tenantProperty = entityType.FindProperty(options.TenantIdPropertyName);
                 }
+                else if (options.Mode == TenantIsolationMode.SharedDatabase)
+                {
+                    throw new InvalidOperationException(
+                        $"Tenant property '{options.TenantIdPropertyName}' was not found on '{entityType.ClrType!.Name}'. " +
+                        "Add the property, enable UseShadowTenantId, or mark the entity as global.");
+                }
                 else
                 {
                     continue;
@@ -81,10 +87,27 @@ public sealed class TenantModelCustomizer : ITenantModelCustomizer
             parameter,
             Expression.Constant(options.TenantIdPropertyName));
 
-        var contextExpression = Expression.Constant(context, typeof(ITenantDbContext));
-        var tenantId = Expression.Property(contextExpression, nameof(ITenantDbContext.CurrentTenantId));
+        var tenantId = BuildTenantIdExpression(context);
+        if (tenantId.Type != typeof(string))
+        {
+            tenantId = Expression.Convert(tenantId, typeof(string));
+        }
+
         var equals = Expression.Equal(propertyAccess, tenantId);
         return Expression.Lambda(equals, parameter);
+    }
+
+    private static Expression BuildTenantIdExpression(ITenantDbContext context)
+    {
+        var contextType = context.GetType();
+        var tenantProperty = contextType.GetProperty(nameof(ITenantDbContext.CurrentTenantId));
+        if (tenantProperty is not null)
+        {
+            return Expression.Property(Expression.Constant(context), tenantProperty);
+        }
+
+        var interfaceProperty = typeof(ITenantDbContext).GetProperty(nameof(ITenantDbContext.CurrentTenantId));
+        return Expression.Property(Expression.Constant(context, typeof(ITenantDbContext)), interfaceProperty!);
     }
 
     private static LambdaExpression CombineFilters(LambdaExpression existing, LambdaExpression added)

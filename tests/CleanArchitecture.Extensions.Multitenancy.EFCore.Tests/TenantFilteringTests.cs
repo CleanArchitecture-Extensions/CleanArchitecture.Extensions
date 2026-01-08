@@ -45,6 +45,51 @@ public class TenantFilteringTests
     }
 
     [Fact]
+    public void Query_filter_uses_current_context_tenant()
+    {
+        var options = new EfCoreMultitenancyOptions
+        {
+            Mode = TenantIsolationMode.SharedDatabase,
+            EnableQueryFilters = true,
+            UseShadowTenantId = false,
+            EnableSaveChangesEnforcement = false
+        };
+        var databaseName = Guid.NewGuid().ToString();
+
+        var firstTenant = new CurrentTenantAccessor
+        {
+            Current = CreateTenantContext("tenant-1")
+        };
+
+        using (var context = CreateContext(firstTenant, options, databaseName: databaseName))
+        {
+            context.Records.AddRange(
+                new TenantRecord { TenantId = "tenant-1", Name = "One" },
+                new TenantRecord { TenantId = "tenant-2", Name = "Two" });
+
+            context.SaveChanges();
+
+            var results = context.Records.ToList();
+
+            Assert.Single(results);
+            Assert.Equal("tenant-1", results[0].TenantId);
+        }
+
+        var secondTenant = new CurrentTenantAccessor
+        {
+            Current = CreateTenantContext("tenant-2")
+        };
+
+        using (var context = CreateContext(secondTenant, options, databaseName: databaseName))
+        {
+            var results = context.Records.ToList();
+
+            Assert.Single(results);
+            Assert.Equal("tenant-2", results[0].TenantId);
+        }
+    }
+
+    [Fact]
     public void SaveChanges_sets_tenant_id_for_added_entities()
     {
         var currentTenant = new CurrentTenantAccessor
@@ -112,10 +157,11 @@ public class TenantFilteringTests
     private static TestTenantDbContext CreateContext(
         CurrentTenantAccessor currentTenant,
         EfCoreMultitenancyOptions options,
-        bool useInterceptor = false)
+        bool useInterceptor = false,
+        string? databaseName = null)
     {
         var builder = new DbContextOptionsBuilder<TestTenantDbContext>()
-            .UseInMemoryDatabase(Guid.NewGuid().ToString());
+            .UseInMemoryDatabase(databaseName ?? Guid.NewGuid().ToString());
 
         if (useInterceptor)
         {
