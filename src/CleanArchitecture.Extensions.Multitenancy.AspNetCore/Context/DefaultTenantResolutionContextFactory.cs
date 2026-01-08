@@ -51,7 +51,18 @@ public sealed class DefaultTenantResolutionContextFactory : ITenantResolutionCon
         {
             foreach (var claim in httpContext.User.Claims)
             {
-                if (!context.Claims.ContainsKey(claim.Type))
+                if (string.IsNullOrWhiteSpace(claim.Type) || string.IsNullOrWhiteSpace(claim.Value))
+                {
+                    continue;
+                }
+
+                if (context.Claims.TryGetValue(claim.Type, out var existing))
+                {
+                    context.Claims[claim.Type] = string.IsNullOrWhiteSpace(existing)
+                        ? claim.Value
+                        : string.Concat(existing, ";", claim.Value);
+                }
+                else
                 {
                     context.Claims[claim.Type] = claim.Value;
                 }

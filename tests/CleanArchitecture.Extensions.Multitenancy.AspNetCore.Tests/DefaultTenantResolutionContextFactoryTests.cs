@@ -38,4 +38,22 @@ public class DefaultTenantResolutionContextFactoryTests
         Assert.Equal("tenant-1", context.Query["tenantId"]);
         Assert.Equal("tenant-1", context.Claims["tenant_id"]);
     }
+
+    [Fact]
+    public void Create_concatenates_multiple_claims_of_same_type()
+    {
+        var options = OptionsFactory.Create(new AspNetCoreMultitenancyOptions());
+        var factory = new DefaultTenantResolutionContextFactory(options);
+
+        var httpContext = new DefaultHttpContext();
+        httpContext.User = new ClaimsPrincipal(new ClaimsIdentity(new[]
+        {
+            new Claim("tenant_id", "alpha"),
+            new Claim("tenant_id", "beta")
+        }, "test"));
+
+        var context = factory.Create(httpContext);
+
+        Assert.Equal("alpha;beta", context.Claims["tenant_id"]);
+    }
 }
