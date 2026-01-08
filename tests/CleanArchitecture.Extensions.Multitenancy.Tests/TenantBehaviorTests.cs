@@ -14,13 +14,28 @@ namespace CleanArchitecture.Extensions.Multitenancy.Tests;
 public class TenantEnforcementBehaviorTests
 {
     [Fact]
-    public async Task Handle_allows_optional_attribute_without_tenant()
+    public async Task Handle_disallows_optional_attribute_when_anonymous_not_allowed()
     {
         var currentTenant = new CurrentTenantAccessor();
         var options = Options.Create(new MultitenancyOptions
         {
             RequireTenantByDefault = true,
             AllowAnonymous = false
+        });
+        var behavior = new TenantEnforcementBehavior<OptionalAttributeRequest, string>(currentTenant, options);
+
+        await Assert.ThrowsAsync<TenantNotResolvedException>(() =>
+            behavior.Handle(new OptionalAttributeRequest(), _ => Task.FromResult("ok"), CancellationToken.None));
+    }
+
+    [Fact]
+    public async Task Handle_allows_optional_attribute_when_anonymous_allowed()
+    {
+        var currentTenant = new CurrentTenantAccessor();
+        var options = Options.Create(new MultitenancyOptions
+        {
+            RequireTenantByDefault = true,
+            AllowAnonymous = true
         });
         var behavior = new TenantEnforcementBehavior<OptionalAttributeRequest, string>(currentTenant, options);
 

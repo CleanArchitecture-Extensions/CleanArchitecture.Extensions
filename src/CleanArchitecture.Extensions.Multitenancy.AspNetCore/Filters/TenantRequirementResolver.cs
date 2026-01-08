@@ -9,18 +9,27 @@ internal static class TenantRequirementResolver
     {
         ArgumentNullException.ThrowIfNull(options);
 
+        TenantRequirementMode? requirement = null;
+
         if (metadata is not null)
         {
             var requirements = metadata.OfType<ITenantRequirement>().ToList();
             if (requirements.Count > 0)
             {
-                return requirements.Any(requirement => requirement.Requirement == TenantRequirementMode.Required)
+                requirement = requirements.Any(item => item.Requirement == TenantRequirementMode.Required)
                     ? TenantRequirementMode.Required
                     : TenantRequirementMode.Optional;
             }
         }
 
-        return options.RequireTenantByDefault && !options.AllowAnonymous
+        if (requirement.HasValue)
+        {
+            return requirement == TenantRequirementMode.Optional && !options.AllowAnonymous
+                ? TenantRequirementMode.Required
+                : requirement.Value;
+        }
+
+        return options.RequireTenantByDefault
             ? TenantRequirementMode.Required
             : TenantRequirementMode.Optional;
     }
