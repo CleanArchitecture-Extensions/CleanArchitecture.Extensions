@@ -11,6 +11,11 @@ public sealed class CachingOptions
     public bool Enabled { get; set; } = true;
 
     /// <summary>
+    /// Gets or sets the cache backend selection strategy.
+    /// </summary>
+    public CacheBackend Backend { get; set; } = CacheBackend.Auto;
+
+    /// <summary>
     /// Gets or sets the default namespace applied to cache keys to avoid collisions across applications.
     /// </summary>
     public string DefaultNamespace { get; set; } = "CleanArchitectureExtensions";

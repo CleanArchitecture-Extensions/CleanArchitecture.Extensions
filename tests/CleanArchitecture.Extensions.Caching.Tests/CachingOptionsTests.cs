@@ -10,6 +10,7 @@ public class CachingOptionsTests
         var options = CachingOptions.Default;
 
         Assert.True(options.Enabled);
+        Assert.Equal(CacheBackend.Auto, options.Backend);
         Assert.Equal("CleanArchitectureExtensions", options.DefaultNamespace);
         Assert.NotNull(options.DefaultEntryOptions);
         Assert.Equal(CachePriority.Normal, options.DefaultEntryOptions.Priority);
