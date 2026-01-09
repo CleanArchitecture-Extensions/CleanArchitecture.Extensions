@@ -1,4 +1,5 @@
 using System.Globalization;
+using System.Text;
 using CleanArchitecture.Extensions.Multitenancy.Abstractions;
 
 namespace CleanArchitecture.Extensions.Multitenancy.EFCore.Options;
@@ -140,12 +141,14 @@ public sealed class EfCoreMultitenancyOptions
             return DefaultSchema;
         }
 
-        if (string.IsNullOrWhiteSpace(SchemaNameFormat) || tenant is null || string.IsNullOrWhiteSpace(tenant.TenantId))
+        var normalizedId = NormalizeTenantId(tenant?.TenantId);
+
+        if (string.IsNullOrWhiteSpace(SchemaNameFormat) || normalizedId is null)
         {
             return DefaultSchema;
         }
 
-        return string.Format(CultureInfo.InvariantCulture, SchemaNameFormat, tenant.TenantId);
+        return string.Format(CultureInfo.InvariantCulture, SchemaNameFormat, normalizedId);
     }
 
     /// <summary>
@@ -159,11 +162,33 @@ public sealed class EfCoreMultitenancyOptions
             return ConnectionStringProvider(tenant);
         }
 
-        if (string.IsNullOrWhiteSpace(ConnectionStringFormat) || tenant is null || string.IsNullOrWhiteSpace(tenant.TenantId))
+        var normalizedId = NormalizeTenantId(tenant?.TenantId);
+
+        if (string.IsNullOrWhiteSpace(ConnectionStringFormat) || normalizedId is null)
         {
             return null;
         }
 
-        return string.Format(CultureInfo.InvariantCulture, ConnectionStringFormat, tenant.TenantId);
+        return string.Format(CultureInfo.InvariantCulture, ConnectionStringFormat, normalizedId);
+    }
+
+    private static string? NormalizeTenantId(string? tenantId)
+    {
+        if (string.IsNullOrWhiteSpace(tenantId))
+        {
+            return null;
+        }
+
+        var builder = new StringBuilder();
+
+        foreach (var ch in tenantId)
+        {
+            if (char.IsLetterOrDigit(ch) || ch is '-' or '_')
+            {
+                builder.Append(char.ToLowerInvariant(ch));
+            }
+        }
+
+        return builder.Length == 0 ? null : builder.ToString();
     }
 }
