@@ -28,11 +28,16 @@ public static class DependencyInjectionExtensions
     /// Whether to add the multitenancy middleware automatically. Use only for host/header resolution.
     /// Route/claim resolution requires manual ordering after routing/authentication.
     /// </param>
+    /// <param name="autoUseExceptionHandler">
+    /// Whether to add the default exception handler middleware so registered <see cref="IExceptionHandler"/> implementations run.
+    /// Helpful when the host overrides exception handling (for example, the template's empty <c>UseExceptionHandler(options =&gt; {{ }})</c>).
+    /// </param>
     public static IServiceCollection AddCleanArchitectureMultitenancyAspNetCore(
         this IServiceCollection services,
         Action<MultitenancyOptions>? configureCore = null,
         Action<AspNetCoreMultitenancyOptions>? configureAspNetCore = null,
-        bool autoUseMiddleware = false)
+        bool autoUseMiddleware = false,
+        bool autoUseExceptionHandler = false)
     {
         ArgumentNullException.ThrowIfNull(services);
 
@@ -51,6 +56,10 @@ public static class DependencyInjectionExtensions
         if (autoUseMiddleware)
         {
             services.TryAddEnumerable(ServiceDescriptor.Singleton<IStartupFilter, TenantResolutionStartupFilter>());
+        }
+        if (autoUseExceptionHandler)
+        {
+            services.TryAddEnumerable(ServiceDescriptor.Singleton<IStartupFilter, ExceptionHandlerStartupFilter>());
         }
 
         return services;
