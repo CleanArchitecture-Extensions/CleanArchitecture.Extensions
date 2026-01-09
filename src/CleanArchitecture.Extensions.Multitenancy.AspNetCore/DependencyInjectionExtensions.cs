@@ -37,7 +37,7 @@ public static class DependencyInjectionExtensions
         Action<MultitenancyOptions>? configureCore = null,
         Action<AspNetCoreMultitenancyOptions>? configureAspNetCore = null,
         bool autoUseMiddleware = false,
-        bool autoUseExceptionHandler = false)
+        bool autoUseExceptionHandler = true)
     {
         ArgumentNullException.ThrowIfNull(services);
 
