@@ -27,10 +27,10 @@ using CleanArchitecture.Extensions.Multitenancy.AspNetCore;
 
 builder.Services.AddCleanArchitectureMultitenancyAspNetCore(
     autoUseMiddleware: true,
-    autoUseExceptionHandler: true);
+    autoUseExceptionHandler: true); // default for the template
 ```
 
-Use `autoUseMiddleware` when header or host resolution is enough and you do not depend on route values. For claim- or route-based resolution, disable it and place `app.UseCleanArchitectureMultitenancy()` after authentication or routing. If the host wires `UseExceptionHandler(options => { })` (as in the template), enable `autoUseExceptionHandler` so the default exception handler middleware is inserted before the host overrides it.
+Use `autoUseMiddleware` when header or host resolution is enough and you do not depend on route values. For claim- or route-based resolution, disable it and place `app.UseCleanArchitectureMultitenancy()` after authentication or routing. `autoUseExceptionHandler` is enabled by default to work around the template's `UseExceptionHandler(options => { })` stub; disable it if you already call `app.UseExceptionHandler()` with the new IExceptionHandler pipeline intact.
 
 ### 2) Add the middleware (manual)
 
@@ -90,7 +90,7 @@ builder.Services.AddCleanArchitectureMultitenancyAspNetCore(
 - Prefer header or host resolution to keep the template unchanged.
 - Route-based tenancy requires routing middleware before multitenancy; opt in only if you can adjust the pipeline.
 
-Example for route-based tenants:
+Example for route-based tenants (note the default exception handler already runs):
 
 ```csharp
 app.UseRouting();
@@ -118,4 +118,4 @@ if (TenantProblemDetailsMapper.TryCreate(exception, httpContext, out var details
 - The middleware stores the resolved `TenantContext` in `HttpContext.Items` by default.
 - `GetTenantContext()` respects the configured `AspNetCoreMultitenancyOptions.HttpContextItemKey` when available.
 - `AddCleanArchitectureMultitenancyAspNetCore` registers `TenantExceptionHandler` so `UseExceptionHandler` can map multitenancy exceptions to ProblemDetails.
-- Set `autoUseExceptionHandler` to true when the host pipeline does not call `UseExceptionHandler()` (or overrides it), so your registered `IExceptionHandler` implementations still run.
+- Keep `autoUseExceptionHandler` enabled (default) when the host pipeline does not call `UseExceptionHandler()` (or overrides it), so your registered `IExceptionHandler` implementations still run.
