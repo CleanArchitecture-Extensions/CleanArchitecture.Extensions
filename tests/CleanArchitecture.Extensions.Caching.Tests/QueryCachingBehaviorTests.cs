@@ -243,6 +243,26 @@ public class QueryCachingBehaviorTests
         Assert.Equal(TimeSpan.FromMinutes(1), cached!.Options?.AbsoluteExpirationRelativeToNow);
     }
 
+    [Fact]
+    public async Task Bypasses_caching_when_hash_generation_fails()
+    {
+        var cache = CreateCache();
+        var behavior = CreateBehavior<FaultyQuery, string>(cache);
+        var callCount = 0;
+        var request = new FaultyQuery(() => 1);
+
+        RequestHandlerDelegate<string> next = _ =>
+        {
+            callCount++;
+            return Task.FromResult("value");
+        };
+
+        await behavior.Handle(request, next, CancellationToken.None);
+        await behavior.Handle(request, next, CancellationToken.None);
+
+        Assert.Equal(2, callCount);
+    }
+
     private sealed record TestQuery(int Id) : IRequest<string>, ICacheableQuery;
 
     [CacheableQuery]
@@ -251,4 +271,6 @@ public class QueryCachingBehaviorTests
     private sealed record NullableQuery(int Id) : IRequest<string?>, ICacheableQuery;
 
     private sealed record TestCommand(int Id) : IRequest<string>;
+
+    private sealed record FaultyQuery(Func<int> Factory) : IRequest<string>, ICacheableQuery;
 }

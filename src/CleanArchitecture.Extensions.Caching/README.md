@@ -29,6 +29,7 @@ public static void AddInfrastructureServices(this IHostApplicationBuilder builde
     {
         options.DefaultNamespace = "MyApp";
         options.MaxEntrySizeBytes = 256 * 1024;
+        // Set Backend = CacheBackend.Distributed to force shared cache when IDistributedCache is configured.
     }, queryOptions =>
     {
         queryOptions.DefaultTtl = TimeSpan.FromMinutes(5);
@@ -72,6 +73,13 @@ public record GetTodosQuery : IRequest<TodosVm>;
 
 // or
 public record GetUserQuery(int Id) : IRequest<UserDto>, ICacheableQuery;
+
+// If your query cannot be serialized for hashing (e.g., contains delegates or HttpContext),
+// implement ICacheKeyProvider to supply a deterministic hash:
+public record GetReportQuery(Func<int> Factory) : IRequest<ReportDto>, ICacheableQuery, ICacheKeyProvider
+{
+    public string GetCacheHash(ICacheKeyFactory keyFactory) => keyFactory.CreateHash(new { Version = 1 });
+}
 ```
 
 ## Step 5 - What to expect

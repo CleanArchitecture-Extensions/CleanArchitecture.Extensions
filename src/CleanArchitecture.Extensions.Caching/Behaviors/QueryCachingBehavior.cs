@@ -51,7 +51,17 @@ public sealed class QueryCachingBehavior<TRequest, TResponse> : IPipelineBehavio
             return await next().ConfigureAwait(false);
         }
 
-        var key = BuildKey(request);
+        CacheKey key;
+        try
+        {
+            key = BuildKey(request);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogWarning(ex, "Failed to build cache key for {Request}; bypassing cache.", typeof(TRequest).Name);
+            return await next().ConfigureAwait(false);
+        }
+
         var cached = await _cache.GetAsync<TResponse>(key, cancellationToken).ConfigureAwait(false);
         if (cached is not null)
         {
@@ -111,7 +121,9 @@ public sealed class QueryCachingBehavior<TRequest, TResponse> : IPipelineBehavio
     private CacheKey BuildKey(TRequest request)
     {
         var resource = _behaviorOptions.ResourceNameSelector?.Invoke(request) ?? typeof(TRequest).Name;
-        var hash = _behaviorOptions.HashFactory?.Invoke(request) ?? _keyFactory.CreateHash(request);
+        var hash = request is ICacheKeyProvider provider
+            ? provider.GetCacheHash(_keyFactory)
+            : _behaviorOptions.HashFactory?.Invoke(request) ?? _keyFactory.CreateHash(request);
         return _cacheScope.Create(resource, hash);
     }
 
