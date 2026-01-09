@@ -5,6 +5,7 @@ using CleanArchitecture.Extensions.Multitenancy.Context;
 using CleanArchitecture.Extensions.Multitenancy.Providers;
 using CleanArchitecture.Extensions.Multitenancy.Serialization;
 using MediatR;
+using MediatR.Pipeline;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
@@ -37,6 +38,7 @@ public static class DependencyInjectionExtensions
         services.TryAddSingleton<ICurrentTenant>(sp => sp.GetRequiredService<CurrentTenantAccessor>());
         services.TryAddSingleton<ITenantContextSerializer, SystemTextJsonTenantContextSerializer>();
         services.TryAddSingleton<ITenantCorrelationScopeAccessor, TenantCorrelationScopeAccessor>();
+        EnsureCorrelationPreProcessorPriority(services);
 
         services.TryAddScoped<ITenantResolutionStrategy, CompositeTenantResolutionStrategy>();
         services.TryAddScoped<ITenantResolver, TenantResolver>();
@@ -77,8 +79,33 @@ public static class DependencyInjectionExtensions
     {
         ArgumentNullException.ThrowIfNull(configuration);
 
-        configuration.AddOpenRequestPreProcessor(typeof(TenantCorrelationPreProcessor<>));
-        configuration.AddOpenRequestPostProcessor(typeof(TenantCorrelationPostProcessor<,>));
+        // Correlation pre/post processors are registered automatically; this method is kept for backward compatibility.
         return configuration;
+    }
+
+    private static void EnsureCorrelationPreProcessorPriority(IServiceCollection services)
+    {
+        var preProcessorDescriptor = ServiceDescriptor.Transient(typeof(IRequestPreProcessor<>), typeof(TenantCorrelationPreProcessor<>));
+        var postProcessorDescriptor = ServiceDescriptor.Transient(typeof(IRequestPostProcessor<,>), typeof(TenantCorrelationPostProcessor<,>));
+
+        // Remove existing registrations to avoid duplicates and control ordering.
+        RemoveDescriptor(services, typeof(IRequestPreProcessor<>), typeof(TenantCorrelationPreProcessor<>));
+        RemoveDescriptor(services, typeof(IRequestPostProcessor<,>), typeof(TenantCorrelationPostProcessor<,>));
+
+        // Insert the pre-processor at the front so it runs before template LoggingBehaviour.
+        services.Insert(0, preProcessorDescriptor);
+        services.Add(postProcessorDescriptor);
+    }
+
+    private static void RemoveDescriptor(IServiceCollection services, Type serviceType, Type implementationType)
+    {
+        for (var i = services.Count - 1; i >= 0; i--)
+        {
+            var descriptor = services[i];
+            if (descriptor.ServiceType == serviceType && descriptor.ImplementationType == implementationType)
+            {
+                services.RemoveAt(i);
+            }
+        }
     }
 }
