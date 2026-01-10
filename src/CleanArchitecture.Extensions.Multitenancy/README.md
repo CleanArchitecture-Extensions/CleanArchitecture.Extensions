@@ -163,7 +163,7 @@ public sealed class GetTenantSummaryHandler
 builder.Services.Configure<MultitenancyOptions>(options =>
 {
     options.RequireTenantByDefault = true;
-    options.AllowAnonymous = true;
+    options.AllowAnonymous = false;
     options.ResolutionOrder = new List<TenantResolutionSource>
     {
         TenantResolutionSource.Route,
