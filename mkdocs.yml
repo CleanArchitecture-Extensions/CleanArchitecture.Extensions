@@ -60,7 +60,15 @@ nav:
   - Recipes:
       - Authentication: recipes/authentication.md
       - Caching: recipes/caching.md
-  - Samples: samples/index.md
+  - Samples:
+      - Overview: samples/index.md
+      - Multitenancy:
+          - Header + Route Resolution: samples/multitenancy/header-and-route-resolution.md
+          - Background Jobs: samples/multitenancy/background-jobs-context-propagation.md
+          - EF Core Database-Per-Tenant: samples/multitenancy/efcore-database-per-tenant.md
+          - Identity (Tenant-Isolated): samples/multitenancy/identity-tenant-isolated-auth.md
+          - Provisioning (Hybrid Residency): samples/multitenancy/provisioning-hybrid-residency.md
+          - Redis Tenant Caching: samples/multitenancy/redis-tenant-caching.md
   - Reference:
       - Configuration: reference/configuration.md
       - Caching options: reference/caching-options.md
