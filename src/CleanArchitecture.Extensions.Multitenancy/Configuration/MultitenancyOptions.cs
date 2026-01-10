@@ -14,7 +14,7 @@ public sealed class MultitenancyOptions
     /// Gets or sets a value indicating whether tenant-less requests are allowed when explicitly marked optional.
     /// When false, optional requirements are treated as required.
     /// </summary>
-    public bool AllowAnonymous { get; set; } = true;
+    public bool AllowAnonymous { get; set; } = false;
 
     /// <summary>
     /// Gets or sets a fallback tenant used when no tenant is resolved.
