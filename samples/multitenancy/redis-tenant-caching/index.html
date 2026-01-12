@@ -10,28 +10,28 @@
       
       
       
-        <link rel="canonical" href="https://cleanarchitecture-extensions.github.io/CleanArchitecture.Extensions/troubleshooting/multitenancy/">
+        <link rel="canonical" href="https://cleanarchitecture-extensions.github.io/CleanArchitecture.Extensions/samples/multitenancy/redis-tenant-caching/">
       
       
-        <link rel="prev" href="../">
+        <link rel="prev" href="../provisioning-hybrid-residency/">
       
       
-        <link rel="next" href="../../contributing/">
+        <link rel="next" href="../../../reference/configuration/">
       
       
-      <link rel="icon" href="../../assets/images/favicon.png">
+      <link rel="icon" href="../../../assets/images/favicon.png">
       <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.5.13">
     
     
       
-        <title>Multitenancy - CleanArchitecture.Extensions</title>
+        <title>Redis Tenant Caching - CleanArchitecture.Extensions</title>
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.7e359304.min.css">
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.7e359304.min.css">
       
         
-        <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.06af60db.min.css">
       
       
 
@@ -50,9 +50,9 @@
       
     
     
-      <link rel="stylesheet" href="../../_assets/theme.css">
+      <link rel="stylesheet" href="../../../_assets/theme.css">
     
-    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
@@ -78,7 +78,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#troubleshooting-multitenancy" class="md-skip">
+        <a href="#scenario-tenant-scoped-redis-caching-with-key-prefixing" class="md-skip">
           Skip to content
         </a>
       
@@ -92,7 +92,7 @@
 
 <header class="md-header" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="../.." title="CleanArchitecture.Extensions" class="md-header__button md-logo" aria-label="CleanArchitecture.Extensions" data-md-component="logo">
+    <a href="../../.." title="CleanArchitecture.Extensions" class="md-header__button md-logo" aria-label="CleanArchitecture.Extensions" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
@@ -112,7 +112,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Multitenancy
+              Redis Tenant Caching
             
           </span>
         </div>
@@ -221,7 +221,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="../.." class="md-tabs__link">
+      <a href="../../.." class="md-tabs__link">
         
   
     
@@ -240,7 +240,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../../roadmap/" class="md-tabs__link">
+        <a href="../../../roadmap/" class="md-tabs__link">
           
   
   Roadmap
@@ -258,7 +258,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../../getting-started/quickstart/" class="md-tabs__link">
+        <a href="../../../getting-started/quickstart/" class="md-tabs__link">
           
   
   Getting Started
@@ -276,7 +276,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../../concepts/architecture-fit/" class="md-tabs__link">
+        <a href="../../../concepts/architecture-fit/" class="md-tabs__link">
           
   
   Concepts
@@ -294,7 +294,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../../extensions/" class="md-tabs__link">
+        <a href="../../../extensions/" class="md-tabs__link">
           
   
   Extensions Catalog
@@ -312,7 +312,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../../recipes/authentication/" class="md-tabs__link">
+        <a href="../../../recipes/authentication/" class="md-tabs__link">
           
   
   Recipes
@@ -326,11 +326,13 @@
         
   
   
+    
+  
   
     
     
-      <li class="md-tabs__item">
-        <a href="../../samples/" class="md-tabs__link">
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../../" class="md-tabs__link">
           
   
   Samples
@@ -348,7 +350,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../../reference/configuration/" class="md-tabs__link">
+        <a href="../../../reference/configuration/" class="md-tabs__link">
           
   
   Reference
@@ -362,13 +364,11 @@
         
   
   
-    
-  
   
     
     
-      <li class="md-tabs__item md-tabs__item--active">
-        <a href="../" class="md-tabs__link">
+      <li class="md-tabs__item">
+        <a href="../../../troubleshooting/" class="md-tabs__link">
           
   
   Troubleshooting
@@ -384,7 +384,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="../../contributing/" class="md-tabs__link">
+      <a href="../../../contributing/" class="md-tabs__link">
         
   
     
@@ -401,7 +401,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="../../release-notes/" class="md-tabs__link">
+      <a href="../../../release-notes/" class="md-tabs__link">
         
   
     
@@ -435,7 +435,7 @@
 
 <nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="../.." title="CleanArchitecture.Extensions" class="md-nav__button md-logo" aria-label="CleanArchitecture.Extensions" data-md-component="logo">
+    <a href="../../.." title="CleanArchitecture.Extensions" class="md-nav__button md-logo" aria-label="CleanArchitecture.Extensions" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
@@ -465,7 +465,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../.." class="md-nav__link">
+      <a href="../../.." class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -525,7 +525,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../roadmap/" class="md-nav__link">
+      <a href="../../../roadmap/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -546,7 +546,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../roadmap/package-blueprints/" class="md-nav__link">
+      <a href="../../../roadmap/package-blueprints/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -614,7 +614,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../getting-started/quickstart/" class="md-nav__link">
+      <a href="../../../getting-started/quickstart/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -635,7 +635,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../getting-started/installation/" class="md-nav__link">
+      <a href="../../../getting-started/installation/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -656,7 +656,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../getting-started/adoption-playbooks/" class="md-nav__link">
+      <a href="../../../getting-started/adoption-playbooks/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -724,7 +724,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../concepts/architecture-fit/" class="md-nav__link">
+      <a href="../../../concepts/architecture-fit/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -745,7 +745,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../concepts/composition/" class="md-nav__link">
+      <a href="../../../concepts/composition/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -813,7 +813,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../extensions/" class="md-nav__link">
+      <a href="../../../extensions/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -834,7 +834,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../extensions/caching/" class="md-nav__link">
+      <a href="../../../extensions/caching/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -855,7 +855,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../extensions/multitenancy-aspnetcore/" class="md-nav__link">
+      <a href="../../../extensions/multitenancy-aspnetcore/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -876,7 +876,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../extensions/multitenancy-efcore/" class="md-nav__link">
+      <a href="../../../extensions/multitenancy-efcore/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -937,7 +937,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../extensions/multitenancy-core/" class="md-nav__link">
+      <a href="../../../extensions/multitenancy-core/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -958,7 +958,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../extensions/multitenancy-core/resolution-pipeline/" class="md-nav__link">
+      <a href="../../../extensions/multitenancy-core/resolution-pipeline/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -979,7 +979,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../extensions/multitenancy-core/requirements-and-behaviors/" class="md-nav__link">
+      <a href="../../../extensions/multitenancy-core/requirements-and-behaviors/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1000,7 +1000,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../extensions/multitenancy-core/validation-and-stores/" class="md-nav__link">
+      <a href="../../../extensions/multitenancy-core/validation-and-stores/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1021,7 +1021,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../extensions/multitenancy-core/context-propagation/" class="md-nav__link">
+      <a href="../../../extensions/multitenancy-core/context-propagation/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1042,7 +1042,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../extensions/multitenancy-core/caching-integration/" class="md-nav__link">
+      <a href="../../../extensions/multitenancy-core/caching-integration/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1118,7 +1118,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../recipes/authentication/" class="md-nav__link">
+      <a href="../../../recipes/authentication/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1139,7 +1139,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../recipes/caching/" class="md-nav__link">
+      <a href="../../../recipes/caching/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1164,25 +1164,30 @@
       
   
   
+    
   
   
+  
     
     
     
+      
+        
+        
       
       
         
       
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" checked>
         
           
-          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="">
             
   
   <span class="md-ellipsis">
@@ -1193,7 +1198,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_7">
             <span class="md-nav__icon md-icon"></span>
             Samples
@@ -1207,7 +1212,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../samples/" class="md-nav__link">
+      <a href="../../" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1225,25 +1230,30 @@
                 
   
   
+    
   
   
+  
     
     
     
       
       
-        
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7_2" >
         
           
-          <label class="md-nav__link" for="__nav_7_2" id="__nav_7_2_label" tabindex="0">
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_7_2" id="__nav_7_2_label" tabindex="">
             
   
   <span class="md-ellipsis">
@@ -1254,7 +1264,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_7_2_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_7_2_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_7_2">
             <span class="md-nav__icon md-icon"></span>
             Multitenancy
@@ -1268,7 +1278,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../samples/multitenancy/header-and-route-resolution/" class="md-nav__link">
+      <a href="../header-and-route-resolution/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1289,7 +1299,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../samples/multitenancy/background-jobs-context-propagation/" class="md-nav__link">
+      <a href="../background-jobs-context-propagation/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1310,7 +1320,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../samples/multitenancy/efcore-database-per-tenant/" class="md-nav__link">
+      <a href="../efcore-database-per-tenant/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1331,7 +1341,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../samples/multitenancy/identity-tenant-isolated-auth/" class="md-nav__link">
+      <a href="../identity-tenant-isolated-auth/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1352,7 +1362,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../samples/multitenancy/provisioning-hybrid-residency/" class="md-nav__link">
+      <a href="../provisioning-hybrid-residency/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1370,10 +1380,30 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../../samples/multitenancy/redis-tenant-caching/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Redis Tenant Caching
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   <span class="md-ellipsis">
@@ -1382,6 +1412,80 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#goal" class="md-nav__link">
+    <span class="md-ellipsis">
+      Goal
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sample-name-and-location" class="md-nav__link">
+    <span class="md-ellipsis">
+      Sample name and location
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#modules-used" class="md-nav__link">
+    <span class="md-ellipsis">
+      Modules used
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#prerequisites" class="md-nav__link">
+    <span class="md-ellipsis">
+      Prerequisites
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#steps" class="md-nav__link">
+    <span class="md-ellipsis">
+      Steps
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#validation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Validation
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -1449,7 +1553,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/configuration/" class="md-nav__link">
+      <a href="../../../reference/configuration/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1470,7 +1574,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/caching-options/" class="md-nav__link">
+      <a href="../../../reference/caching-options/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1491,7 +1595,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/multitenancy-options/" class="md-nav__link">
+      <a href="../../../reference/multitenancy-options/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1512,7 +1616,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/aspnetcore-multitenancy-options/" class="md-nav__link">
+      <a href="../../../reference/aspnetcore-multitenancy-options/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1533,7 +1637,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/efcore-multitenancy-options/" class="md-nav__link">
+      <a href="../../../reference/efcore-multitenancy-options/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1558,30 +1662,25 @@
       
   
   
-    
   
   
-  
     
     
     
-      
-        
-        
       
       
         
       
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_9" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_9" >
         
           
-          <label class="md-nav__link" for="__nav_9" id="__nav_9_label" tabindex="">
+          <label class="md-nav__link" for="__nav_9" id="__nav_9_label" tabindex="0">
             
   
   <span class="md-ellipsis">
@@ -1592,7 +1691,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_9_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_9_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_9">
             <span class="md-nav__icon md-icon"></span>
             Troubleshooting
@@ -1606,7 +1705,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../" class="md-nav__link">
+      <a href="../../../troubleshooting/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1624,30 +1723,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  <span class="md-ellipsis">
-    Multitenancy
-  </span>
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../../../troubleshooting/multitenancy/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1656,98 +1735,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#tenantnotresolvedexception" class="md-nav__link">
-    <span class="md-ellipsis">
-      TenantNotResolvedException
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#tenantnotfoundexception" class="md-nav__link">
-    <span class="md-ellipsis">
-      TenantNotFoundException
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#ambiguous-tenant-candidates" class="md-nav__link">
-    <span class="md-ellipsis">
-      Ambiguous tenant candidates
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#host-based-resolution-returns-null" class="md-nav__link">
-    <span class="md-ellipsis">
-      Host-based resolution returns null
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#cache-scope-mismatch-warnings" class="md-nav__link">
-    <span class="md-ellipsis">
-      Cache scope mismatch warnings
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#tenant-context-lost-in-background-jobs" class="md-nav__link">
-    <span class="md-ellipsis">
-      Tenant context lost in background jobs
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#ef-core-tenantsavechangesinterceptor-errors" class="md-nav__link">
-    <span class="md-ellipsis">
-      EF Core: TenantSaveChangesInterceptor errors
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#ef-core-database-per-tenant-errors" class="md-nav__link">
-    <span class="md-ellipsis">
-      EF Core: database-per-tenant errors
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -1767,7 +1754,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../contributing/" class="md-nav__link">
+      <a href="../../../contributing/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1787,7 +1774,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../release-notes/" class="md-nav__link">
+      <a href="../../../release-notes/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1827,72 +1814,54 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#tenantnotresolvedexception" class="md-nav__link">
+  <a href="#goal" class="md-nav__link">
     <span class="md-ellipsis">
-      TenantNotResolvedException
+      Goal
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#tenantnotfoundexception" class="md-nav__link">
+  <a href="#sample-name-and-location" class="md-nav__link">
     <span class="md-ellipsis">
-      TenantNotFoundException
+      Sample name and location
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#ambiguous-tenant-candidates" class="md-nav__link">
+  <a href="#modules-used" class="md-nav__link">
     <span class="md-ellipsis">
-      Ambiguous tenant candidates
+      Modules used
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#host-based-resolution-returns-null" class="md-nav__link">
+  <a href="#prerequisites" class="md-nav__link">
     <span class="md-ellipsis">
-      Host-based resolution returns null
+      Prerequisites
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#cache-scope-mismatch-warnings" class="md-nav__link">
+  <a href="#steps" class="md-nav__link">
     <span class="md-ellipsis">
-      Cache scope mismatch warnings
+      Steps
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#tenant-context-lost-in-background-jobs" class="md-nav__link">
+  <a href="#validation" class="md-nav__link">
     <span class="md-ellipsis">
-      Tenant context lost in background jobs
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#ef-core-tenantsavechangesinterceptor-errors" class="md-nav__link">
-    <span class="md-ellipsis">
-      EF Core: TenantSaveChangesInterceptor errors
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#ef-core-database-per-tenant-errors" class="md-nav__link">
-    <span class="md-ellipsis">
-      EF Core: database-per-tenant errors
+      Validation
     </span>
   </a>
   
@@ -1913,93 +1882,42 @@
                   
 
 
-<h1 id="troubleshooting-multitenancy">Troubleshooting: Multitenancy<a class="headerlink" href="#troubleshooting-multitenancy" title="Permanent link">&para;</a></h1>
-<p>Common multitenancy issues and fixes across core, ASP.NET Core, and EF Core adapters.</p>
-<h2 id="tenantnotresolvedexception">TenantNotResolvedException<a class="headerlink" href="#tenantnotresolvedexception" title="Permanent link">&para;</a></h2>
-<p><strong>Symptoms</strong></p>
+<h1 id="scenario-tenant-scoped-redis-caching-with-key-prefixing">Scenario: Tenant-Scoped Redis Caching with Key Prefixing<a class="headerlink" href="#scenario-tenant-scoped-redis-caching-with-key-prefixing" title="Permanent link">&para;</a></h1>
+<h2 id="goal">Goal<a class="headerlink" href="#goal" title="Permanent link">&para;</a></h2>
+<p>Document a sample that combines multitenancy caching behavior with Redis key prefixing to guarantee cache isolation per tenant.</p>
+<h2 id="sample-name-and-location">Sample name and location<a class="headerlink" href="#sample-name-and-location" title="Permanent link">&para;</a></h2>
 <ul>
-<li>Requests fail with "Tenant not resolved" or 400 ProblemDetails.</li>
+<li>Solution: <code>CleanArchitecture.Extensions.Samples.Multitenancy.RedisCaching</code></li>
+<li>Path: <code>samples/CleanArchitecture.Extensions.Samples.Multitenancy.RedisCaching</code></li>
 </ul>
-<p><strong>Fixes</strong></p>
+<h2 id="modules-used">Modules used<a class="headerlink" href="#modules-used" title="Permanent link">&para;</a></h2>
 <ul>
-<li>Ensure your host adapter populates <code>TenantResolutionContext</code> before handlers run.</li>
-<li>Verify <code>ResolutionOrder</code> includes the provider you expect (route/host/header/query/claim).</li>
-<li>Check that your route parameter name, header names, or claim type match the incoming request.</li>
+<li>Multitenancy core</li>
+<li>Multitenancy.Caching</li>
+<li>Multitenancy.Redis (planned adapter)</li>
+<li>Multitenancy.AspNetCore for inbound resolution</li>
 </ul>
-<h2 id="tenantnotfoundexception">TenantNotFoundException<a class="headerlink" href="#tenantnotfoundexception" title="Permanent link">&para;</a></h2>
-<p><strong>Symptoms</strong></p>
+<h2 id="prerequisites">Prerequisites<a class="headerlink" href="#prerequisites" title="Permanent link">&para;</a></h2>
 <ul>
-<li>Requests fail even though a tenant ID is present.</li>
+<li>Base Web API solution; provide a Redis connection (local container or test instance) via configuration.</li>
+<li>Numbered step comments and matching README entries for every change.</li>
 </ul>
-<p><strong>Fixes</strong></p>
+<h2 id="steps">Steps<a class="headerlink" href="#steps" title="Permanent link">&para;</a></h2>
+<ol>
+<li>Reference <code>CleanArchitecture.Extensions.Multitenancy</code>, <code>CleanArchitecture.Extensions.Multitenancy.AspNetCore</code>, <code>CleanArchitecture.Extensions.Multitenancy.Caching</code>, and add <code>CleanArchitecture.Extensions.Multitenancy.Redis</code> when available; ensure distributed cache services are registered before the multitenancy adapters.</li>
+<li>Configure <code>MultitenancyOptions</code> to require tenant context for cache-bearing operations and enable <code>TenantScopedCacheBehavior</code> in MediatR.</li>
+<li>Configure <code>RedisKeyStrategyOptions</code> with a prefix pattern such as <code>{tenant}:{resource}:{hash}</code>, disable global keys, and set default TTLs per resource; wire <code>TenantRedisConnectionResolver</code> if different endpoints per tenant are needed.</li>
+<li>Register Redis distributed cache (StackExchange.Redis) pointing at the dev instance; expose the connection string via configuration so tests can swap to in-memory fakes.</li>
+<li>Update caching helpers to reject keys that lack tenant context; audit background jobs to ensure <code>TenantContext</code> is restored before cache usage.</li>
+<li>Add integration tests to assert keys include tenant prefixing, cross-tenant cache pollution is prevented, and cache hits/misses are counted per tenant.</li>
+<li>Document migration steps for changing prefix formats and how to flush a single tenant's keys safely during deletion without issuing a global flush.</li>
+<li>Note operational guardrails: avoid flush-all commands, monitor keyspace size per tenant, and alert on prefix collisions.</li>
+</ol>
+<h2 id="validation">Validation<a class="headerlink" href="#validation" title="Permanent link">&para;</a></h2>
 <ul>
-<li>Register <code>ITenantInfoStore</code> when using <code>TenantValidationMode.Repository</code>.</li>
-<li>Register <code>ITenantInfoCache</code> when using <code>TenantValidationMode.Cache</code>.</li>
-<li>Ensure the tenant exists in the store and is marked active.</li>
-</ul>
-<h2 id="ambiguous-tenant-candidates">Ambiguous tenant candidates<a class="headerlink" href="#ambiguous-tenant-candidates" title="Permanent link">&para;</a></h2>
-<p><strong>Symptoms</strong></p>
-<ul>
-<li>Tenant resolves as null even though IDs are present.</li>
-</ul>
-<p><strong>Fixes</strong></p>
-<ul>
-<li>Ensure headers/queries contain only a single tenant ID.</li>
-<li>Disable <code>RequireMatchAcrossSources</code> or ensure all sources agree on the same ID.</li>
-<li>Avoid sending multiple <code>X-Tenant-ID</code> values separated by commas or semicolons.</li>
-</ul>
-<h2 id="host-based-resolution-returns-null">Host-based resolution returns null<a class="headerlink" href="#host-based-resolution-returns-null" title="Permanent link">&para;</a></h2>
-<p><strong>Symptoms</strong></p>
-<ul>
-<li>Host provider does not resolve tenant for subdomains.</li>
-</ul>
-<p><strong>Fixes</strong></p>
-<ul>
-<li>Ensure requests include a subdomain (for example, <code>tenant.app.com</code>).</li>
-<li>Configure <code>HostTenantSelector</code> to support custom host patterns.</li>
-<li>Host provider ignores IP addresses and single-segment hosts.</li>
-</ul>
-<h2 id="cache-scope-mismatch-warnings">Cache scope mismatch warnings<a class="headerlink" href="#cache-scope-mismatch-warnings" title="Permanent link">&para;</a></h2>
-<p><strong>Symptoms</strong></p>
-<ul>
-<li>Logs show "Cache scope tenant mismatch".</li>
-</ul>
-<p><strong>Fixes</strong></p>
-<ul>
-<li>Install <code>CleanArchitecture.Extensions.Multitenancy.Caching</code> and call <code>AddCleanArchitectureMultitenancyCaching</code> after <code>AddCleanArchitectureCaching</code>.</li>
-<li>Ensure tenant resolution runs before caching behaviors.</li>
-</ul>
-<h2 id="tenant-context-lost-in-background-jobs">Tenant context lost in background jobs<a class="headerlink" href="#tenant-context-lost-in-background-jobs" title="Permanent link">&para;</a></h2>
-<p><strong>Symptoms</strong></p>
-<ul>
-<li>Background workers execute without tenant context.</li>
-</ul>
-<p><strong>Fixes</strong></p>
-<ul>
-<li>Serialize <code>TenantContext</code> with <code>ITenantContextSerializer</code> and restore it in the worker.</li>
-<li>Wrap work in <code>ITenantAccessor.BeginScope</code> to avoid AsyncLocal leakage.</li>
-</ul>
-<h2 id="ef-core-tenantsavechangesinterceptor-errors">EF Core: TenantSaveChangesInterceptor errors<a class="headerlink" href="#ef-core-tenantsavechangesinterceptor-errors" title="Permanent link">&para;</a></h2>
-<p><strong>Symptoms</strong></p>
-<ul>
-<li>Writes throw <code>TenantNotResolvedException</code> or a tenant mismatch exception.</li>
-</ul>
-<p><strong>Fixes</strong></p>
-<ul>
-<li>Ensure tenant context is set before SaveChanges executes.</li>
-<li>Verify <code>TenantIdPropertyName</code> matches your model configuration.</li>
-<li>Confirm global entities are excluded with <code>IGlobalEntity</code> or <code>[GlobalEntity]</code>.</li>
-</ul>
-<h2 id="ef-core-database-per-tenant-errors">EF Core: database-per-tenant errors<a class="headerlink" href="#ef-core-database-per-tenant-errors" title="Permanent link">&para;</a></h2>
-<p><strong>Symptoms</strong></p>
-<ul>
-<li><code>TenantDbContextFactory</code> throws "Tenant connection string was not resolved".</li>
-</ul>
-<p><strong>Fixes</strong></p>
-<ul>
-<li>Configure <code>ConnectionStringFormat</code> or register a custom <code>ITenantConnectionResolver</code>.</li>
-<li>Ensure the current tenant is resolved before creating a DbContext.</li>
-<li>Use a relational EF Core provider (database-per-tenant requires relational).</li>
+<li>Cache keys are consistently prefixed with the current tenant ID and optional environment/resource segments.</li>
+<li>Requests without tenant context fail fast when cache access is required.</li>
+<li>Cache isolation holds under concurrent cross-tenant load and during key format migrations.</li>
 </ul>
 
 
@@ -2021,7 +1939,7 @@
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1-2.1-2M12.5 7v5.2l4 2.4-1 1L11 13V7h1.5M11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2v1.8Z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">January 3, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">January 10, 2026</span>
   </span>
 
     
@@ -2070,10 +1988,10 @@
     </div>
     
     
-    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.sections", "navigation.tracking", "content.code.copy", "content.tabs.link", "search.suggest", "search.highlight"], "search": "../../assets/javascripts/workers/search.b8dbb3d2.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    <script id="__config" type="application/json">{"base": "../../..", "features": ["navigation.tabs", "navigation.sections", "navigation.tracking", "content.code.copy", "content.tabs.link", "search.suggest", "search.highlight"], "search": "../../../assets/javascripts/workers/search.b8dbb3d2.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
-      <script src="../../assets/javascripts/bundle.c8d2eff1.min.js"></script>
+      <script src="../../../assets/javascripts/bundle.c8d2eff1.min.js"></script>
       
     
   </body>

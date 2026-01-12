@@ -10,28 +10,28 @@
       
       
       
-        <link rel="canonical" href="https://cleanarchitecture-extensions.github.io/CleanArchitecture.Extensions/troubleshooting/multitenancy/">
+        <link rel="canonical" href="https://cleanarchitecture-extensions.github.io/CleanArchitecture.Extensions/samples/multitenancy/header-and-route-resolution/">
       
       
-        <link rel="prev" href="../">
+        <link rel="prev" href="../../">
       
       
-        <link rel="next" href="../../contributing/">
+        <link rel="next" href="../background-jobs-context-propagation/">
       
       
-      <link rel="icon" href="../../assets/images/favicon.png">
+      <link rel="icon" href="../../../assets/images/favicon.png">
       <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.5.13">
     
     
       
-        <title>Multitenancy - CleanArchitecture.Extensions</title>
+        <title>Header + Route Resolution - CleanArchitecture.Extensions</title>
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.7e359304.min.css">
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.7e359304.min.css">
       
         
-        <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.06af60db.min.css">
       
       
 
@@ -50,9 +50,9 @@
       
     
     
-      <link rel="stylesheet" href="../../_assets/theme.css">
+      <link rel="stylesheet" href="../../../_assets/theme.css">
     
-    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
@@ -78,7 +78,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#troubleshooting-multitenancy" class="md-skip">
+        <a href="#scenario-header-route-resolution-with-aspnet-core-enforcement" class="md-skip">
           Skip to content
         </a>
       
@@ -92,7 +92,7 @@
 
 <header class="md-header" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="../.." title="CleanArchitecture.Extensions" class="md-header__button md-logo" aria-label="CleanArchitecture.Extensions" data-md-component="logo">
+    <a href="../../.." title="CleanArchitecture.Extensions" class="md-header__button md-logo" aria-label="CleanArchitecture.Extensions" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
@@ -112,7 +112,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Multitenancy
+              Header + Route Resolution
             
           </span>
         </div>
@@ -221,7 +221,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="../.." class="md-tabs__link">
+      <a href="../../.." class="md-tabs__link">
         
   
     
@@ -240,7 +240,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../../roadmap/" class="md-tabs__link">
+        <a href="../../../roadmap/" class="md-tabs__link">
           
   
   Roadmap
@@ -258,7 +258,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../../getting-started/quickstart/" class="md-tabs__link">
+        <a href="../../../getting-started/quickstart/" class="md-tabs__link">
           
   
   Getting Started
@@ -276,7 +276,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../../concepts/architecture-fit/" class="md-tabs__link">
+        <a href="../../../concepts/architecture-fit/" class="md-tabs__link">
           
   
   Concepts
@@ -294,7 +294,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../../extensions/" class="md-tabs__link">
+        <a href="../../../extensions/" class="md-tabs__link">
           
   
   Extensions Catalog
@@ -312,7 +312,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../../recipes/authentication/" class="md-tabs__link">
+        <a href="../../../recipes/authentication/" class="md-tabs__link">
           
   
   Recipes
@@ -326,11 +326,13 @@
         
   
   
+    
+  
   
     
     
-      <li class="md-tabs__item">
-        <a href="../../samples/" class="md-tabs__link">
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../../" class="md-tabs__link">
           
   
   Samples
@@ -348,7 +350,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../../reference/configuration/" class="md-tabs__link">
+        <a href="../../../reference/configuration/" class="md-tabs__link">
           
   
   Reference
@@ -362,13 +364,11 @@
         
   
   
-    
-  
   
     
     
-      <li class="md-tabs__item md-tabs__item--active">
-        <a href="../" class="md-tabs__link">
+      <li class="md-tabs__item">
+        <a href="../../../troubleshooting/" class="md-tabs__link">
           
   
   Troubleshooting
@@ -384,7 +384,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="../../contributing/" class="md-tabs__link">
+      <a href="../../../contributing/" class="md-tabs__link">
         
   
     
@@ -401,7 +401,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="../../release-notes/" class="md-tabs__link">
+      <a href="../../../release-notes/" class="md-tabs__link">
         
   
     
@@ -435,7 +435,7 @@
 
 <nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="../.." title="CleanArchitecture.Extensions" class="md-nav__button md-logo" aria-label="CleanArchitecture.Extensions" data-md-component="logo">
+    <a href="../../.." title="CleanArchitecture.Extensions" class="md-nav__button md-logo" aria-label="CleanArchitecture.Extensions" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
@@ -465,7 +465,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../.." class="md-nav__link">
+      <a href="../../.." class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -525,7 +525,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../roadmap/" class="md-nav__link">
+      <a href="../../../roadmap/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -546,7 +546,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../roadmap/package-blueprints/" class="md-nav__link">
+      <a href="../../../roadmap/package-blueprints/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -614,7 +614,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../getting-started/quickstart/" class="md-nav__link">
+      <a href="../../../getting-started/quickstart/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -635,7 +635,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../getting-started/installation/" class="md-nav__link">
+      <a href="../../../getting-started/installation/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -656,7 +656,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../getting-started/adoption-playbooks/" class="md-nav__link">
+      <a href="../../../getting-started/adoption-playbooks/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -724,7 +724,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../concepts/architecture-fit/" class="md-nav__link">
+      <a href="../../../concepts/architecture-fit/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -745,7 +745,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../concepts/composition/" class="md-nav__link">
+      <a href="../../../concepts/composition/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -813,7 +813,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../extensions/" class="md-nav__link">
+      <a href="../../../extensions/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -834,7 +834,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../extensions/caching/" class="md-nav__link">
+      <a href="../../../extensions/caching/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -855,7 +855,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../extensions/multitenancy-aspnetcore/" class="md-nav__link">
+      <a href="../../../extensions/multitenancy-aspnetcore/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -876,7 +876,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../extensions/multitenancy-efcore/" class="md-nav__link">
+      <a href="../../../extensions/multitenancy-efcore/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -937,7 +937,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../extensions/multitenancy-core/" class="md-nav__link">
+      <a href="../../../extensions/multitenancy-core/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -958,7 +958,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../extensions/multitenancy-core/resolution-pipeline/" class="md-nav__link">
+      <a href="../../../extensions/multitenancy-core/resolution-pipeline/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -979,7 +979,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../extensions/multitenancy-core/requirements-and-behaviors/" class="md-nav__link">
+      <a href="../../../extensions/multitenancy-core/requirements-and-behaviors/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1000,7 +1000,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../extensions/multitenancy-core/validation-and-stores/" class="md-nav__link">
+      <a href="../../../extensions/multitenancy-core/validation-and-stores/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1021,7 +1021,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../extensions/multitenancy-core/context-propagation/" class="md-nav__link">
+      <a href="../../../extensions/multitenancy-core/context-propagation/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1042,7 +1042,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../extensions/multitenancy-core/caching-integration/" class="md-nav__link">
+      <a href="../../../extensions/multitenancy-core/caching-integration/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1118,7 +1118,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../recipes/authentication/" class="md-nav__link">
+      <a href="../../../recipes/authentication/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1139,7 +1139,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../recipes/caching/" class="md-nav__link">
+      <a href="../../../recipes/caching/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1164,25 +1164,30 @@
       
   
   
+    
   
   
+  
     
     
     
+      
+        
+        
       
       
         
       
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" checked>
         
           
-          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="">
             
   
   <span class="md-ellipsis">
@@ -1193,7 +1198,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_7">
             <span class="md-nav__icon md-icon"></span>
             Samples
@@ -1207,7 +1212,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../samples/" class="md-nav__link">
+      <a href="../../" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1225,25 +1230,30 @@
                 
   
   
+    
   
   
+  
     
     
     
       
       
-        
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7_2" >
         
           
-          <label class="md-nav__link" for="__nav_7_2" id="__nav_7_2_label" tabindex="0">
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_7_2" id="__nav_7_2_label" tabindex="">
             
   
   <span class="md-ellipsis">
@@ -1254,7 +1264,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_7_2_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_7_2_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_7_2">
             <span class="md-nav__icon md-icon"></span>
             Multitenancy
@@ -1265,10 +1275,30 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../../samples/multitenancy/header-and-route-resolution/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Header + Route Resolution
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   <span class="md-ellipsis">
@@ -1277,6 +1307,80 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#goal" class="md-nav__link">
+    <span class="md-ellipsis">
+      Goal
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sample-name-and-location" class="md-nav__link">
+    <span class="md-ellipsis">
+      Sample name and location
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#modules-used" class="md-nav__link">
+    <span class="md-ellipsis">
+      Modules used
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#prerequisites" class="md-nav__link">
+    <span class="md-ellipsis">
+      Prerequisites
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#steps" class="md-nav__link">
+    <span class="md-ellipsis">
+      Steps
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#validation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Validation
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -1289,7 +1393,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../samples/multitenancy/background-jobs-context-propagation/" class="md-nav__link">
+      <a href="../background-jobs-context-propagation/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1310,7 +1414,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../samples/multitenancy/efcore-database-per-tenant/" class="md-nav__link">
+      <a href="../efcore-database-per-tenant/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1331,7 +1435,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../samples/multitenancy/identity-tenant-isolated-auth/" class="md-nav__link">
+      <a href="../identity-tenant-isolated-auth/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1352,7 +1456,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../samples/multitenancy/provisioning-hybrid-residency/" class="md-nav__link">
+      <a href="../provisioning-hybrid-residency/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1373,7 +1477,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../samples/multitenancy/redis-tenant-caching/" class="md-nav__link">
+      <a href="../redis-tenant-caching/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1449,7 +1553,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/configuration/" class="md-nav__link">
+      <a href="../../../reference/configuration/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1470,7 +1574,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/caching-options/" class="md-nav__link">
+      <a href="../../../reference/caching-options/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1491,7 +1595,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/multitenancy-options/" class="md-nav__link">
+      <a href="../../../reference/multitenancy-options/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1512,7 +1616,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/aspnetcore-multitenancy-options/" class="md-nav__link">
+      <a href="../../../reference/aspnetcore-multitenancy-options/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1533,7 +1637,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/efcore-multitenancy-options/" class="md-nav__link">
+      <a href="../../../reference/efcore-multitenancy-options/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1558,30 +1662,25 @@
       
   
   
-    
   
   
-  
     
     
     
-      
-        
-        
       
       
         
       
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_9" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_9" >
         
           
-          <label class="md-nav__link" for="__nav_9" id="__nav_9_label" tabindex="">
+          <label class="md-nav__link" for="__nav_9" id="__nav_9_label" tabindex="0">
             
   
   <span class="md-ellipsis">
@@ -1592,7 +1691,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_9_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_9_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_9">
             <span class="md-nav__icon md-icon"></span>
             Troubleshooting
@@ -1606,7 +1705,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../" class="md-nav__link">
+      <a href="../../../troubleshooting/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1624,30 +1723,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  <span class="md-ellipsis">
-    Multitenancy
-  </span>
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../../../troubleshooting/multitenancy/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1656,98 +1735,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#tenantnotresolvedexception" class="md-nav__link">
-    <span class="md-ellipsis">
-      TenantNotResolvedException
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#tenantnotfoundexception" class="md-nav__link">
-    <span class="md-ellipsis">
-      TenantNotFoundException
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#ambiguous-tenant-candidates" class="md-nav__link">
-    <span class="md-ellipsis">
-      Ambiguous tenant candidates
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#host-based-resolution-returns-null" class="md-nav__link">
-    <span class="md-ellipsis">
-      Host-based resolution returns null
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#cache-scope-mismatch-warnings" class="md-nav__link">
-    <span class="md-ellipsis">
-      Cache scope mismatch warnings
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#tenant-context-lost-in-background-jobs" class="md-nav__link">
-    <span class="md-ellipsis">
-      Tenant context lost in background jobs
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#ef-core-tenantsavechangesinterceptor-errors" class="md-nav__link">
-    <span class="md-ellipsis">
-      EF Core: TenantSaveChangesInterceptor errors
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#ef-core-database-per-tenant-errors" class="md-nav__link">
-    <span class="md-ellipsis">
-      EF Core: database-per-tenant errors
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -1767,7 +1754,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../contributing/" class="md-nav__link">
+      <a href="../../../contributing/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1787,7 +1774,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../release-notes/" class="md-nav__link">
+      <a href="../../../release-notes/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1827,72 +1814,54 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#tenantnotresolvedexception" class="md-nav__link">
+  <a href="#goal" class="md-nav__link">
     <span class="md-ellipsis">
-      TenantNotResolvedException
+      Goal
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#tenantnotfoundexception" class="md-nav__link">
+  <a href="#sample-name-and-location" class="md-nav__link">
     <span class="md-ellipsis">
-      TenantNotFoundException
+      Sample name and location
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#ambiguous-tenant-candidates" class="md-nav__link">
+  <a href="#modules-used" class="md-nav__link">
     <span class="md-ellipsis">
-      Ambiguous tenant candidates
+      Modules used
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#host-based-resolution-returns-null" class="md-nav__link">
+  <a href="#prerequisites" class="md-nav__link">
     <span class="md-ellipsis">
-      Host-based resolution returns null
+      Prerequisites
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#cache-scope-mismatch-warnings" class="md-nav__link">
+  <a href="#steps" class="md-nav__link">
     <span class="md-ellipsis">
-      Cache scope mismatch warnings
+      Steps
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#tenant-context-lost-in-background-jobs" class="md-nav__link">
+  <a href="#validation" class="md-nav__link">
     <span class="md-ellipsis">
-      Tenant context lost in background jobs
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#ef-core-tenantsavechangesinterceptor-errors" class="md-nav__link">
-    <span class="md-ellipsis">
-      EF Core: TenantSaveChangesInterceptor errors
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#ef-core-database-per-tenant-errors" class="md-nav__link">
-    <span class="md-ellipsis">
-      EF Core: database-per-tenant errors
+      Validation
     </span>
   </a>
   
@@ -1913,93 +1882,106 @@
                   
 
 
-<h1 id="troubleshooting-multitenancy">Troubleshooting: Multitenancy<a class="headerlink" href="#troubleshooting-multitenancy" title="Permanent link">&para;</a></h1>
-<p>Common multitenancy issues and fixes across core, ASP.NET Core, and EF Core adapters.</p>
-<h2 id="tenantnotresolvedexception">TenantNotResolvedException<a class="headerlink" href="#tenantnotresolvedexception" title="Permanent link">&para;</a></h2>
-<p><strong>Symptoms</strong></p>
+<h1 id="scenario-header-route-resolution-with-aspnet-core-enforcement">Scenario: Header + Route Resolution with ASP.NET Core Enforcement<a class="headerlink" href="#scenario-header-route-resolution-with-aspnet-core-enforcement" title="Permanent link">&para;</a></h1>
+<h2 id="goal">Goal<a class="headerlink" href="#goal" title="Permanent link">&para;</a></h2>
+<p>Document a sample that shows deterministic tenant resolution from route first, host second, and header fallback, with ProblemDetails responses when a tenant is missing or inactive</p>
+<h2 id="sample-name-and-location">Sample name and location<a class="headerlink" href="#sample-name-and-location" title="Permanent link">&para;</a></h2>
 <ul>
-<li>Requests fail with "Tenant not resolved" or 400 ProblemDetails.</li>
+<li>Solution: <code>CleanArchitecture.Extensions.Samples.Multitenancy.HeaderAndRouteResolution</code></li>
+<li>Path: <code>samples/CleanArchitecture.Extensions.Samples.Multitenancy.HeaderAndRouteResolution</code></li>
 </ul>
-<p><strong>Fixes</strong></p>
+<h2 id="modules-used">Modules used<a class="headerlink" href="#modules-used" title="Permanent link">&para;</a></h2>
 <ul>
-<li>Ensure your host adapter populates <code>TenantResolutionContext</code> before handlers run.</li>
-<li>Verify <code>ResolutionOrder</code> includes the provider you expect (route/host/header/query/claim).</li>
-<li>Check that your route parameter name, header names, or claim type match the incoming request.</li>
+<li>Multitenancy core (resolution pipeline + behaviors)</li>
+<li>Multitenancy.AspNetCore (middleware, attributes, ProblemDetails)</li>
 </ul>
-<h2 id="tenantnotfoundexception">TenantNotFoundException<a class="headerlink" href="#tenantnotfoundexception" title="Permanent link">&para;</a></h2>
-<p><strong>Symptoms</strong></p>
+<h2 id="prerequisites">Prerequisites<a class="headerlink" href="#prerequisites" title="Permanent link">&para;</a></h2>
 <ul>
-<li>Requests fail even though a tenant ID is present.</li>
+<li>Install the .NET SDK required by the Clean Architecture template.</li>
+<li>Keep numbered step comments in code changes and mirror them in the sample README per repository guidance.</li>
 </ul>
-<p><strong>Fixes</strong></p>
+<h2 id="steps">Steps<a class="headerlink" href="#steps" title="Permanent link">&para;</a></h2>
+<ol>
+<li>Install Jason Taylor's Clean Architecture template and create the base Web API-only solution (no extensions yet).</li>
+<li>Install or update the template to the version we align with:
+     <div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>dotnet<span class="w"> </span>new<span class="w"> </span>install<span class="w"> </span>Clean.Architecture.Solution.Template::10.0.0-preview
+</code></pre></div></li>
+<li>From the repo root, create the sample solution under <code>CleanArchitecture.Extensions/samples</code> using SQLite:
+     <div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="nb">cd</span><span class="w"> </span>CleanArchitecture.Extensions/samples
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>dotnet<span class="w"> </span>new<span class="w"> </span>ca-sln<span class="w"> </span>-cf<span class="w"> </span>None<span class="w"> </span>-o<span class="w"> </span>CleanArchitecture.Extensions.Samples.Multitenancy.HeaderAndRouteResolution<span class="w"> </span>--database<span class="w"> </span>sqlite
+</code></pre></div></li>
+<li>Verify the output folder exists and contains the new solution file plus <code>src/</code> and <code>tests/</code>.</li>
+<li>Add NuGet package references for the multitenancy extensions (use the latest published versions from NuGet).</li>
+<li>Packages: <a href="https://www.nuget.org/packages/CleanArchitecture.Extensions.Multitenancy">CleanArchitecture.Extensions.Multitenancy</a> and <a href="https://www.nuget.org/packages/CleanArchitecture.Extensions.Multitenancy.AspNetCore">CleanArchitecture.Extensions.Multitenancy.AspNetCore</a>.</li>
+<li><code>samples/CleanArchitecture.Extensions.Samples.Multitenancy.HeaderAndRouteResolution/src/Application/Application.csproj</code>:
+     <div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="cm">&lt;!-- Step 2: (Begin) Add Multitenancy core package --&gt;</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="nt">&lt;PackageReference</span><span class="w"> </span><span class="na">Include=</span><span class="s">&quot;CleanArchitecture.Extensions.Multitenancy&quot;</span><span class="w"> </span><span class="na">VersionOverride=</span><span class="s">&quot;0.2.5&quot;</span><span class="w"> </span><span class="nt">/&gt;</span>
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="cm">&lt;!-- Step 2: (End) Add Multitenancy core package --&gt;</span>
+</code></pre></div></li>
+<li><code>samples/CleanArchitecture.Extensions.Samples.Multitenancy.HeaderAndRouteResolution/src/Web/Web.csproj</code>:
+     <div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="cm">&lt;!-- Step 2: (Begin) Add Multitenancy AspNetCore package --&gt;</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="nt">&lt;PackageReference</span><span class="w"> </span><span class="na">Include=</span><span class="s">&quot;CleanArchitecture.Extensions.Multitenancy.AspNetCore&quot;</span><span class="w"> </span><span class="na">VersionOverride=</span><span class="s">&quot;0.2.5&quot;</span><span class="w"> </span><span class="nt">/&gt;</span>
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="cm">&lt;!-- Step 2: (End) Add Multitenancy AspNetCore package --&gt;</span>
+</code></pre></div></li>
+<li>Configure <code>MultitenancyOptions</code> for route-first ordering (<code>Route &gt; Host &gt; Header &gt; Query &gt; Claim</code>), set header name <code>X-Tenant-ID</code>, require tenants by default, and disable fallback tenants.</li>
+<li><code>samples/CleanArchitecture.Extensions.Samples.Multitenancy.HeaderAndRouteResolution/src/Web/DependencyInjection.cs</code>:
+     <div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="c1">// Step 3: (Begin) Multitenancy configuration imports</span>
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="k">using</span><span class="w"> </span><span class="nn">CleanArchitecture.Extensions.Multitenancy</span><span class="p">;</span>
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="k">using</span><span class="w"> </span><span class="nn">CleanArchitecture.Extensions.Multitenancy.Configuration</span><span class="p">;</span>
+<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="c1">// Step 3: (End) Multitenancy configuration imports</span>
+</code></pre></div>
+     <div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="c1">// Step 3: (Begin) Configure multitenancy resolution defaults</span>
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="n">Configure</span><span class="o">&lt;</span><span class="n">MultitenancyOptions</span><span class="o">&gt;</span><span class="p">(</span><span class="n">options</span><span class="w"> </span><span class="o">=&gt;</span>
+<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="p">{</span>
+<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="w">    </span><span class="n">options</span><span class="p">.</span><span class="n">RequireTenantByDefault</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">true</span><span class="p">;</span>
+<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="w">    </span><span class="n">options</span><span class="p">.</span><span class="n">HeaderNames</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="p">[]</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="s">&quot;X-Tenant-ID&quot;</span><span class="w"> </span><span class="p">};</span>
+<a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a><span class="w">    </span><span class="n">options</span><span class="p">.</span><span class="n">ResolutionOrder</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">List</span><span class="o">&lt;</span><span class="n">TenantResolutionSource</span><span class="o">&gt;</span>
+<a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="w">    </span><span class="p">{</span>
+<a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a><span class="w">        </span><span class="n">TenantResolutionSource</span><span class="p">.</span><span class="n">Route</span><span class="p">,</span>
+<a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a><span class="w">        </span><span class="n">TenantResolutionSource</span><span class="p">.</span><span class="n">Host</span><span class="p">,</span>
+<a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a><span class="w">        </span><span class="n">TenantResolutionSource</span><span class="p">.</span><span class="n">Header</span><span class="p">,</span>
+<a id="__codelineno-5-11" name="__codelineno-5-11" href="#__codelineno-5-11"></a><span class="w">        </span><span class="n">TenantResolutionSource</span><span class="p">.</span><span class="n">QueryString</span><span class="p">,</span>
+<a id="__codelineno-5-12" name="__codelineno-5-12" href="#__codelineno-5-12"></a><span class="w">        </span><span class="n">TenantResolutionSource</span><span class="p">.</span><span class="n">Claim</span>
+<a id="__codelineno-5-13" name="__codelineno-5-13" href="#__codelineno-5-13"></a><span class="w">    </span><span class="p">};</span>
+<a id="__codelineno-5-14" name="__codelineno-5-14" href="#__codelineno-5-14"></a><span class="w">    </span><span class="n">options</span><span class="p">.</span><span class="n">FallbackTenant</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">null</span><span class="p">;</span>
+<a id="__codelineno-5-15" name="__codelineno-5-15" href="#__codelineno-5-15"></a><span class="w">    </span><span class="n">options</span><span class="p">.</span><span class="n">FallbackTenantId</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">null</span><span class="p">;</span>
+<a id="__codelineno-5-16" name="__codelineno-5-16" href="#__codelineno-5-16"></a><span class="p">});</span>
+<a id="__codelineno-5-17" name="__codelineno-5-17" href="#__codelineno-5-17"></a><span class="c1">// Step 3: (End) Configure multitenancy resolution defaults</span>
+</code></pre></div></li>
+<li>Register services with <code>AddCleanArchitectureMultitenancy</code> then <code>AddCleanArchitectureMultitenancyAspNetCore(autoUseMiddleware: false)</code>; add <code>UseCleanArchitectureMultitenancy</code> after routing and before authentication/authorization.</li>
+<li><code>samples/CleanArchitecture.Extensions.Samples.Multitenancy.HeaderAndRouteResolution/src/Web/DependencyInjection.cs</code>:
+     <div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="c1">// Step 4: (Begin) Multitenancy ASP.NET Core registration imports</span>
+<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="k">using</span><span class="w"> </span><span class="nn">CleanArchitecture.Extensions.Multitenancy.AspNetCore</span><span class="p">;</span>
+<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="c1">// Step 4: (End) Multitenancy ASP.NET Core registration imports</span>
+</code></pre></div>
+     <div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="c1">// Step 4: (Begin) Register multitenancy services and ASP.NET Core adapter</span>
+<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="n">AddCleanArchitectureMultitenancy</span><span class="p">();</span>
+<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="n">AddCleanArchitectureMultitenancyAspNetCore</span><span class="p">(</span><span class="n">autoUseMiddleware</span><span class="p">:</span><span class="w"> </span><span class="k">false</span><span class="p">);</span>
+<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="c1">// Step 4: (End) Register multitenancy services and ASP.NET Core adapter</span>
+</code></pre></div></li>
+<li><code>samples/CleanArchitecture.Extensions.Samples.Multitenancy.HeaderAndRouteResolution/src/Web/Program.cs</code>:
+     <div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="c1">// Step 4: (Begin) Multitenancy middleware import</span>
+<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="k">using</span><span class="w"> </span><span class="nn">CleanArchitecture.Extensions.Multitenancy.AspNetCore.Middleware</span><span class="p">;</span>
+<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="c1">// Step 4: (End) Multitenancy middleware import</span>
+</code></pre></div>
+     <div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="c1">// Step 4: (Begin) Add multitenancy middleware between routing and auth</span>
+<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="n">app</span><span class="p">.</span><span class="n">UseRouting</span><span class="p">();</span>
+<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="n">app</span><span class="p">.</span><span class="n">UseCleanArchitectureMultitenancy</span><span class="p">();</span>
+<a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="n">app</span><span class="p">.</span><span class="n">UseAuthentication</span><span class="p">();</span>
+<a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a><span class="n">app</span><span class="p">.</span><span class="n">UseAuthorization</span><span class="p">();</span>
+<a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a><span class="c1">// Step 4: (End) Add multitenancy middleware between routing and auth</span>
+</code></pre></div></li>
+<li>Add route conventions that group tenant-bound APIs under <code>/tenants/{tenantId}/...</code>; keep health/status endpoints outside the group for anonymous access.</li>
+<li>Decorate tenant-bound endpoints with <code>RequireTenant</code>, and mark public endpoints with <code>AllowAnonymousTenant</code> to keep resolution optional without enforcement.</li>
+<li>Enable <code>TenantExceptionHandler</code>/ProblemDetails so unresolved tenants return 400, missing tenants return 404, and suspended tenants return 403.</li>
+<li>Add integration tests that cover: resolved via route, resolved via host mapping, header fallback when the route is absent, conflict handling when route/header disagree, and enforcement responses when no tenant is provided.</li>
+<li>Update the sample README with the walkthrough (inputs, expected status codes) and middleware ordering reminders.</li>
+</ol>
+<h2 id="validation">Validation<a class="headerlink" href="#validation" title="Permanent link">&para;</a></h2>
 <ul>
-<li>Register <code>ITenantInfoStore</code> when using <code>TenantValidationMode.Repository</code>.</li>
-<li>Register <code>ITenantInfoCache</code> when using <code>TenantValidationMode.Cache</code>.</li>
-<li>Ensure the tenant exists in the store and is marked active.</li>
-</ul>
-<h2 id="ambiguous-tenant-candidates">Ambiguous tenant candidates<a class="headerlink" href="#ambiguous-tenant-candidates" title="Permanent link">&para;</a></h2>
-<p><strong>Symptoms</strong></p>
-<ul>
-<li>Tenant resolves as null even though IDs are present.</li>
-</ul>
-<p><strong>Fixes</strong></p>
-<ul>
-<li>Ensure headers/queries contain only a single tenant ID.</li>
-<li>Disable <code>RequireMatchAcrossSources</code> or ensure all sources agree on the same ID.</li>
-<li>Avoid sending multiple <code>X-Tenant-ID</code> values separated by commas or semicolons.</li>
-</ul>
-<h2 id="host-based-resolution-returns-null">Host-based resolution returns null<a class="headerlink" href="#host-based-resolution-returns-null" title="Permanent link">&para;</a></h2>
-<p><strong>Symptoms</strong></p>
-<ul>
-<li>Host provider does not resolve tenant for subdomains.</li>
-</ul>
-<p><strong>Fixes</strong></p>
-<ul>
-<li>Ensure requests include a subdomain (for example, <code>tenant.app.com</code>).</li>
-<li>Configure <code>HostTenantSelector</code> to support custom host patterns.</li>
-<li>Host provider ignores IP addresses and single-segment hosts.</li>
-</ul>
-<h2 id="cache-scope-mismatch-warnings">Cache scope mismatch warnings<a class="headerlink" href="#cache-scope-mismatch-warnings" title="Permanent link">&para;</a></h2>
-<p><strong>Symptoms</strong></p>
-<ul>
-<li>Logs show "Cache scope tenant mismatch".</li>
-</ul>
-<p><strong>Fixes</strong></p>
-<ul>
-<li>Install <code>CleanArchitecture.Extensions.Multitenancy.Caching</code> and call <code>AddCleanArchitectureMultitenancyCaching</code> after <code>AddCleanArchitectureCaching</code>.</li>
-<li>Ensure tenant resolution runs before caching behaviors.</li>
-</ul>
-<h2 id="tenant-context-lost-in-background-jobs">Tenant context lost in background jobs<a class="headerlink" href="#tenant-context-lost-in-background-jobs" title="Permanent link">&para;</a></h2>
-<p><strong>Symptoms</strong></p>
-<ul>
-<li>Background workers execute without tenant context.</li>
-</ul>
-<p><strong>Fixes</strong></p>
-<ul>
-<li>Serialize <code>TenantContext</code> with <code>ITenantContextSerializer</code> and restore it in the worker.</li>
-<li>Wrap work in <code>ITenantAccessor.BeginScope</code> to avoid AsyncLocal leakage.</li>
-</ul>
-<h2 id="ef-core-tenantsavechangesinterceptor-errors">EF Core: TenantSaveChangesInterceptor errors<a class="headerlink" href="#ef-core-tenantsavechangesinterceptor-errors" title="Permanent link">&para;</a></h2>
-<p><strong>Symptoms</strong></p>
-<ul>
-<li>Writes throw <code>TenantNotResolvedException</code> or a tenant mismatch exception.</li>
-</ul>
-<p><strong>Fixes</strong></p>
-<ul>
-<li>Ensure tenant context is set before SaveChanges executes.</li>
-<li>Verify <code>TenantIdPropertyName</code> matches your model configuration.</li>
-<li>Confirm global entities are excluded with <code>IGlobalEntity</code> or <code>[GlobalEntity]</code>.</li>
-</ul>
-<h2 id="ef-core-database-per-tenant-errors">EF Core: database-per-tenant errors<a class="headerlink" href="#ef-core-database-per-tenant-errors" title="Permanent link">&para;</a></h2>
-<p><strong>Symptoms</strong></p>
-<ul>
-<li><code>TenantDbContextFactory</code> throws "Tenant connection string was not resolved".</li>
-</ul>
-<p><strong>Fixes</strong></p>
-<ul>
-<li>Configure <code>ConnectionStringFormat</code> or register a custom <code>ITenantConnectionResolver</code>.</li>
-<li>Ensure the current tenant is resolved before creating a DbContext.</li>
-<li>Use a relational EF Core provider (database-per-tenant requires relational).</li>
+<li>Requests with <code>/tenants/{tenantId}</code> succeed only when the tenant exists and is active.</li>
+<li>Requests without tenant context return the expected ProblemDetails payloads.</li>
+<li>Tenant context is cleared per request (no AsyncLocal leakage between tests).</li>
 </ul>
 
 
@@ -2021,7 +2003,7 @@
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1-2.1-2M12.5 7v5.2l4 2.4-1 1L11 13V7h1.5M11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2v1.8Z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">January 3, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">January 12, 2026</span>
   </span>
 
     
@@ -2070,10 +2052,10 @@
     </div>
     
     
-    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.sections", "navigation.tracking", "content.code.copy", "content.tabs.link", "search.suggest", "search.highlight"], "search": "../../assets/javascripts/workers/search.b8dbb3d2.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    <script id="__config" type="application/json">{"base": "../../..", "features": ["navigation.tabs", "navigation.sections", "navigation.tracking", "content.code.copy", "content.tabs.link", "search.suggest", "search.highlight"], "search": "../../../assets/javascripts/workers/search.b8dbb3d2.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
-      <script src="../../assets/javascripts/bundle.c8d2eff1.min.js"></script>
+      <script src="../../../assets/javascripts/bundle.c8d2eff1.min.js"></script>
       
     
   </body>
