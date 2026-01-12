@@ -1,12 +1,15 @@
 using CleanArchitecture.Extensions.Multitenancy;
 using CleanArchitecture.Extensions.Multitenancy.Abstractions;
 using CleanArchitecture.Extensions.Multitenancy.AspNetCore.Context;
+using CleanArchitecture.Extensions.Multitenancy.AspNetCore;
 using CleanArchitecture.Extensions.Multitenancy.AspNetCore.Middleware;
 using CleanArchitecture.Extensions.Multitenancy.AspNetCore.Options;
 using CleanArchitecture.Extensions.Multitenancy.Behaviors;
 using CleanArchitecture.Extensions.Multitenancy.Configuration;
 using CleanArchitecture.Extensions.Multitenancy.Context;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging.Abstractions;
 using OptionsFactory = Microsoft.Extensions.Options.Options;
 
@@ -34,8 +37,13 @@ public class TenantResolutionMiddlewareTests
             return Task.CompletedTask;
         };
 
-        var middleware = new TenantResolutionMiddleware(
-            next,
+        var middleware = new TenantResolutionMiddleware(next);
+
+        var httpContext = new DefaultHttpContext();
+        httpContext.Request.Headers["X-Tenant-ID"] = "tenant-1";
+
+        await middleware.InvokeAsync(
+            httpContext,
             resolver,
             accessor,
             factory,
@@ -44,14 +52,29 @@ public class TenantResolutionMiddlewareTests
             logger,
             new TenantCorrelationScopeAccessor());
 
-        var httpContext = new DefaultHttpContext();
-        httpContext.Request.Headers["X-Tenant-ID"] = "tenant-1";
-
-        await middleware.InvokeAsync(httpContext);
-
         Assert.Equal("tenant-1", observedTenantId);
         Assert.NotNull(observedContext);
         Assert.Null(accessor.TenantId);
+    }
+
+    [Fact]
+    public void UseCleanArchitectureMultitenancy_builds_pipeline_with_validated_scopes()
+    {
+        var services = new ServiceCollection();
+        services.AddLogging();
+        services.AddCleanArchitectureMultitenancyAspNetCore();
+
+        using var provider = services.BuildServiceProvider(new ServiceProviderOptions
+        {
+            ValidateScopes = true
+        });
+
+        var app = new ApplicationBuilder(provider);
+        app.UseCleanArchitectureMultitenancy();
+        app.Run(_ => Task.CompletedTask);
+
+        var exception = Record.Exception(() => app.Build());
+        Assert.Null(exception);
     }
 
     private sealed class CapturingTenantResolver : ITenantResolver
