@@ -1,0 +1,2 @@
+# Keep sample files consistently LF to match .editorconfig and avoid mixed endings
+* text=auto eol=lf
