@@ -8,6 +8,9 @@
   <ItemGroup>
     <PackageReference Include="Ardalis.GuardClauses" />
     <PackageReference Include="AutoMapper" />
+    <!-- Step 2: (Begin) Add Multitenancy core package -->
+    <PackageReference Include="CleanArchitecture.Extensions.Multitenancy" />
+    <!-- Step 2: (End) Add Multitenancy core package -->
     <PackageReference Include="FluentValidation.DependencyInjectionExtensions" />
     <PackageReference Include="MediatR" />
     <PackageReference Include="Microsoft.Build.Tasks.Core" />
