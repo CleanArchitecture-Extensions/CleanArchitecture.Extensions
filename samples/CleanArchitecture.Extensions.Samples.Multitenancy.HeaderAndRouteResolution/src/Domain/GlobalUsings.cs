@@ -1,0 +1,6 @@
+﻿global using CleanArchitecture.Extensions.Samples.Multitenancy.HeaderAndRouteResolution.Domain.Common;
+global using CleanArchitecture.Extensions.Samples.Multitenancy.HeaderAndRouteResolution.Domain.Entities;
+global using CleanArchitecture.Extensions.Samples.Multitenancy.HeaderAndRouteResolution.Domain.Enums;
+global using CleanArchitecture.Extensions.Samples.Multitenancy.HeaderAndRouteResolution.Domain.Events;
+global using CleanArchitecture.Extensions.Samples.Multitenancy.HeaderAndRouteResolution.Domain.Exceptions;
+global using CleanArchitecture.Extensions.Samples.Multitenancy.HeaderAndRouteResolution.Domain.ValueObjects;
