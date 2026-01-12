@@ -1,4 +1,8 @@
 ﻿using Azure.Identity;
+// Step 3: (Begin) Multitenancy configuration imports
+using CleanArchitecture.Extensions.Multitenancy;
+using CleanArchitecture.Extensions.Multitenancy.Configuration;
+// Step 3: (End) Multitenancy configuration imports
 using CleanArchitecture.Extensions.Samples.Multitenancy.HeaderAndRouteResolution.Application.Common.Interfaces;
 using CleanArchitecture.Extensions.Samples.Multitenancy.HeaderAndRouteResolution.Infrastructure.Data;
 using CleanArchitecture.Extensions.Samples.Multitenancy.HeaderAndRouteResolution.Web.Services;
@@ -22,6 +26,24 @@ public static class DependencyInjection
             .AddDbContextCheck<ApplicationDbContext>();
 
         builder.Services.AddExceptionHandler<CustomExceptionHandler>();
+
+        // Step 3: (Begin) Configure multitenancy resolution defaults
+        builder.Services.Configure<MultitenancyOptions>(options =>
+        {
+            options.RequireTenantByDefault = true;
+            options.HeaderNames = new[] { "X-Tenant-ID" };
+            options.ResolutionOrder = new List<TenantResolutionSource>
+            {
+                TenantResolutionSource.Route,
+                TenantResolutionSource.Host,
+                TenantResolutionSource.Header,
+                TenantResolutionSource.QueryString,
+                TenantResolutionSource.Claim
+            };
+            options.FallbackTenant = null;
+            options.FallbackTenantId = null;
+        });
+        // Step 3: (End) Configure multitenancy resolution defaults
 
 
         // Customise default API behaviour

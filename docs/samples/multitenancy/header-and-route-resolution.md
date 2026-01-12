@@ -34,32 +34,45 @@ Document a sample that shows deterministic tenant resolution from route first, h
    - Verify the output folder exists and contains the new solution file plus `src/` and `tests/`.
 2. Add NuGet package references for the multitenancy extensions (use the latest published versions from NuGet).
    - Packages: [CleanArchitecture.Extensions.Multitenancy](https://www.nuget.org/packages/CleanArchitecture.Extensions.Multitenancy) and [CleanArchitecture.Extensions.Multitenancy.AspNetCore](https://www.nuget.org/packages/CleanArchitecture.Extensions.Multitenancy.AspNetCore).
-   - You can either use `dotnet add package` or edit the files directly as shown below. The sample uses central package management, so versions live in `Directory.Packages.props`.
-   - `samples/CleanArchitecture.Extensions.Samples.Multitenancy.HeaderAndRouteResolution/Directory.Packages.props`:
-     ```xml
-     <!-- Step 2: (Begin) Pin CleanArchitecture.Extensions package version -->
-     <CleanArchitectureExtensionsVersion>0.1.1-preview.1</CleanArchitectureExtensionsVersion>
-     <!-- Step 2: (End) Pin CleanArchitecture.Extensions package version -->
-     ```
-     ```xml
-     <!-- Step 2: (Begin) Add Multitenancy package versions -->
-     <PackageVersion Include="CleanArchitecture.Extensions.Multitenancy" Version="$(CleanArchitectureExtensionsVersion)" />
-     <PackageVersion Include="CleanArchitecture.Extensions.Multitenancy.AspNetCore" Version="$(CleanArchitectureExtensionsVersion)" />
-     <!-- Step 2: (End) Add Multitenancy package versions -->
-     ```
    - `samples/CleanArchitecture.Extensions.Samples.Multitenancy.HeaderAndRouteResolution/src/Application/Application.csproj`:
      ```xml
      <!-- Step 2: (Begin) Add Multitenancy core package -->
-     <PackageReference Include="CleanArchitecture.Extensions.Multitenancy" />
+     <PackageReference Include="CleanArchitecture.Extensions.Multitenancy" VersionOverride="0.2.5" />
      <!-- Step 2: (End) Add Multitenancy core package -->
      ```
    - `samples/CleanArchitecture.Extensions.Samples.Multitenancy.HeaderAndRouteResolution/src/Web/Web.csproj`:
      ```xml
      <!-- Step 2: (Begin) Add Multitenancy AspNetCore package -->
-     <PackageReference Include="CleanArchitecture.Extensions.Multitenancy.AspNetCore" />
+     <PackageReference Include="CleanArchitecture.Extensions.Multitenancy.AspNetCore" VersionOverride="0.2.5" />
      <!-- Step 2: (End) Add Multitenancy AspNetCore package -->
      ```
 3. Configure `MultitenancyOptions` for route-first ordering (`Route > Host > Header > Query > Claim`), set header name `X-Tenant-ID`, require tenants by default, and disable fallback tenants.
+   - `samples/CleanArchitecture.Extensions.Samples.Multitenancy.HeaderAndRouteResolution/src/Web/DependencyInjection.cs`:
+     ```csharp
+     // Step 3: (Begin) Multitenancy configuration imports
+     using CleanArchitecture.Extensions.Multitenancy;
+     using CleanArchitecture.Extensions.Multitenancy.Configuration;
+     // Step 3: (End) Multitenancy configuration imports
+     ```
+     ```csharp
+     // Step 3: (Begin) Configure multitenancy resolution defaults
+     builder.Services.Configure<MultitenancyOptions>(options =>
+     {
+         options.RequireTenantByDefault = true;
+         options.HeaderNames = new[] { "X-Tenant-ID" };
+         options.ResolutionOrder = new List<TenantResolutionSource>
+         {
+             TenantResolutionSource.Route,
+             TenantResolutionSource.Host,
+             TenantResolutionSource.Header,
+             TenantResolutionSource.QueryString,
+             TenantResolutionSource.Claim
+         };
+         options.FallbackTenant = null;
+         options.FallbackTenantId = null;
+     });
+     // Step 3: (End) Configure multitenancy resolution defaults
+     ```
 4. Register services with `AddCleanArchitectureMultitenancy` then `AddCleanArchitectureMultitenancyAspNetCore(autoUseMiddleware: false)`; place `UseCleanArchitectureMultitenancy` after routing and before authentication/authorization.
 5. Add route conventions that group tenant-bound APIs under `/tenants/{tenantId}/...`; keep health/status endpoints outside the group for anonymous access.
 6. Decorate tenant-bound endpoints with `RequireTenant`, and mark public endpoints with `AllowAnonymousTenant` to keep resolution optional without enforcement.

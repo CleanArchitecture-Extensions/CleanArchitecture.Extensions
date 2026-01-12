@@ -14,7 +14,7 @@
     <PackageReference Include="Azure.Extensions.AspNetCore.Configuration.Secrets" />
     <PackageReference Include="Azure.Identity" />
     <!-- Step 2: (Begin) Add Multitenancy AspNetCore package -->
-    <PackageReference Include="CleanArchitecture.Extensions.Multitenancy.AspNetCore" />
+    <PackageReference Include="CleanArchitecture.Extensions.Multitenancy.AspNetCore" VersionOverride="0.2.5" />
     <!-- Step 2: (End) Add Multitenancy AspNetCore package -->
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" />
