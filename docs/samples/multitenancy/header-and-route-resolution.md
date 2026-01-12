@@ -32,7 +32,33 @@ Document a sample that shows deterministic tenant resolution from route first, h
      dotnet new ca-sln -cf None -o CleanArchitecture.Extensions.Samples.Multitenancy.HeaderAndRouteResolution --database sqlite
      ```
    - Verify the output folder exists and contains the new solution file plus `src/` and `tests/`.
-2. Add project references to `CleanArchitecture.Extensions.Multitenancy` and `CleanArchitecture.Extensions.Multitenancy.AspNetCore` from `src/`, and include those projects in the sample solution.
+2. Add NuGet package references for the multitenancy extensions (use the latest published versions from NuGet).
+   - Packages: [CleanArchitecture.Extensions.Multitenancy](https://www.nuget.org/packages/CleanArchitecture.Extensions.Multitenancy) and [CleanArchitecture.Extensions.Multitenancy.AspNetCore](https://www.nuget.org/packages/CleanArchitecture.Extensions.Multitenancy.AspNetCore).
+   - You can either use `dotnet add package` or edit the files directly as shown below. The sample uses central package management, so versions live in `Directory.Packages.props`.
+   - `samples/CleanArchitecture.Extensions.Samples.Multitenancy.HeaderAndRouteResolution/Directory.Packages.props`:
+     ```xml
+     <!-- Step 2: (Begin) Pin CleanArchitecture.Extensions package version -->
+     <CleanArchitectureExtensionsVersion>0.1.1-preview.1</CleanArchitectureExtensionsVersion>
+     <!-- Step 2: (End) Pin CleanArchitecture.Extensions package version -->
+     ```
+     ```xml
+     <!-- Step 2: (Begin) Add Multitenancy package versions -->
+     <PackageVersion Include="CleanArchitecture.Extensions.Multitenancy" Version="$(CleanArchitectureExtensionsVersion)" />
+     <PackageVersion Include="CleanArchitecture.Extensions.Multitenancy.AspNetCore" Version="$(CleanArchitectureExtensionsVersion)" />
+     <!-- Step 2: (End) Add Multitenancy package versions -->
+     ```
+   - `samples/CleanArchitecture.Extensions.Samples.Multitenancy.HeaderAndRouteResolution/src/Application/Application.csproj`:
+     ```xml
+     <!-- Step 2: (Begin) Add Multitenancy core package -->
+     <PackageReference Include="CleanArchitecture.Extensions.Multitenancy" />
+     <!-- Step 2: (End) Add Multitenancy core package -->
+     ```
+   - `samples/CleanArchitecture.Extensions.Samples.Multitenancy.HeaderAndRouteResolution/src/Web/Web.csproj`:
+     ```xml
+     <!-- Step 2: (Begin) Add Multitenancy AspNetCore package -->
+     <PackageReference Include="CleanArchitecture.Extensions.Multitenancy.AspNetCore" />
+     <!-- Step 2: (End) Add Multitenancy AspNetCore package -->
+     ```
 3. Configure `MultitenancyOptions` for route-first ordering (`Route > Host > Header > Query > Claim`), set header name `X-Tenant-ID`, require tenants by default, and disable fallback tenants.
 4. Register services with `AddCleanArchitectureMultitenancy` then `AddCleanArchitectureMultitenancyAspNetCore(autoUseMiddleware: false)`; place `UseCleanArchitectureMultitenancy` after routing and before authentication/authorization.
 5. Add route conventions that group tenant-bound APIs under `/tenants/{tenantId}/...`; keep health/status endpoints outside the group for anonymous access.

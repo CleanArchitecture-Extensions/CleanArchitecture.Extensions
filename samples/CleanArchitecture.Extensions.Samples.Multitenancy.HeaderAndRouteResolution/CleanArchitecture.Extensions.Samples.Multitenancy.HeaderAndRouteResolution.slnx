@@ -13,6 +13,8 @@
     <Project Path="src/Infrastructure/Infrastructure.csproj" />
     <Project Path="src/Web/Web.csproj" />
   </Folder>
+  <!-- Step 2: (Begin) Use NuGet packages; no extension projects are added to the solution -->
+  <!-- Step 2: (End) Use NuGet packages; no extension projects are added to the solution -->
   <Folder Name="/tests/">
     <Project Path="tests/Application.FunctionalTests/Application.FunctionalTests.csproj" />
     <Project Path="tests/Application.UnitTests/Application.UnitTests.csproj" />
