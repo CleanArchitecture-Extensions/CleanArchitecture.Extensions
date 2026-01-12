@@ -9,7 +9,7 @@
     <PackageReference Include="Ardalis.GuardClauses" />
     <PackageReference Include="AutoMapper" />
     <!-- Step 2: (Begin) Add Multitenancy core package -->
-    <PackageReference Include="CleanArchitecture.Extensions.Multitenancy" VersionOverride="0.2.5" />
+    <PackageReference Include="CleanArchitecture.Extensions.Multitenancy" VersionOverride="0.2.6" />
     <!-- Step 2: (End) Add Multitenancy core package -->
     <PackageReference Include="FluentValidation.DependencyInjectionExtensions" />
     <PackageReference Include="MediatR" />

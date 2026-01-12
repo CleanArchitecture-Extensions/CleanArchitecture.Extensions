@@ -17,14 +17,14 @@ Packages:
 `samples/CleanArchitecture.Extensions.Samples.Multitenancy.HeaderAndRouteResolution/src/Application/Application.csproj`:
 ```xml
 <!-- Step 2: (Begin) Add Multitenancy core package -->
-<PackageReference Include="CleanArchitecture.Extensions.Multitenancy" VersionOverride="0.2.5" />
+<PackageReference Include="CleanArchitecture.Extensions.Multitenancy" VersionOverride="0.2.6" />
 <!-- Step 2: (End) Add Multitenancy core package -->
 ```
 
 `samples/CleanArchitecture.Extensions.Samples.Multitenancy.HeaderAndRouteResolution/src/Web/Web.csproj`:
 ```xml
 <!-- Step 2: (Begin) Add Multitenancy AspNetCore package -->
-<PackageReference Include="CleanArchitecture.Extensions.Multitenancy.AspNetCore" VersionOverride="0.2.5" />
+<PackageReference Include="CleanArchitecture.Extensions.Multitenancy.AspNetCore" VersionOverride="0.2.6" />
 <!-- Step 2: (End) Add Multitenancy AspNetCore package -->
 ```
 
@@ -87,6 +87,21 @@ app.UseCleanArchitectureMultitenancy();
 app.UseAuthentication();
 app.UseAuthorization();
 // Step 4: (End) Add multitenancy middleware between routing and auth
+```
+
+### Step 5: Add tenant route prefix for endpoint groups
+Group tenant-bound APIs under `/api/tenants/{tenantId}/...`. Health and status endpoints remain outside this group.
+
+`samples/CleanArchitecture.Extensions.Samples.Multitenancy.HeaderAndRouteResolution/src/Web/Infrastructure/WebApplicationExtensions.cs`:
+```csharp
+// Step 5: (Begin) Prefix tenant-bound endpoints with tenant route
+var tenantRoutePrefix = "/api/tenants/{tenantId}";
+
+return app
+    .MapGroup($"{tenantRoutePrefix}/{groupName}")
+    .WithGroupName(groupName)
+    .WithTags(groupName);
+// Step 5: (End) Prefix tenant-bound endpoints with tenant route
 ```
 
 ## Build

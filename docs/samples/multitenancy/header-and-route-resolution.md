@@ -37,13 +37,13 @@ Document a sample that shows deterministic tenant resolution from route first, h
    - `samples/CleanArchitecture.Extensions.Samples.Multitenancy.HeaderAndRouteResolution/src/Application/Application.csproj`:
      ```xml
      <!-- Step 2: (Begin) Add Multitenancy core package -->
-     <PackageReference Include="CleanArchitecture.Extensions.Multitenancy" VersionOverride="0.2.5" />
+     <PackageReference Include="CleanArchitecture.Extensions.Multitenancy" VersionOverride="0.2.6" />
      <!-- Step 2: (End) Add Multitenancy core package -->
      ```
    - `samples/CleanArchitecture.Extensions.Samples.Multitenancy.HeaderAndRouteResolution/src/Web/Web.csproj`:
      ```xml
      <!-- Step 2: (Begin) Add Multitenancy AspNetCore package -->
-     <PackageReference Include="CleanArchitecture.Extensions.Multitenancy.AspNetCore" VersionOverride="0.2.5" />
+     <PackageReference Include="CleanArchitecture.Extensions.Multitenancy.AspNetCore" VersionOverride="0.2.6" />
      <!-- Step 2: (End) Add Multitenancy AspNetCore package -->
      ```
 3. Configure `MultitenancyOptions` for route-first ordering (`Route > Host > Header > Query > Claim`), set header name `X-Tenant-ID`, require tenants by default, and disable fallback tenants.
@@ -101,6 +101,20 @@ Document a sample that shows deterministic tenant resolution from route first, h
      // Step 4: (End) Add multitenancy middleware between routing and auth
      ```
 5. Add route conventions that group tenant-bound APIs under `/tenants/{tenantId}/...`; keep health/status endpoints outside the group for anonymous access.
+
+   - `samples/CleanArchitecture.Extensions.Samples.Multitenancy.HeaderAndRouteResolution/src/Web/Infrastructure/WebApplicationExtensions.cs`:
+
+     ```csharp
+     // Step 5: (Begin) Prefix tenant-bound endpoints with tenant route
+     var tenantRoutePrefix = "/api/tenants/{tenantId}";
+
+     return app
+         .MapGroup($"{tenantRoutePrefix}/{groupName}")
+         .WithGroupName(groupName)
+         .WithTags(groupName);
+     // Step 5: (End) Prefix tenant-bound endpoints with tenant route
+     ```
+
 6. Decorate tenant-bound endpoints with `RequireTenant`, and mark public endpoints with `AllowAnonymousTenant` to keep resolution optional without enforcement.
 7. Enable `TenantExceptionHandler`/ProblemDetails so unresolved tenants return 400, missing tenants return 404, and suspended tenants return 403.
 8. Add integration tests that cover: resolved via route, resolved via host mapping, header fallback when the route is absent, conflict handling when route/header disagree, and enforcement responses when no tenant is provided.
