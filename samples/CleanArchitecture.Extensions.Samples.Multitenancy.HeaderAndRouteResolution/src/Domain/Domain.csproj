@@ -1,0 +1,12 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <RootNamespace>CleanArchitecture.Extensions.Samples.Multitenancy.HeaderAndRouteResolution.Domain</RootNamespace>
+    <AssemblyName>CleanArchitecture.Extensions.Samples.Multitenancy.HeaderAndRouteResolution.Domain</AssemblyName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MediatR.Contracts" />
+  </ItemGroup>
+
+</Project>
