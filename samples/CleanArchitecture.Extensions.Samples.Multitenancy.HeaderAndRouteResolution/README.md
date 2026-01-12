@@ -58,6 +58,37 @@ builder.Services.Configure<MultitenancyOptions>(options =>
 // Step 3: (End) Configure multitenancy resolution defaults
 ```
 
+### Step 4: Register multitenancy services and middleware
+Register the core and ASP.NET Core services, then add the middleware between routing and auth.
+
+`samples/CleanArchitecture.Extensions.Samples.Multitenancy.HeaderAndRouteResolution/src/Web/DependencyInjection.cs`:
+```csharp
+// Step 4: (Begin) Multitenancy ASP.NET Core registration imports
+using CleanArchitecture.Extensions.Multitenancy.AspNetCore;
+// Step 4: (End) Multitenancy ASP.NET Core registration imports
+```
+```csharp
+// Step 4: (Begin) Register multitenancy services and ASP.NET Core adapter
+builder.Services.AddCleanArchitectureMultitenancy();
+builder.Services.AddCleanArchitectureMultitenancyAspNetCore(autoUseMiddleware: false);
+// Step 4: (End) Register multitenancy services and ASP.NET Core adapter
+```
+
+`samples/CleanArchitecture.Extensions.Samples.Multitenancy.HeaderAndRouteResolution/src/Web/Program.cs`:
+```csharp
+// Step 4: (Begin) Multitenancy middleware import
+using CleanArchitecture.Extensions.Multitenancy.AspNetCore.Middleware;
+// Step 4: (End) Multitenancy middleware import
+```
+```csharp
+// Step 4: (Begin) Add multitenancy middleware between routing and auth
+app.UseRouting();
+app.UseCleanArchitectureMultitenancy();
+app.UseAuthentication();
+app.UseAuthorization();
+// Step 4: (End) Add multitenancy middleware between routing and auth
+```
+
 ## Build
 
 Run `dotnet build -tl` to build the solution.

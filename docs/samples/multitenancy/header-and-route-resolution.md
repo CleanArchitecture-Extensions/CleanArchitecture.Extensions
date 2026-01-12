@@ -73,7 +73,33 @@ Document a sample that shows deterministic tenant resolution from route first, h
      });
      // Step 3: (End) Configure multitenancy resolution defaults
      ```
-4. Register services with `AddCleanArchitectureMultitenancy` then `AddCleanArchitectureMultitenancyAspNetCore(autoUseMiddleware: false)`; place `UseCleanArchitectureMultitenancy` after routing and before authentication/authorization.
+4. Register services with `AddCleanArchitectureMultitenancy` then `AddCleanArchitectureMultitenancyAspNetCore(autoUseMiddleware: false)`; add `UseCleanArchitectureMultitenancy` after routing and before authentication/authorization.
+   - `samples/CleanArchitecture.Extensions.Samples.Multitenancy.HeaderAndRouteResolution/src/Web/DependencyInjection.cs`:
+     ```csharp
+     // Step 4: (Begin) Multitenancy ASP.NET Core registration imports
+     using CleanArchitecture.Extensions.Multitenancy.AspNetCore;
+     // Step 4: (End) Multitenancy ASP.NET Core registration imports
+     ```
+     ```csharp
+     // Step 4: (Begin) Register multitenancy services and ASP.NET Core adapter
+     builder.Services.AddCleanArchitectureMultitenancy();
+     builder.Services.AddCleanArchitectureMultitenancyAspNetCore(autoUseMiddleware: false);
+     // Step 4: (End) Register multitenancy services and ASP.NET Core adapter
+     ```
+   - `samples/CleanArchitecture.Extensions.Samples.Multitenancy.HeaderAndRouteResolution/src/Web/Program.cs`:
+     ```csharp
+     // Step 4: (Begin) Multitenancy middleware import
+     using CleanArchitecture.Extensions.Multitenancy.AspNetCore.Middleware;
+     // Step 4: (End) Multitenancy middleware import
+     ```
+     ```csharp
+     // Step 4: (Begin) Add multitenancy middleware between routing and auth
+     app.UseRouting();
+     app.UseCleanArchitectureMultitenancy();
+     app.UseAuthentication();
+     app.UseAuthorization();
+     // Step 4: (End) Add multitenancy middleware between routing and auth
+     ```
 5. Add route conventions that group tenant-bound APIs under `/tenants/{tenantId}/...`; keep health/status endpoints outside the group for anonymous access.
 6. Decorate tenant-bound endpoints with `RequireTenant`, and mark public endpoints with `AllowAnonymousTenant` to keep resolution optional without enforcement.
 7. Enable `TenantExceptionHandler`/ProblemDetails so unresolved tenants return 400, missing tenants return 404, and suspended tenants return 403.
