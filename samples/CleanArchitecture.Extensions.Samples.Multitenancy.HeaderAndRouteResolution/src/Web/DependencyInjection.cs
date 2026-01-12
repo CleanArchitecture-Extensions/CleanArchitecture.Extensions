@@ -3,6 +3,9 @@
 using CleanArchitecture.Extensions.Multitenancy;
 using CleanArchitecture.Extensions.Multitenancy.Configuration;
 // Step 3: (End) Multitenancy configuration imports
+// Step 4: (Begin) Multitenancy ASP.NET Core registration imports
+using CleanArchitecture.Extensions.Multitenancy.AspNetCore;
+// Step 4: (End) Multitenancy ASP.NET Core registration imports
 using CleanArchitecture.Extensions.Samples.Multitenancy.HeaderAndRouteResolution.Application.Common.Interfaces;
 using CleanArchitecture.Extensions.Samples.Multitenancy.HeaderAndRouteResolution.Infrastructure.Data;
 using CleanArchitecture.Extensions.Samples.Multitenancy.HeaderAndRouteResolution.Web.Services;
@@ -44,6 +47,11 @@ public static class DependencyInjection
             options.FallbackTenantId = null;
         });
         // Step 3: (End) Configure multitenancy resolution defaults
+
+        // Step 4: (Begin) Register multitenancy services and ASP.NET Core adapter
+        builder.Services.AddCleanArchitectureMultitenancy();
+        builder.Services.AddCleanArchitectureMultitenancyAspNetCore(autoUseMiddleware: false);
+        // Step 4: (End) Register multitenancy services and ASP.NET Core adapter
 
 
         // Customise default API behaviour
