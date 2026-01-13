@@ -1,6 +1,8 @@
 using System.Linq;
 using CleanArchitecture.Extensions.Multitenancy.AspNetCore;
+using CleanArchitecture.Extensions.Multitenancy.AspNetCore.ApiExplorer;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace CleanArchitecture.Extensions.Multitenancy.AspNetCore.Tests;
@@ -33,5 +35,19 @@ public class DependencyInjectionExtensionsTests
         var filters = provider.GetServices<IStartupFilter>();
 
         Assert.NotEmpty(filters);
+    }
+
+    [Fact]
+    public void AddCleanArchitectureMultitenancyAspNetCore_registers_api_description_provider_by_default()
+    {
+        var services = new ServiceCollection();
+
+        services.AddCleanArchitectureMultitenancyAspNetCore();
+
+        using var provider = services.BuildServiceProvider();
+
+        var providers = provider.GetServices<IApiDescriptionProvider>().ToList();
+
+        Assert.Contains(providers, item => item is TenantRouteApiDescriptionProvider);
     }
 }

@@ -82,6 +82,7 @@ builder.Services.AddCleanArchitectureMultitenancyAspNetCore(
     {
         aspNetOptions.CorrelationIdHeaderName = "X-Correlation-ID";
         aspNetOptions.StoreTenantInHttpContextItems = true;
+        aspNetOptions.EnableOpenApiIntegration = true;
     });
 ```
 
@@ -119,3 +120,4 @@ if (TenantProblemDetailsMapper.TryCreate(exception, httpContext, out var details
 - `GetTenantContext()` respects the configured `AspNetCoreMultitenancyOptions.HttpContextItemKey` when available.
 - `AddCleanArchitectureMultitenancyAspNetCore` registers `TenantExceptionHandler` so `UseExceptionHandler` can map multitenancy exceptions to ProblemDetails.
 - Keep `autoUseExceptionHandler` enabled (default) when the host pipeline does not call `UseExceptionHandler()` (or overrides it), so your registered `IExceptionHandler` implementations still run.
+- Set `AspNetCoreMultitenancyOptions.EnableOpenApiIntegration` to `false` to disable ApiExplorer/OpenAPI adjustments.

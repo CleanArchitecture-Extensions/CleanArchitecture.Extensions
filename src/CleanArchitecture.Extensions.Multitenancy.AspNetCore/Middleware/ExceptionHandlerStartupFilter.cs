@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Hosting;
 
 namespace CleanArchitecture.Extensions.Multitenancy.AspNetCore.Middleware;
