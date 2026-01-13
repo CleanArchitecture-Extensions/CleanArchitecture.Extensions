@@ -29,11 +29,15 @@ public static class DependencyInjection
             .AddDbContextCheck<ApplicationDbContext>();
 
         builder.Services.AddExceptionHandler<CustomExceptionHandler>();
+        // Step 7: (Begin) Register ProblemDetails for exception handling
+        builder.Services.AddProblemDetails();
+        // Step 7: (End) Register ProblemDetails for exception handling
 
         // Step 3: (Begin) Configure multitenancy resolution defaults
         builder.Services.Configure<MultitenancyOptions>(options =>
         {
             options.RequireTenantByDefault = true;
+            options.AllowAnonymous = true;
             options.HeaderNames = new[] { "X-Tenant-ID" };
             options.ResolutionOrder = new List<TenantResolutionSource>
             {

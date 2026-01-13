@@ -17,19 +17,19 @@ Packages:
 `samples/CleanArchitecture.Extensions.Samples.Multitenancy.HeaderAndRouteResolution/src/Application/Application.csproj`:
 ```xml
 <!-- Step 2: (Begin) Add Multitenancy core package -->
-<PackageReference Include="CleanArchitecture.Extensions.Multitenancy" VersionOverride="0.2.5" />
+<PackageReference Include="CleanArchitecture.Extensions.Multitenancy" VersionOverride="0.2.6" />
 <!-- Step 2: (End) Add Multitenancy core package -->
 ```
 
 `samples/CleanArchitecture.Extensions.Samples.Multitenancy.HeaderAndRouteResolution/src/Web/Web.csproj`:
 ```xml
 <!-- Step 2: (Begin) Add Multitenancy AspNetCore package -->
-<PackageReference Include="CleanArchitecture.Extensions.Multitenancy.AspNetCore" VersionOverride="0.2.5" />
+<PackageReference Include="CleanArchitecture.Extensions.Multitenancy.AspNetCore" VersionOverride="0.2.6" />
 <!-- Step 2: (End) Add Multitenancy AspNetCore package -->
 ```
 
 ### Step 3: Configure multitenancy resolution defaults
-Set route-first ordering, require tenants by default, and disable fallback tenants.
+Set route-first ordering, require tenants by default, allow explicitly anonymous endpoints, and disable fallback tenants.
 
 `samples/CleanArchitecture.Extensions.Samples.Multitenancy.HeaderAndRouteResolution/src/Web/DependencyInjection.cs`:
 ```csharp
@@ -43,6 +43,7 @@ using CleanArchitecture.Extensions.Multitenancy.Configuration;
 builder.Services.Configure<MultitenancyOptions>(options =>
 {
     options.RequireTenantByDefault = true;
+    options.AllowAnonymous = true;
     options.HeaderNames = new[] { "X-Tenant-ID" };
     options.ResolutionOrder = new List<TenantResolutionSource>
     {
@@ -87,6 +88,68 @@ app.UseCleanArchitectureMultitenancy();
 app.UseAuthentication();
 app.UseAuthorization();
 // Step 4: (End) Add multitenancy middleware between routing and auth
+```
+
+### Step 5: Add tenant route prefix for endpoint groups
+Group tenant-bound APIs under `/api/tenants/{tenantId}/...`. Health and status endpoints remain outside this group.
+
+`samples/CleanArchitecture.Extensions.Samples.Multitenancy.HeaderAndRouteResolution/src/Web/Infrastructure/WebApplicationExtensions.cs`:
+```csharp
+// Step 5: (Begin) Prefix tenant-bound endpoints with tenant route
+var tenantRoutePrefix = "/api/tenants/{tenantId}";
+
+var routeGroup = app
+    .MapGroup($"{tenantRoutePrefix}/{groupName}")
+    .WithGroupName(groupName)
+    .WithTags(groupName);
+// Step 5: (End) Prefix tenant-bound endpoints with tenant route
+```
+
+### Step 6: Enforce tenant requirements and allow public endpoints
+Require tenants on grouped endpoints and mark public endpoints as optional (requires `AllowAnonymous = true` in Step 3).
+
+`samples/CleanArchitecture.Extensions.Samples.Multitenancy.HeaderAndRouteResolution/src/Web/Infrastructure/WebApplicationExtensions.cs`:
+```csharp
+// Step 6: (Begin) Tenant enforcement routing helpers
+using CleanArchitecture.Extensions.Multitenancy.AspNetCore.Routing;
+// Step 6: (End) Tenant enforcement routing helpers
+```
+```csharp
+// Step 6: (Begin) Enforce tenant requirements for grouped endpoints
+routeGroup.AddTenantEnforcement();
+routeGroup.RequireTenant();
+// Step 6: (End) Enforce tenant requirements for grouped endpoints
+```
+
+`samples/CleanArchitecture.Extensions.Samples.Multitenancy.HeaderAndRouteResolution/src/Web/Program.cs`:
+```csharp
+// Step 6: (Begin) Tenant requirement routing helpers
+using CleanArchitecture.Extensions.Multitenancy.AspNetCore.Routing;
+// Step 6: (End) Tenant requirement routing helpers
+```
+```csharp
+// Step 6: (Begin) Allow tenant-less access for public endpoints
+app.Map("/", () => Results.Redirect("/api"))
+    .AddTenantEnforcement()
+    .AllowAnonymousTenant();
+// Step 6: (End) Allow tenant-less access for public endpoints
+```
+
+### Step 7: Enable ProblemDetails exception handling
+Activate the registered exception handlers so multitenancy failures map to ProblemDetails responses.
+
+`samples/CleanArchitecture.Extensions.Samples.Multitenancy.HeaderAndRouteResolution/src/Web/DependencyInjection.cs`:
+```csharp
+// Step 7: (Begin) Register ProblemDetails for exception handling
+builder.Services.AddProblemDetails();
+// Step 7: (End) Register ProblemDetails for exception handling
+```
+
+`samples/CleanArchitecture.Extensions.Samples.Multitenancy.HeaderAndRouteResolution/src/Web/Program.cs`:
+```csharp
+// Step 7: (Begin) Enable exception handlers for ProblemDetails responses
+app.UseExceptionHandler();
+// Step 7: (End) Enable exception handlers for ProblemDetails responses
 ```
 
 ## Build
