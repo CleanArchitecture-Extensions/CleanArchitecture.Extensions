@@ -1,4 +1,5 @@
 using CleanArchitecture.Extensions.Multitenancy;
+using CleanArchitecture.Extensions.Multitenancy.AspNetCore.ApiExplorer;
 using CleanArchitecture.Extensions.Multitenancy.AspNetCore.Context;
 using CleanArchitecture.Extensions.Multitenancy.AspNetCore.Filters;
 using CleanArchitecture.Extensions.Multitenancy.AspNetCore.Middleware;
@@ -7,6 +8,7 @@ using CleanArchitecture.Extensions.Multitenancy.AspNetCore.ProblemDetails;
 using CleanArchitecture.Extensions.Multitenancy.Configuration;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -52,6 +54,7 @@ public static class DependencyInjectionExtensions
         services.TryAddSingleton<ITenantResolutionContextFactory, DefaultTenantResolutionContextFactory>();
         services.TryAddScoped<TenantEnforcementEndpointFilter>();
         services.TryAddScoped<TenantEnforcementActionFilter>();
+        services.TryAddEnumerable(ServiceDescriptor.Transient<IApiDescriptionProvider, TenantRouteApiDescriptionProvider>());
         services.TryAddEnumerable(ServiceDescriptor.Singleton<IExceptionHandler, TenantExceptionHandler>());
         if (autoUseMiddleware)
         {

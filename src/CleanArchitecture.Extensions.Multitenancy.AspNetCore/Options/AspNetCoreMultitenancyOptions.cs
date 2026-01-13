@@ -28,6 +28,11 @@ public sealed class AspNetCoreMultitenancyOptions
     public bool UseTraceIdentifierAsCorrelationId { get; set; } = true;
 
     /// <summary>
+    /// Gets or sets a value indicating whether OpenAPI/ApiExplorer integration is enabled.
+    /// </summary>
+    public bool EnableOpenApiIntegration { get; set; } = true;
+
+    /// <summary>
     /// Gets the default options instance.
     /// </summary>
     public static AspNetCoreMultitenancyOptions Default => new();
