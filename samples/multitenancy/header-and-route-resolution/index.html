@@ -1915,15 +1915,15 @@
 <li>Packages: <a href="https://www.nuget.org/packages/CleanArchitecture.Extensions.Multitenancy">CleanArchitecture.Extensions.Multitenancy</a> and <a href="https://www.nuget.org/packages/CleanArchitecture.Extensions.Multitenancy.AspNetCore">CleanArchitecture.Extensions.Multitenancy.AspNetCore</a>.</li>
 <li><code>samples/CleanArchitecture.Extensions.Samples.Multitenancy.HeaderAndRouteResolution/src/Application/Application.csproj</code>:
      <div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="cm">&lt;!-- Step 2: (Begin) Add Multitenancy core package --&gt;</span>
-<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="nt">&lt;PackageReference</span><span class="w"> </span><span class="na">Include=</span><span class="s">&quot;CleanArchitecture.Extensions.Multitenancy&quot;</span><span class="w"> </span><span class="na">VersionOverride=</span><span class="s">&quot;0.2.5&quot;</span><span class="w"> </span><span class="nt">/&gt;</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="nt">&lt;PackageReference</span><span class="w"> </span><span class="na">Include=</span><span class="s">&quot;CleanArchitecture.Extensions.Multitenancy&quot;</span><span class="w"> </span><span class="na">VersionOverride=</span><span class="s">&quot;0.2.6&quot;</span><span class="w"> </span><span class="nt">/&gt;</span>
 <a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="cm">&lt;!-- Step 2: (End) Add Multitenancy core package --&gt;</span>
 </code></pre></div></li>
 <li><code>samples/CleanArchitecture.Extensions.Samples.Multitenancy.HeaderAndRouteResolution/src/Web/Web.csproj</code>:
      <div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="cm">&lt;!-- Step 2: (Begin) Add Multitenancy AspNetCore package --&gt;</span>
-<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="nt">&lt;PackageReference</span><span class="w"> </span><span class="na">Include=</span><span class="s">&quot;CleanArchitecture.Extensions.Multitenancy.AspNetCore&quot;</span><span class="w"> </span><span class="na">VersionOverride=</span><span class="s">&quot;0.2.5&quot;</span><span class="w"> </span><span class="nt">/&gt;</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="nt">&lt;PackageReference</span><span class="w"> </span><span class="na">Include=</span><span class="s">&quot;CleanArchitecture.Extensions.Multitenancy.AspNetCore&quot;</span><span class="w"> </span><span class="na">VersionOverride=</span><span class="s">&quot;0.2.6&quot;</span><span class="w"> </span><span class="nt">/&gt;</span>
 <a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="cm">&lt;!-- Step 2: (End) Add Multitenancy AspNetCore package --&gt;</span>
 </code></pre></div></li>
-<li>Configure <code>MultitenancyOptions</code> for route-first ordering (<code>Route &gt; Host &gt; Header &gt; Query &gt; Claim</code>), set header name <code>X-Tenant-ID</code>, require tenants by default, and disable fallback tenants.</li>
+<li>Configure <code>MultitenancyOptions</code> for route-first ordering (<code>Route &gt; Host &gt; Header &gt; Query &gt; Claim</code>), set header name <code>X-Tenant-ID</code>, require tenants by default, allow explicitly anonymous endpoints, and disable fallback tenants.</li>
 <li><code>samples/CleanArchitecture.Extensions.Samples.Multitenancy.HeaderAndRouteResolution/src/Web/DependencyInjection.cs</code>:
      <div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="c1">// Step 3: (Begin) Multitenancy configuration imports</span>
 <a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="k">using</span><span class="w"> </span><span class="nn">CleanArchitecture.Extensions.Multitenancy</span><span class="p">;</span>
@@ -1933,20 +1933,21 @@
      <div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="c1">// Step 3: (Begin) Configure multitenancy resolution defaults</span>
 <a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="n">Configure</span><span class="o">&lt;</span><span class="n">MultitenancyOptions</span><span class="o">&gt;</span><span class="p">(</span><span class="n">options</span><span class="w"> </span><span class="o">=&gt;</span>
 <a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="p">{</span>
-<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="w">    </span><span class="n">options</span><span class="p">.</span><span class="n">RequireTenantByDefault</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">true</span><span class="p">;</span>
-<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="w">    </span><span class="n">options</span><span class="p">.</span><span class="n">HeaderNames</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="p">[]</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="s">&quot;X-Tenant-ID&quot;</span><span class="w"> </span><span class="p">};</span>
-<a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a><span class="w">    </span><span class="n">options</span><span class="p">.</span><span class="n">ResolutionOrder</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">List</span><span class="o">&lt;</span><span class="n">TenantResolutionSource</span><span class="o">&gt;</span>
-<a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="w">    </span><span class="p">{</span>
-<a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a><span class="w">        </span><span class="n">TenantResolutionSource</span><span class="p">.</span><span class="n">Route</span><span class="p">,</span>
-<a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a><span class="w">        </span><span class="n">TenantResolutionSource</span><span class="p">.</span><span class="n">Host</span><span class="p">,</span>
-<a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a><span class="w">        </span><span class="n">TenantResolutionSource</span><span class="p">.</span><span class="n">Header</span><span class="p">,</span>
-<a id="__codelineno-5-11" name="__codelineno-5-11" href="#__codelineno-5-11"></a><span class="w">        </span><span class="n">TenantResolutionSource</span><span class="p">.</span><span class="n">QueryString</span><span class="p">,</span>
-<a id="__codelineno-5-12" name="__codelineno-5-12" href="#__codelineno-5-12"></a><span class="w">        </span><span class="n">TenantResolutionSource</span><span class="p">.</span><span class="n">Claim</span>
-<a id="__codelineno-5-13" name="__codelineno-5-13" href="#__codelineno-5-13"></a><span class="w">    </span><span class="p">};</span>
-<a id="__codelineno-5-14" name="__codelineno-5-14" href="#__codelineno-5-14"></a><span class="w">    </span><span class="n">options</span><span class="p">.</span><span class="n">FallbackTenant</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">null</span><span class="p">;</span>
-<a id="__codelineno-5-15" name="__codelineno-5-15" href="#__codelineno-5-15"></a><span class="w">    </span><span class="n">options</span><span class="p">.</span><span class="n">FallbackTenantId</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">null</span><span class="p">;</span>
-<a id="__codelineno-5-16" name="__codelineno-5-16" href="#__codelineno-5-16"></a><span class="p">});</span>
-<a id="__codelineno-5-17" name="__codelineno-5-17" href="#__codelineno-5-17"></a><span class="c1">// Step 3: (End) Configure multitenancy resolution defaults</span>
+<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="n">options</span><span class="p">.</span><span class="n">RequireTenantByDefault</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">true</span><span class="p">;</span>
+<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="n">options</span><span class="p">.</span><span class="n">AllowAnonymous</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">true</span><span class="p">;</span>
+<a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a><span class="w">    </span><span class="n">options</span><span class="p">.</span><span class="n">HeaderNames</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="p">[]</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="s">&quot;X-Tenant-ID&quot;</span><span class="w"> </span><span class="p">};</span>
+<a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="w">    </span><span class="n">options</span><span class="p">.</span><span class="n">ResolutionOrder</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">List</span><span class="o">&lt;</span><span class="n">TenantResolutionSource</span><span class="o">&gt;</span>
+<a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a><span class="w">    </span><span class="p">{</span>
+<a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a><span class="w">        </span><span class="n">TenantResolutionSource</span><span class="p">.</span><span class="n">Route</span><span class="p">,</span>
+<a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a><span class="w">        </span><span class="n">TenantResolutionSource</span><span class="p">.</span><span class="n">Host</span><span class="p">,</span>
+<a id="__codelineno-5-11" name="__codelineno-5-11" href="#__codelineno-5-11"></a><span class="w">        </span><span class="n">TenantResolutionSource</span><span class="p">.</span><span class="n">Header</span><span class="p">,</span>
+<a id="__codelineno-5-12" name="__codelineno-5-12" href="#__codelineno-5-12"></a><span class="w">        </span><span class="n">TenantResolutionSource</span><span class="p">.</span><span class="n">QueryString</span><span class="p">,</span>
+<a id="__codelineno-5-13" name="__codelineno-5-13" href="#__codelineno-5-13"></a><span class="w">        </span><span class="n">TenantResolutionSource</span><span class="p">.</span><span class="n">Claim</span>
+<a id="__codelineno-5-14" name="__codelineno-5-14" href="#__codelineno-5-14"></a><span class="w">    </span><span class="p">};</span>
+<a id="__codelineno-5-15" name="__codelineno-5-15" href="#__codelineno-5-15"></a><span class="w">    </span><span class="n">options</span><span class="p">.</span><span class="n">FallbackTenant</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">null</span><span class="p">;</span>
+<a id="__codelineno-5-16" name="__codelineno-5-16" href="#__codelineno-5-16"></a><span class="w">    </span><span class="n">options</span><span class="p">.</span><span class="n">FallbackTenantId</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">null</span><span class="p">;</span>
+<a id="__codelineno-5-17" name="__codelineno-5-17" href="#__codelineno-5-17"></a><span class="p">});</span>
+<a id="__codelineno-5-18" name="__codelineno-5-18" href="#__codelineno-5-18"></a><span class="c1">// Step 3: (End) Configure multitenancy resolution defaults</span>
 </code></pre></div></li>
 <li>Register services with <code>AddCleanArchitectureMultitenancy</code> then <code>AddCleanArchitectureMultitenancyAspNetCore(autoUseMiddleware: false)</code>; add <code>UseCleanArchitectureMultitenancy</code> after routing and before authentication/authorization.</li>
 <li><code>samples/CleanArchitecture.Extensions.Samples.Multitenancy.HeaderAndRouteResolution/src/Web/DependencyInjection.cs</code>:
@@ -1971,9 +1972,56 @@
 <a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a><span class="n">app</span><span class="p">.</span><span class="n">UseAuthorization</span><span class="p">();</span>
 <a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a><span class="c1">// Step 4: (End) Add multitenancy middleware between routing and auth</span>
 </code></pre></div></li>
-<li>Add route conventions that group tenant-bound APIs under <code>/tenants/{tenantId}/...</code>; keep health/status endpoints outside the group for anonymous access.</li>
-<li>Decorate tenant-bound endpoints with <code>RequireTenant</code>, and mark public endpoints with <code>AllowAnonymousTenant</code> to keep resolution optional without enforcement.</li>
+<li>
+<p>Add route conventions that group tenant-bound APIs under <code>/tenants/{tenantId}/...</code>; keep health/status endpoints outside the group for anonymous access.</p>
+</li>
+<li>
+<p><code>samples/CleanArchitecture.Extensions.Samples.Multitenancy.HeaderAndRouteResolution/src/Web/Infrastructure/WebApplicationExtensions.cs</code>:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="c1">// Step 5: (Begin) Prefix tenant-bound endpoints with tenant route</span>
+<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="kt">var</span><span class="w"> </span><span class="n">tenantRoutePrefix</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;/api/tenants/{tenantId}&quot;</span><span class="p">;</span>
+<a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>
+<a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a><span class="kt">var</span><span class="w"> </span><span class="n">routeGroup</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">app</span>
+<a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a><span class="w">    </span><span class="p">.</span><span class="n">MapGroup</span><span class="p">(</span><span class="s">$&quot;{tenantRoutePrefix}/{groupName}&quot;</span><span class="p">)</span>
+<a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a><span class="w">    </span><span class="p">.</span><span class="n">WithGroupName</span><span class="p">(</span><span class="n">groupName</span><span class="p">)</span>
+<a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a><span class="w">    </span><span class="p">.</span><span class="n">WithTags</span><span class="p">(</span><span class="n">groupName</span><span class="p">);</span>
+<a id="__codelineno-10-8" name="__codelineno-10-8" href="#__codelineno-10-8"></a><span class="c1">// Step 5: (End) Prefix tenant-bound endpoints with tenant route</span>
+</code></pre></div>
+</li>
+<li>
+<p>Decorate tenant-bound endpoints with <code>RequireTenant</code>, and mark public endpoints with <code>AllowAnonymousTenant</code> to keep resolution optional without enforcement (requires <code>AllowAnonymous = true</code> in Step 3).</p>
+</li>
+<li><code>samples/CleanArchitecture.Extensions.Samples.Multitenancy.HeaderAndRouteResolution/src/Web/Infrastructure/WebApplicationExtensions.cs</code>:
+     <div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="c1">// Step 6: (Begin) Tenant enforcement routing helpers</span>
+<a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a><span class="k">using</span><span class="w"> </span><span class="nn">CleanArchitecture.Extensions.Multitenancy.AspNetCore.Routing</span><span class="p">;</span>
+<a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a><span class="c1">// Step 6: (End) Tenant enforcement routing helpers</span>
+</code></pre></div>
+     <div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="c1">// Step 6: (Begin) Enforce tenant requirements for grouped endpoints</span>
+<a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a><span class="n">routeGroup</span><span class="p">.</span><span class="n">AddTenantEnforcement</span><span class="p">();</span>
+<a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a><span class="n">routeGroup</span><span class="p">.</span><span class="n">RequireTenant</span><span class="p">();</span>
+<a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a><span class="c1">// Step 6: (End) Enforce tenant requirements for grouped endpoints</span>
+</code></pre></div></li>
+<li><code>samples/CleanArchitecture.Extensions.Samples.Multitenancy.HeaderAndRouteResolution/src/Web/Program.cs</code>:
+     <div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="c1">// Step 6: (Begin) Tenant requirement routing helpers</span>
+<a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a><span class="k">using</span><span class="w"> </span><span class="nn">CleanArchitecture.Extensions.Multitenancy.AspNetCore.Routing</span><span class="p">;</span>
+<a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a><span class="c1">// Step 6: (End) Tenant requirement routing helpers</span>
+</code></pre></div>
+     <div class="highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="c1">// Step 6: (Begin) Allow tenant-less access for public endpoints</span>
+<a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a><span class="n">app</span><span class="p">.</span><span class="n">Map</span><span class="p">(</span><span class="s">&quot;/&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">Results</span><span class="p">.</span><span class="n">Redirect</span><span class="p">(</span><span class="s">&quot;/api&quot;</span><span class="p">))</span>
+<a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a><span class="w">    </span><span class="p">.</span><span class="n">AddTenantEnforcement</span><span class="p">()</span>
+<a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a><span class="w">    </span><span class="p">.</span><span class="n">AllowAnonymousTenant</span><span class="p">();</span>
+<a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a><span class="c1">// Step 6: (End) Allow tenant-less access for public endpoints</span>
+</code></pre></div></li>
 <li>Enable <code>TenantExceptionHandler</code>/ProblemDetails so unresolved tenants return 400, missing tenants return 404, and suspended tenants return 403.</li>
+<li><code>samples/CleanArchitecture.Extensions.Samples.Multitenancy.HeaderAndRouteResolution/src/Web/DependencyInjection.cs</code>:
+     <div class="highlight"><pre><span></span><code><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="c1">// Step 7: (Begin) Register ProblemDetails for exception handling</span>
+<a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a><span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="n">AddProblemDetails</span><span class="p">();</span>
+<a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a><span class="c1">// Step 7: (End) Register ProblemDetails for exception handling</span>
+</code></pre></div></li>
+<li><code>samples/CleanArchitecture.Extensions.Samples.Multitenancy.HeaderAndRouteResolution/src/Web/Program.cs</code>:
+     <div class="highlight"><pre><span></span><code><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="c1">// Step 7: (Begin) Enable exception handlers for ProblemDetails responses</span>
+<a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a><span class="n">app</span><span class="p">.</span><span class="n">UseExceptionHandler</span><span class="p">();</span>
+<a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a><span class="c1">// Step 7: (End) Enable exception handlers for ProblemDetails responses</span>
+</code></pre></div></li>
 <li>Add integration tests that cover: resolved via route, resolved via host mapping, header fallback when the route is absent, conflict handling when route/header disagree, and enforcement responses when no tenant is provided.</li>
 <li>Update the sample README with the walkthrough (inputs, expected status codes) and middleware ordering reminders.</li>
 </ol>
@@ -2003,7 +2051,7 @@
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1-2.1-2M12.5 7v5.2l4 2.4-1 1L11 13V7h1.5M11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2v1.8Z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">January 12, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">January 13, 2026</span>
   </span>
 
     
