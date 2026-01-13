@@ -1,4 +1,5 @@
 using System.Reflection;
+using System.Text.RegularExpressions;
 using CleanArchitecture.Extensions.Multitenancy.AspNetCore.Options;
 using CleanArchitecture.Extensions.Multitenancy.Configuration;
 using Microsoft.AspNetCore.Mvc.Abstractions;
@@ -13,6 +14,10 @@ namespace CleanArchitecture.Extensions.Multitenancy.AspNetCore.ApiExplorer;
 /// </summary>
 public sealed class TenantRouteApiDescriptionProvider : IApiDescriptionProvider
 {
+    private static readonly Regex DisplayNameRouteRegex = new(
+        @"(?:^|HTTP:\s*)(GET|POST|PUT|DELETE|PATCH|HEAD|OPTIONS)\s+(?<path>/\S+)",
+        RegexOptions.IgnoreCase | RegexOptions.Compiled);
+
     private readonly MultitenancyOptions _options;
     private readonly AspNetCoreMultitenancyOptions _aspNetCoreOptions;
     private readonly IModelMetadataProvider? _modelMetadataProvider;
@@ -104,30 +109,101 @@ public sealed class TenantRouteApiDescriptionProvider : IApiDescriptionProvider
             return template;
         }
 
-        return TryGetRoutePatternTemplate(actionDescriptor);
+        return TryGetRoutePatternTemplate(actionDescriptor)
+            ?? TryGetTemplateFromEndpointMetadata(actionDescriptor)
+            ?? TryGetTemplateFromDisplayName(actionDescriptor);
     }
 
     private static string? TryGetRoutePatternTemplate(ActionDescriptor actionDescriptor)
     {
-        var routePatternProperty = actionDescriptor.GetType().GetProperty("RoutePattern", BindingFlags.Instance | BindingFlags.Public);
+        var routePatternProperty = actionDescriptor.GetType().GetProperty(
+            "RoutePattern",
+            BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
         if (routePatternProperty is null)
         {
             return null;
         }
 
         var routePattern = routePatternProperty.GetValue(actionDescriptor);
+        return GetRawText(routePattern);
+    }
+
+    private static string? TryGetTemplateFromEndpointMetadata(ActionDescriptor actionDescriptor)
+    {
+        if (actionDescriptor.EndpointMetadata is null || actionDescriptor.EndpointMetadata.Count == 0)
+        {
+            return null;
+        }
+
+        foreach (var metadata in actionDescriptor.EndpointMetadata)
+        {
+            if (metadata is null)
+            {
+                continue;
+            }
+
+            var routePatternProperty = metadata.GetType().GetProperty(
+                "RoutePattern",
+                BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+            if (routePatternProperty is not null)
+            {
+                var routePattern = routePatternProperty.GetValue(metadata);
+                var template = GetRawText(routePattern);
+                if (!string.IsNullOrWhiteSpace(template))
+                {
+                    return template;
+                }
+            }
+
+            var templateProperty = metadata.GetType().GetProperty(
+                "Template",
+                BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+            if (templateProperty?.PropertyType == typeof(string))
+            {
+                var template = templateProperty.GetValue(metadata) as string;
+                if (!string.IsNullOrWhiteSpace(template))
+                {
+                    return template;
+                }
+            }
+        }
+
+        return null;
+    }
+
+    private static string? GetRawText(object? routePattern)
+    {
         if (routePattern is null)
         {
             return null;
         }
 
-        var rawTextProperty = routePattern.GetType().GetProperty("RawText", BindingFlags.Instance | BindingFlags.Public);
+        var rawTextProperty = routePattern.GetType().GetProperty(
+            "RawText",
+            BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
         if (rawTextProperty?.PropertyType == typeof(string))
         {
             return rawTextProperty.GetValue(routePattern) as string;
         }
 
         return routePattern.ToString();
+    }
+
+    private static string? TryGetTemplateFromDisplayName(ActionDescriptor actionDescriptor)
+    {
+        var displayName = actionDescriptor.DisplayName;
+        if (string.IsNullOrWhiteSpace(displayName))
+        {
+            return null;
+        }
+
+        var match = DisplayNameRouteRegex.Match(displayName);
+        if (!match.Success)
+        {
+            return null;
+        }
+
+        return match.Groups["path"].Value;
     }
 
     private static bool ContainsRouteParameter(string template, string parameterName)
