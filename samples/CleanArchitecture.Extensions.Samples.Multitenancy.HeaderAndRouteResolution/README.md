@@ -1,4 +1,4 @@
-﻿# CleanArchitecture.Extensions.Samples.Multitenancy.HeaderAndRouteResolution
+# CleanArchitecture.Extensions.Samples.Multitenancy.HeaderAndRouteResolution
 
 The project was generated using the [Clean.Architecture.Solution.Template](https://github.com/jasontaylordev/CleanArchitecture) version 10.0.0-preview.
 
@@ -17,14 +17,14 @@ Packages:
 `samples/CleanArchitecture.Extensions.Samples.Multitenancy.HeaderAndRouteResolution/src/Application/Application.csproj`:
 ```xml
 <!-- Step 2: (Begin) Add Multitenancy core package -->
-<PackageReference Include="CleanArchitecture.Extensions.Multitenancy" VersionOverride="0.2.6" />
+<PackageReference Include="CleanArchitecture.Extensions.Multitenancy" VersionOverride="0.2.7" />
 <!-- Step 2: (End) Add Multitenancy core package -->
 ```
 
 `samples/CleanArchitecture.Extensions.Samples.Multitenancy.HeaderAndRouteResolution/src/Web/Web.csproj`:
 ```xml
 <!-- Step 2: (Begin) Add Multitenancy AspNetCore package -->
-<PackageReference Include="CleanArchitecture.Extensions.Multitenancy.AspNetCore" VersionOverride="0.2.6" />
+<PackageReference Include="CleanArchitecture.Extensions.Multitenancy.AspNetCore" VersionOverride="0.2.7" />
 <!-- Step 2: (End) Add Multitenancy AspNetCore package -->
 ```
 
