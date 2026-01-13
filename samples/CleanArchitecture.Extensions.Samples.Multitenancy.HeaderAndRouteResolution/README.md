@@ -7,24 +7,20 @@ The project was generated using the [Clean.Architecture.Solution.Template](https
 ### Step 1: Create the base solution
 Generate the empty Web API-only solution with SQLite using the Clean Architecture template. This matches the baseline template so the multitenancy changes are easy to compare and repeat.
 
-### Step 2: Add multitenancy NuGet packages
-Reference the published Multitenancy packages from NuGet (use the latest versions available).
-
-Packages:
-- [CleanArchitecture.Extensions.Multitenancy](https://www.nuget.org/packages/CleanArchitecture.Extensions.Multitenancy)
-- [CleanArchitecture.Extensions.Multitenancy.AspNetCore](https://www.nuget.org/packages/CleanArchitecture.Extensions.Multitenancy.AspNetCore)
+### Step 2: Reference multitenancy projects locally
+Reference the multitenancy projects directly from the repository while iterating locally. When you move back to NuGet, replace these `<ProjectReference />` entries with `<PackageReference />` entries that target the latest published versions.
 
 `samples/CleanArchitecture.Extensions.Samples.Multitenancy.HeaderAndRouteResolution/src/Application/Application.csproj`:
 ```xml
 <!-- Step 2: (Begin) Add Multitenancy core package -->
-<PackageReference Include="CleanArchitecture.Extensions.Multitenancy" VersionOverride="0.2.7" />
+<ProjectReference Include="..\..\..\..\src\CleanArchitecture.Extensions.Multitenancy\CleanArchitecture.Extensions.Multitenancy.csproj" />
 <!-- Step 2: (End) Add Multitenancy core package -->
 ```
 
 `samples/CleanArchitecture.Extensions.Samples.Multitenancy.HeaderAndRouteResolution/src/Web/Web.csproj`:
 ```xml
 <!-- Step 2: (Begin) Add Multitenancy AspNetCore package -->
-<PackageReference Include="CleanArchitecture.Extensions.Multitenancy.AspNetCore" VersionOverride="0.2.7" />
+<ProjectReference Include="..\..\..\..\src\CleanArchitecture.Extensions.Multitenancy.AspNetCore\CleanArchitecture.Extensions.Multitenancy.AspNetCore.csproj" />
 <!-- Step 2: (End) Add Multitenancy AspNetCore package -->
 ```
 

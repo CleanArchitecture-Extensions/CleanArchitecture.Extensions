@@ -6,7 +6,7 @@
     "version": "1.0.0"
   },
   "paths": {
-    "/api/TodoItems": {
+    "/api/tenants/{tenantId}/TodoItems": {
       "get": {
         "tags": [
           "TodoItems"
@@ -42,6 +42,16 @@
               "format": "int32"
             },
             "x-position": 3
+          },
+          {
+            "name": "tenantId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 4
           }
         ],
         "responses": {
@@ -67,6 +77,18 @@
           "TodoItems"
         ],
         "operationId": "CreateTodoItem",
+        "parameters": [
+          {
+            "name": "tenantId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 2
+          }
+        ],
         "requestBody": {
           "x-name": "command",
           "content": {
@@ -99,7 +121,7 @@
         ]
       }
     },
-    "/api/TodoItems/{id}": {
+    "/api/tenants/{tenantId}/TodoItems/{id}": {
       "put": {
         "tags": [
           "TodoItems"
@@ -115,6 +137,16 @@
               "format": "int32"
             },
             "x-position": 1
+          },
+          {
+            "name": "tenantId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 3
           }
         ],
         "requestBody": {
@@ -158,6 +190,16 @@
               "format": "int32"
             },
             "x-position": 1
+          },
+          {
+            "name": "tenantId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 2
           }
         ],
         "responses": {
@@ -172,7 +214,7 @@
         ]
       }
     },
-    "/api/TodoItems/UpdateDetail/{id}": {
+    "/api/tenants/{tenantId}/TodoItems/UpdateDetail/{id}": {
       "put": {
         "tags": [
           "TodoItems"
@@ -188,6 +230,16 @@
               "format": "int32"
             },
             "x-position": 1
+          },
+          {
+            "name": "tenantId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 3
           }
         ],
         "requestBody": {
@@ -217,12 +269,24 @@
         ]
       }
     },
-    "/api/TodoLists": {
+    "/api/tenants/{tenantId}/TodoLists": {
       "get": {
         "tags": [
           "TodoLists"
         ],
         "operationId": "GetTodoLists",
+        "parameters": [
+          {
+            "name": "tenantId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 1
+          }
+        ],
         "responses": {
           "200": {
             "description": "",
@@ -246,6 +310,18 @@
           "TodoLists"
         ],
         "operationId": "CreateTodoList",
+        "parameters": [
+          {
+            "name": "tenantId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 2
+          }
+        ],
         "requestBody": {
           "x-name": "command",
           "content": {
@@ -278,7 +354,7 @@
         ]
       }
     },
-    "/api/TodoLists/{id}": {
+    "/api/tenants/{tenantId}/TodoLists/{id}": {
       "put": {
         "tags": [
           "TodoLists"
@@ -294,6 +370,16 @@
               "format": "int32"
             },
             "x-position": 1
+          },
+          {
+            "name": "tenantId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 3
           }
         ],
         "requestBody": {
@@ -337,6 +423,16 @@
               "format": "int32"
             },
             "x-position": 1
+          },
+          {
+            "name": "tenantId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 2
           }
         ],
         "responses": {
@@ -351,12 +447,24 @@
         ]
       }
     },
-    "/api/Users/register": {
+    "/api/tenants/{tenantId}/Users/register": {
       "post": {
         "tags": [
           "Users"
         ],
-        "operationId": "PostApiUsersRegister",
+        "operationId": "PostApiTenantsUsersRegister",
+        "parameters": [
+          {
+            "name": "tenantId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 2
+          }
+        ],
         "requestBody": {
           "x-name": "registration",
           "content": {
@@ -386,12 +494,12 @@
         }
       }
     },
-    "/api/Users/login": {
+    "/api/tenants/{tenantId}/Users/login": {
       "post": {
         "tags": [
           "Users"
         ],
-        "operationId": "PostApiUsersLogin",
+        "operationId": "PostApiTenantsUsersLogin",
         "parameters": [
           {
             "name": "useCookies",
@@ -410,6 +518,16 @@
               "nullable": true
             },
             "x-position": 3
+          },
+          {
+            "name": "tenantId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 4
           }
         ],
         "requestBody": {
@@ -438,12 +556,24 @@
         }
       }
     },
-    "/api/Users/refresh": {
+    "/api/tenants/{tenantId}/Users/refresh": {
       "post": {
         "tags": [
           "Users"
         ],
-        "operationId": "PostApiUsersRefresh",
+        "operationId": "PostApiTenantsUsersRefresh",
+        "parameters": [
+          {
+            "name": "tenantId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 2
+          }
+        ],
         "requestBody": {
           "x-name": "refreshRequest",
           "content": {
@@ -470,12 +600,12 @@
         }
       }
     },
-    "/api/Users/confirmEmail": {
+    "/api/tenants/{tenantId}/Users/confirmEmail": {
       "get": {
         "tags": [
           "Users"
         ],
-        "operationId": "GetApiUsersConfirmEmail",
+        "operationId": "GetApiTenantsUsersConfirmEmail",
         "parameters": [
           {
             "name": "userId",
@@ -505,6 +635,16 @@
               "nullable": true
             },
             "x-position": 3
+          },
+          {
+            "name": "tenantId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 4
           }
         ],
         "responses": {
@@ -514,12 +654,24 @@
         }
       }
     },
-    "/api/Users/resendConfirmationEmail": {
+    "/api/tenants/{tenantId}/Users/resendConfirmationEmail": {
       "post": {
         "tags": [
           "Users"
         ],
-        "operationId": "PostApiUsersResendConfirmationEmail",
+        "operationId": "PostApiTenantsUsersResendConfirmationEmail",
+        "parameters": [
+          {
+            "name": "tenantId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 2
+          }
+        ],
         "requestBody": {
           "x-name": "resendRequest",
           "content": {
@@ -539,12 +691,24 @@
         }
       }
     },
-    "/api/Users/forgotPassword": {
+    "/api/tenants/{tenantId}/Users/forgotPassword": {
       "post": {
         "tags": [
           "Users"
         ],
-        "operationId": "PostApiUsersForgotPassword",
+        "operationId": "PostApiTenantsUsersForgotPassword",
+        "parameters": [
+          {
+            "name": "tenantId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 2
+          }
+        ],
         "requestBody": {
           "x-name": "resetRequest",
           "content": {
@@ -574,12 +738,24 @@
         }
       }
     },
-    "/api/Users/resetPassword": {
+    "/api/tenants/{tenantId}/Users/resetPassword": {
       "post": {
         "tags": [
           "Users"
         ],
-        "operationId": "PostApiUsersResetPassword",
+        "operationId": "PostApiTenantsUsersResetPassword",
+        "parameters": [
+          {
+            "name": "tenantId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 2
+          }
+        ],
         "requestBody": {
           "x-name": "resetRequest",
           "content": {
@@ -609,12 +785,24 @@
         }
       }
     },
-    "/api/Users/manage/2fa": {
+    "/api/tenants/{tenantId}/Users/manage/2fa": {
       "post": {
         "tags": [
           "Users"
         ],
-        "operationId": "PostApiUsersManage2fa",
+        "operationId": "PostApiTenantsUsersManage2fa",
+        "parameters": [
+          {
+            "name": "tenantId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 2
+          }
+        ],
         "requestBody": {
           "x-name": "tfaRequest",
           "content": {
@@ -659,12 +847,24 @@
         ]
       }
     },
-    "/api/Users/manage/info": {
+    "/api/tenants/{tenantId}/Users/manage/info": {
       "get": {
         "tags": [
           "Users"
         ],
-        "operationId": "GetApiUsersManageInfo",
+        "operationId": "GetApiTenantsUsersManageInfo",
+        "parameters": [
+          {
+            "name": "tenantId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 1
+          }
+        ],
         "responses": {
           "200": {
             "description": "",
@@ -700,7 +900,19 @@
         "tags": [
           "Users"
         ],
-        "operationId": "PostApiUsersManageInfo",
+        "operationId": "PostApiTenantsUsersManageInfo",
+        "parameters": [
+          {
+            "name": "tenantId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 2
+          }
+        ],
         "requestBody": {
           "x-name": "infoRequest",
           "content": {
@@ -745,12 +957,24 @@
         ]
       }
     },
-    "/api/WeatherForecasts": {
+    "/api/tenants/{tenantId}/WeatherForecasts": {
       "get": {
         "tags": [
           "WeatherForecasts"
         ],
         "operationId": "GetWeatherForecasts",
+        "parameters": [
+          {
+            "name": "tenantId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 1
+          }
+        ],
         "responses": {
           "200": {
             "description": "",
