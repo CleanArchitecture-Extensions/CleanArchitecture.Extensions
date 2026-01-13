@@ -73,4 +73,48 @@ public class TenantRouteApiDescriptionProviderTests
         Assert.Equal("api/tenants/TodoItems", description.RelativePath);
         Assert.Empty(description.ParameterDescriptions);
     }
+
+    [Fact]
+    public void OnProvidersExecuting_uses_route_pattern_when_attribute_template_missing()
+    {
+        var options = OptionsFactory.Create(new MultitenancyOptions { RouteParameterName = "tenantId" });
+        var aspNetCoreOptions = OptionsFactory.Create(new AspNetCoreMultitenancyOptions { EnableOpenApiIntegration = true });
+        var provider = new TenantRouteApiDescriptionProvider(options, aspNetCoreOptions, new EmptyModelMetadataProvider());
+
+        var actionDescriptor = new StubRouteActionDescriptor
+        {
+            RoutePattern = new StubRoutePattern("api/tenants/{tenantId}/TodoItems")
+        };
+
+        var description = new ApiDescription
+        {
+            ActionDescriptor = actionDescriptor,
+            RelativePath = "api/tenants/TodoItems"
+        };
+
+        var context = new ApiDescriptionProviderContext(new[] { actionDescriptor });
+        context.Results.Add(description);
+
+        provider.OnProvidersExecuting(context);
+
+        Assert.Equal("api/tenants/{tenantId}/TodoItems", description.RelativePath);
+        var parameter = Assert.Single(description.ParameterDescriptions, item =>
+            string.Equals(item.Name, "tenantId", StringComparison.OrdinalIgnoreCase));
+        Assert.Equal(BindingSource.Path, parameter.Source);
+    }
+
+    private sealed class StubRoutePattern
+    {
+        public StubRoutePattern(string rawText)
+        {
+            RawText = rawText;
+        }
+
+        public string RawText { get; }
+    }
+
+    private sealed class StubRouteActionDescriptor : ActionDescriptor
+    {
+        public StubRoutePattern? RoutePattern { get; set; }
+    }
 }
