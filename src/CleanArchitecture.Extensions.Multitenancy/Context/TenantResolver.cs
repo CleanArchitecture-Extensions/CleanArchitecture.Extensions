@@ -120,7 +120,8 @@ public sealed class TenantResolver : ITenantResolver
             return null;
         }
 
-        return await _tenantCache.GetAsync(tenantId, cancellationToken).ConfigureAwait(false);
+        var cached = await _tenantCache.GetAsync(tenantId, cancellationToken).ConfigureAwait(false);
+        return cached is null ? null : TenantInfo.From(cached);
     }
 
     private async Task<ITenantInfo?> ResolveFromStoreAsync(string tenantId, CancellationToken cancellationToken)
@@ -137,11 +138,13 @@ public sealed class TenantResolver : ITenantResolver
             return null;
         }
 
+        var snapshot = TenantInfo.From(tenant);
+
         if (_tenantCache is not null)
         {
-            await _tenantCache.SetAsync(tenant, _options.ResolutionCacheTtl, cancellationToken).ConfigureAwait(false);
+            await _tenantCache.SetAsync(snapshot, _options.ResolutionCacheTtl, cancellationToken).ConfigureAwait(false);
         }
 
-        return tenant;
+        return snapshot;
     }
 }
