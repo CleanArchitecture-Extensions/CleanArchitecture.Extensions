@@ -1,4 +1,7 @@
 ﻿using System.Reflection;
+// Step 6: (Begin) Tenant enforcement routing helpers
+using CleanArchitecture.Extensions.Multitenancy.AspNetCore.Routing;
+// Step 6: (End) Tenant enforcement routing helpers
 
 namespace CleanArchitecture.Extensions.Samples.Multitenancy.HeaderAndRouteResolution.Web.Infrastructure;
 
@@ -11,11 +14,18 @@ public static class WebApplicationExtensions
         // Step 5: (Begin) Prefix tenant-bound endpoints with tenant route
         var tenantRoutePrefix = "/api/tenants/{tenantId}";
 
-        return app
+        var routeGroup = app
             .MapGroup($"{tenantRoutePrefix}/{groupName}")
             .WithGroupName(groupName)
             .WithTags(groupName);
         // Step 5: (End) Prefix tenant-bound endpoints with tenant route
+
+        // Step 6: (Begin) Enforce tenant requirements for grouped endpoints
+        routeGroup.AddTenantEnforcement();
+        routeGroup.RequireTenant();
+        // Step 6: (End) Enforce tenant requirements for grouped endpoints
+
+        return routeGroup;
     }
 
     public static WebApplication MapEndpoints(this WebApplication app)

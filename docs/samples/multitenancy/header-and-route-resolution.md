@@ -46,7 +46,7 @@ Document a sample that shows deterministic tenant resolution from route first, h
      <PackageReference Include="CleanArchitecture.Extensions.Multitenancy.AspNetCore" VersionOverride="0.2.6" />
      <!-- Step 2: (End) Add Multitenancy AspNetCore package -->
      ```
-3. Configure `MultitenancyOptions` for route-first ordering (`Route > Host > Header > Query > Claim`), set header name `X-Tenant-ID`, require tenants by default, and disable fallback tenants.
+3. Configure `MultitenancyOptions` for route-first ordering (`Route > Host > Header > Query > Claim`), set header name `X-Tenant-ID`, require tenants by default, allow explicitly anonymous endpoints, and disable fallback tenants.
    - `samples/CleanArchitecture.Extensions.Samples.Multitenancy.HeaderAndRouteResolution/src/Web/DependencyInjection.cs`:
      ```csharp
      // Step 3: (Begin) Multitenancy configuration imports
@@ -58,7 +58,8 @@ Document a sample that shows deterministic tenant resolution from route first, h
      // Step 3: (Begin) Configure multitenancy resolution defaults
      builder.Services.Configure<MultitenancyOptions>(options =>
      {
-         options.RequireTenantByDefault = true;
+     options.RequireTenantByDefault = true;
+     options.AllowAnonymous = true;
          options.HeaderNames = new[] { "X-Tenant-ID" };
          options.ResolutionOrder = new List<TenantResolutionSource>
          {
@@ -108,15 +109,52 @@ Document a sample that shows deterministic tenant resolution from route first, h
      // Step 5: (Begin) Prefix tenant-bound endpoints with tenant route
      var tenantRoutePrefix = "/api/tenants/{tenantId}";
 
-     return app
+     var routeGroup = app
          .MapGroup($"{tenantRoutePrefix}/{groupName}")
          .WithGroupName(groupName)
          .WithTags(groupName);
      // Step 5: (End) Prefix tenant-bound endpoints with tenant route
      ```
 
-6. Decorate tenant-bound endpoints with `RequireTenant`, and mark public endpoints with `AllowAnonymousTenant` to keep resolution optional without enforcement.
+6. Decorate tenant-bound endpoints with `RequireTenant`, and mark public endpoints with `AllowAnonymousTenant` to keep resolution optional without enforcement (requires `AllowAnonymous = true` in Step 3).
+   - `samples/CleanArchitecture.Extensions.Samples.Multitenancy.HeaderAndRouteResolution/src/Web/Infrastructure/WebApplicationExtensions.cs`:
+     ```csharp
+     // Step 6: (Begin) Tenant enforcement routing helpers
+     using CleanArchitecture.Extensions.Multitenancy.AspNetCore.Routing;
+     // Step 6: (End) Tenant enforcement routing helpers
+     ```
+     ```csharp
+     // Step 6: (Begin) Enforce tenant requirements for grouped endpoints
+     routeGroup.AddTenantEnforcement();
+     routeGroup.RequireTenant();
+     // Step 6: (End) Enforce tenant requirements for grouped endpoints
+     ```
+   - `samples/CleanArchitecture.Extensions.Samples.Multitenancy.HeaderAndRouteResolution/src/Web/Program.cs`:
+     ```csharp
+     // Step 6: (Begin) Tenant requirement routing helpers
+     using CleanArchitecture.Extensions.Multitenancy.AspNetCore.Routing;
+     // Step 6: (End) Tenant requirement routing helpers
+     ```
+     ```csharp
+     // Step 6: (Begin) Allow tenant-less access for public endpoints
+     app.Map("/", () => Results.Redirect("/api"))
+         .AddTenantEnforcement()
+         .AllowAnonymousTenant();
+     // Step 6: (End) Allow tenant-less access for public endpoints
+     ```
 7. Enable `TenantExceptionHandler`/ProblemDetails so unresolved tenants return 400, missing tenants return 404, and suspended tenants return 403.
+   - `samples/CleanArchitecture.Extensions.Samples.Multitenancy.HeaderAndRouteResolution/src/Web/DependencyInjection.cs`:
+     ```csharp
+     // Step 7: (Begin) Register ProblemDetails for exception handling
+     builder.Services.AddProblemDetails();
+     // Step 7: (End) Register ProblemDetails for exception handling
+     ```
+   - `samples/CleanArchitecture.Extensions.Samples.Multitenancy.HeaderAndRouteResolution/src/Web/Program.cs`:
+     ```csharp
+     // Step 7: (Begin) Enable exception handlers for ProblemDetails responses
+     app.UseExceptionHandler();
+     // Step 7: (End) Enable exception handlers for ProblemDetails responses
+     ```
 8. Add integration tests that cover: resolved via route, resolved via host mapping, header fallback when the route is absent, conflict handling when route/header disagree, and enforcement responses when no tenant is provided.
 9. Update the sample README with the walkthrough (inputs, expected status codes) and middleware ordering reminders.
 

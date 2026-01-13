@@ -1,6 +1,9 @@
 // Step 4: (Begin) Multitenancy middleware import
 using CleanArchitecture.Extensions.Multitenancy.AspNetCore.Middleware;
 // Step 4: (End) Multitenancy middleware import
+// Step 6: (Begin) Tenant requirement routing helpers
+using CleanArchitecture.Extensions.Multitenancy.AspNetCore.Routing;
+// Step 6: (End) Tenant requirement routing helpers
 using CleanArchitecture.Extensions.Samples.Multitenancy.HeaderAndRouteResolution.Infrastructure.Data;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -35,7 +38,9 @@ app.UseSwaggerUi(settings =>
 });
 
 
-app.UseExceptionHandler(options => { });
+// Step 7: (Begin) Enable exception handlers for ProblemDetails responses
+app.UseExceptionHandler();
+// Step 7: (End) Enable exception handlers for ProblemDetails responses
 
 // Step 4: (Begin) Add multitenancy middleware between routing and auth
 app.UseRouting();
@@ -44,7 +49,11 @@ app.UseAuthentication();
 app.UseAuthorization();
 // Step 4: (End) Add multitenancy middleware between routing and auth
 
-app.Map("/", () => Results.Redirect("/api"));
+// Step 6: (Begin) Allow tenant-less access for public endpoints
+app.Map("/", () => Results.Redirect("/api"))
+    .AddTenantEnforcement()
+    .AllowAnonymousTenant();
+// Step 6: (End) Allow tenant-less access for public endpoints
 
 app.MapEndpoints();
 
