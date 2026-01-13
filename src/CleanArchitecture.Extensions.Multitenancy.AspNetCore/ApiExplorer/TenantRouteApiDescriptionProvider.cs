@@ -1,5 +1,7 @@
+using System.Reflection;
 using CleanArchitecture.Extensions.Multitenancy.AspNetCore.Options;
 using CleanArchitecture.Extensions.Multitenancy.Configuration;
+using Microsoft.AspNetCore.Mvc.Abstractions;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.Options;
@@ -46,7 +48,7 @@ public sealed class TenantRouteApiDescriptionProvider : IApiDescriptionProvider
 
         foreach (var description in context.Results)
         {
-            var template = description.ActionDescriptor?.AttributeRouteInfo?.Template;
+            var template = GetTemplate(description.ActionDescriptor);
             if (!ShouldApplyTemplate(template))
             {
                 continue;
@@ -87,6 +89,45 @@ public sealed class TenantRouteApiDescriptionProvider : IApiDescriptionProvider
     private static string NormalizeTemplate(string template)
     {
         return template.TrimStart('/');
+    }
+
+    private static string? GetTemplate(ActionDescriptor? actionDescriptor)
+    {
+        if (actionDescriptor is null)
+        {
+            return null;
+        }
+
+        var template = actionDescriptor.AttributeRouteInfo?.Template;
+        if (!string.IsNullOrWhiteSpace(template))
+        {
+            return template;
+        }
+
+        return TryGetRoutePatternTemplate(actionDescriptor);
+    }
+
+    private static string? TryGetRoutePatternTemplate(ActionDescriptor actionDescriptor)
+    {
+        var routePatternProperty = actionDescriptor.GetType().GetProperty("RoutePattern", BindingFlags.Instance | BindingFlags.Public);
+        if (routePatternProperty is null)
+        {
+            return null;
+        }
+
+        var routePattern = routePatternProperty.GetValue(actionDescriptor);
+        if (routePattern is null)
+        {
+            return null;
+        }
+
+        var rawTextProperty = routePattern.GetType().GetProperty("RawText", BindingFlags.Instance | BindingFlags.Public);
+        if (rawTextProperty?.PropertyType == typeof(string))
+        {
+            return rawTextProperty.GetValue(routePattern) as string;
+        }
+
+        return routePattern.ToString();
     }
 
     private static bool ContainsRouteParameter(string template, string parameterName)

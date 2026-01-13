@@ -37,13 +37,13 @@ Document a sample that shows deterministic tenant resolution from route first, h
    - `samples/CleanArchitecture.Extensions.Samples.Multitenancy.HeaderAndRouteResolution/src/Application/Application.csproj`:
      ```xml
      <!-- Step 2: (Begin) Add Multitenancy core package -->
-     <PackageReference Include="CleanArchitecture.Extensions.Multitenancy" VersionOverride="0.2.6" />
+     <PackageReference Include="CleanArchitecture.Extensions.Multitenancy" VersionOverride="0.2.7" />
      <!-- Step 2: (End) Add Multitenancy core package -->
      ```
    - `samples/CleanArchitecture.Extensions.Samples.Multitenancy.HeaderAndRouteResolution/src/Web/Web.csproj`:
      ```xml
      <!-- Step 2: (Begin) Add Multitenancy AspNetCore package -->
-     <PackageReference Include="CleanArchitecture.Extensions.Multitenancy.AspNetCore" VersionOverride="0.2.6" />
+     <PackageReference Include="CleanArchitecture.Extensions.Multitenancy.AspNetCore" VersionOverride="0.2.7" />
      <!-- Step 2: (End) Add Multitenancy AspNetCore package -->
      ```
 3. Configure `MultitenancyOptions` for route-first ordering (`Route > Host > Header > Query > Claim`), set header name `X-Tenant-ID`, require tenants by default, allow explicitly anonymous endpoints, and disable fallback tenants.
