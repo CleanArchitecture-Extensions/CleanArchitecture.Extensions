@@ -29,7 +29,8 @@ public static void AddInfrastructureServices(this IHostApplicationBuilder builde
     {
         options.DefaultNamespace = "MyApp";
         options.MaxEntrySizeBytes = 256 * 1024;
-        // Set Backend = CacheBackend.Distributed to force shared cache when IDistributedCache is configured.
+        // Set Backend = CacheBackend.Distributed to force shared cache when a real IDistributedCache (e.g., Redis) is configured.
+        // MemoryDistributedCache is treated as non-distributed; use Backend.Memory or Backend.Auto for single-node setups.
     }, queryOptions =>
     {
         queryOptions.DefaultTtl = TimeSpan.FromMinutes(5);
