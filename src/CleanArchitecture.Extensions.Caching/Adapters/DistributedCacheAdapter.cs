@@ -119,7 +119,8 @@ public sealed class DistributedCacheAdapter : ICache
         }
 
         var entryOptions = ResolveEntryOptions(options);
-        var envelope = CreateEnvelope(value, entryOptions);
+        var relativeExpiration = ApplyJitter(entryOptions.AbsoluteExpirationRelativeToNow, _options.StampedePolicy?.Jitter);
+        var envelope = CreateEnvelope(value, entryOptions, relativeExpiration);
         var payload = _serializer.Serialize(envelope);
 
         if (ExceedsSizeLimit(payload))
@@ -128,7 +129,7 @@ public sealed class DistributedCacheAdapter : ICache
             return;
         }
 
-        var distributedOptions = ToDistributedOptions(entryOptions);
+        var distributedOptions = ToDistributedOptions(entryOptions, relativeExpiration);
         _distributedCache.Set(key.FullKey, payload, distributedOptions);
     }
 
@@ -142,7 +143,8 @@ public sealed class DistributedCacheAdapter : ICache
         }
 
         var entryOptions = ResolveEntryOptions(options);
-        var envelope = CreateEnvelope(value, entryOptions);
+        var relativeExpiration = ApplyJitter(entryOptions.AbsoluteExpirationRelativeToNow, _options.StampedePolicy?.Jitter);
+        var envelope = CreateEnvelope(value, entryOptions, relativeExpiration);
         var payload = _serializer.Serialize(envelope);
 
         if (ExceedsSizeLimit(payload))
@@ -151,7 +153,7 @@ public sealed class DistributedCacheAdapter : ICache
             return Task.CompletedTask;
         }
 
-        var distributedOptions = ToDistributedOptions(entryOptions);
+        var distributedOptions = ToDistributedOptions(entryOptions, relativeExpiration);
         return _distributedCache.SetAsync(key.FullKey, payload, distributedOptions, cancellationToken);
     }
 
@@ -270,14 +272,14 @@ public sealed class DistributedCacheAdapter : ICache
 
     private bool ExceedsSizeLimit(byte[] payload) => _options.MaxEntrySizeBytes.HasValue && payload.LongLength > _options.MaxEntrySizeBytes.Value;
 
-    private DistributedCacheEntryOptions ToDistributedOptions(CacheEntryOptions options) => new()
+    private static DistributedCacheEntryOptions ToDistributedOptions(CacheEntryOptions options, TimeSpan? relativeExpiration) => new()
     {
         AbsoluteExpiration = options.AbsoluteExpiration,
-        AbsoluteExpirationRelativeToNow = ApplyJitter(options.AbsoluteExpirationRelativeToNow, _options.StampedePolicy?.Jitter),
+        AbsoluteExpirationRelativeToNow = relativeExpiration,
         SlidingExpiration = options.SlidingExpiration
     };
 
-    private DistributedStoredEntry<T> CreateEnvelope<T>(T value, CacheEntryOptions options)
+    private DistributedStoredEntry<T> CreateEnvelope<T>(T value, CacheEntryOptions options, TimeSpan? relativeExpiration)
     {
         var createdAt = _timeProvider.GetUtcNow();
         DateTimeOffset? expiresAt = null;
@@ -285,9 +287,9 @@ public sealed class DistributedCacheAdapter : ICache
         {
             expiresAt = options.AbsoluteExpiration;
         }
-        else if (options.AbsoluteExpirationRelativeToNow.HasValue)
+        else if (relativeExpiration.HasValue)
         {
-            expiresAt = createdAt.Add(options.AbsoluteExpirationRelativeToNow.Value);
+            expiresAt = createdAt.Add(relativeExpiration.Value);
         }
 
         return new DistributedStoredEntry<T>(value, createdAt, expiresAt, options, _serializer.ContentType);
