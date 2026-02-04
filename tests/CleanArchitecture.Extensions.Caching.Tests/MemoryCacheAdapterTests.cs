@@ -118,6 +118,23 @@ public class MemoryCacheAdapterTests
         Assert.Throws<InvalidOperationException>(() => provider.GetRequiredService<ICache>());
     }
 
+    [Fact]
+    public void Stores_non_serializable_values_without_throwing()
+    {
+        using var provider = BuildProvider();
+        var cache = provider.GetRequiredService<ICache>();
+        var keyFactory = provider.GetRequiredService<ICacheKeyFactory>();
+        var key = keyFactory.Create("Resource", keyFactory.CreateHash(new { id = 9 }));
+        var value = new SelfReferencing();
+
+        cache.Set(key, value);
+
+        var cached = cache.Get<SelfReferencing>(key);
+
+        Assert.NotNull(cached);
+        Assert.Same(value, cached!.Value);
+    }
+
     private sealed class TestCacheSerializer : ICacheSerializer
     {
         private static readonly JsonSerializerOptions SerializerOptions = new(JsonSerializerDefaults.Web)
@@ -130,5 +147,10 @@ public class MemoryCacheAdapterTests
         public byte[] Serialize<T>(T? value) => JsonSerializer.SerializeToUtf8Bytes(value, SerializerOptions);
 
         public T? Deserialize<T>(ReadOnlySpan<byte> payload) => JsonSerializer.Deserialize<T>(payload, SerializerOptions);
+    }
+
+    private sealed class SelfReferencing
+    {
+        public SelfReferencing Self => this;
     }
 }

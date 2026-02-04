@@ -57,6 +57,19 @@ public class DependencyInjectionExtensionsTests
         Assert.Throws<InvalidOperationException>(() => provider.GetRequiredService<ICache>());
     }
 
+    [Fact]
+    public void Throws_when_distributed_backend_selected_with_memory_distributed_cache()
+    {
+        var services = new ServiceCollection();
+        services.AddLogging();
+
+        services.AddCleanArchitectureCaching(options => options.Backend = CacheBackend.Distributed);
+
+        using var provider = services.BuildServiceProvider();
+
+        Assert.Throws<InvalidOperationException>(() => provider.GetRequiredService<ICache>());
+    }
+
     private sealed class FakeDistributedCache : IDistributedCache
     {
         public byte[]? Get(string key) => null;

@@ -96,18 +96,37 @@ public sealed class MemoryCacheAdapter : ICache
         }
 
         var entryOptions = ResolveEntryOptions(options);
-        var payload = _serializer.Serialize(value);
 
-        if (ExceedsSizeLimit(payload, entryOptions))
+        if (ExceedsConfiguredSizeLimit(entryOptions))
         {
             _logger.LogWarning("Cache entry for {Key} exceeded maximum size; skipping store.", key.FullKey);
             return;
         }
 
+        if (_options.MaxEntrySizeBytes.HasValue)
+        {
+            byte[] payload;
+            try
+            {
+                payload = _serializer.Serialize(value);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning(ex, "Failed to serialize cache entry for {Key}; skipping store.", key.FullKey);
+                return;
+            }
+
+            if (payload.LongLength > _options.MaxEntrySizeBytes.Value)
+            {
+                _logger.LogWarning("Cache entry for {Key} exceeded maximum size; skipping store.", key.FullKey);
+                return;
+            }
+        }
+
         var memoryOptions = ToMemoryOptions(entryOptions);
         var createdAt = _timeProvider.GetUtcNow();
         var expiresAt = ResolveExpiresAt(createdAt, memoryOptions);
-        var stored = new StoredCacheEntry(payload, _serializer.ContentType, createdAt, expiresAt, entryOptions, value);
+        var stored = new StoredCacheEntry(null, _serializer.ContentType, createdAt, expiresAt, entryOptions, value);
 
         _memoryCache.Set(key.FullKey, stored, memoryOptions);
     }
@@ -263,13 +282,8 @@ public sealed class MemoryCacheAdapter : ICache
 
     private CacheEntryOptions ResolveEntryOptions(CacheEntryOptions? options) => options ?? _options.DefaultEntryOptions ?? CacheEntryOptions.Default;
 
-    private bool ExceedsSizeLimit(byte[] payload, CacheEntryOptions entryOptions)
+    private bool ExceedsConfiguredSizeLimit(CacheEntryOptions entryOptions)
     {
-        if (_options.MaxEntrySizeBytes.HasValue && payload.LongLength > _options.MaxEntrySizeBytes.Value)
-        {
-            return true;
-        }
-
         if (entryOptions.Size.HasValue && _options.MaxEntrySizeBytes.HasValue && entryOptions.Size.Value > _options.MaxEntrySizeBytes.Value)
         {
             return true;
@@ -300,6 +314,11 @@ public sealed class MemoryCacheAdapter : ICache
             return typed;
         }
 
+        if (stored.Payload is null)
+        {
+            return default;
+        }
+
         try
         {
             return _serializer.Deserialize<T>(stored.Payload);
@@ -328,5 +347,5 @@ public sealed class MemoryCacheAdapter : ICache
         return baseValue.Value + TimeSpan.FromMilliseconds(offsetMs);
     }
 
-    private sealed record StoredCacheEntry(byte[] Payload, string? ContentType, DateTimeOffset CreatedAt, DateTimeOffset? ExpiresAt, CacheEntryOptions Options, object? Value);
+    private sealed record StoredCacheEntry(byte[]? Payload, string? ContentType, DateTimeOffset CreatedAt, DateTimeOffset? ExpiresAt, CacheEntryOptions Options, object? Value);
 }

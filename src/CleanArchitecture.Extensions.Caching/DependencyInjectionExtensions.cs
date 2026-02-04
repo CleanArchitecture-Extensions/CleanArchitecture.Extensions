@@ -54,21 +54,24 @@ public static class DependencyInjectionExtensions
             var options = sp.GetRequiredService<IOptions<CachingOptions>>().Value;
             var serializers = sp.GetServices<ICacheSerializer>();
             var distributedCache = sp.GetService<IDistributedCache>();
+            var isMemoryDistributed = distributedCache is MemoryDistributedCache;
+
+            if (options.Backend == CacheBackend.Distributed && (distributedCache is null || isMemoryDistributed))
+            {
+                throw new InvalidOperationException(
+                    "CachingOptions.Backend is set to Distributed but the registered IDistributedCache is missing or uses MemoryDistributedCache. " +
+                    "Register a real distributed cache or set Backend to Memory/Auto.");
+            }
 
             var useDistributed = options.Backend switch
             {
                 CacheBackend.Distributed => true,
                 CacheBackend.Memory => false,
-                _ => distributedCache is not null && distributedCache is not MemoryDistributedCache
+                _ => distributedCache is not null && !isMemoryDistributed
             };
 
             if (useDistributed)
             {
-                if (distributedCache is null)
-                {
-                    throw new InvalidOperationException("CachingOptions.Backend is set to Distributed but no IDistributedCache is registered.");
-                }
-
                 return ActivatorUtilities.CreateInstance<DistributedCacheAdapter>(sp, serializers);
             }
 
