@@ -10,7 +10,9 @@ internal sealed class KeyedLock
     internal sealed class LockEntry
     {
         public readonly SemaphoreSlim Semaphore = new(1, 1);
+        public readonly object SyncRoot = new();
         public int RefCount;
+        public bool Removed;
     }
 
     private readonly ConcurrentDictionary<string, LockEntry> _locks = new(StringComparer.Ordinal);
@@ -53,17 +55,34 @@ internal sealed class KeyedLock
 
     private LockEntry GetEntry(string key)
     {
-        var entry = _locks.GetOrAdd(key, _ => new LockEntry());
-        Interlocked.Increment(ref entry.RefCount);
-        return entry;
+        while (true)
+        {
+            var entry = _locks.GetOrAdd(key, _ => new LockEntry());
+
+            lock (entry.SyncRoot)
+            {
+                if (entry.Removed)
+                {
+                    continue;
+                }
+
+                entry.RefCount++;
+                return entry;
+            }
+        }
     }
 
     private void ReleaseEntry(string key, LockEntry entry)
     {
-        if (Interlocked.Decrement(ref entry.RefCount) == 0)
+        lock (entry.SyncRoot)
         {
-            _locks.TryRemove(new KeyValuePair<string, LockEntry>(key, entry));
-            entry.Semaphore.Dispose();
+            entry.RefCount--;
+
+            if (entry.RefCount == 0 && _locks.TryRemove(new KeyValuePair<string, LockEntry>(key, entry)))
+            {
+                entry.Removed = true;
+                entry.Semaphore.Dispose();
+            }
         }
     }
 
