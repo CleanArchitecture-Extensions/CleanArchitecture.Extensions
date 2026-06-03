@@ -13,10 +13,10 @@ namespace CleanArchitecture.Extensions.Caching.Tests;
 
 public class DistributedCacheAdapterTests
 {
-    private static DistributedCacheAdapter CreateAdapter(CachingOptions? options = null, ICacheSerializer? serializer = null)
+    private static DistributedCacheAdapter CreateAdapter(CachingOptions? options = null, ICacheSerializer? serializer = null, IDistributedCache? distributed = null)
     {
         serializer ??= new SystemTextJsonCacheSerializer();
-        var distributed = new MemoryDistributedCache(MOptions.Create(new MemoryDistributedCacheOptions()));
+        distributed ??= new MemoryDistributedCache(MOptions.Create(new MemoryDistributedCacheOptions()));
         var cachingOptions = options ?? CachingOptions.Default;
         return new DistributedCacheAdapter(
             distributed,
@@ -84,6 +84,34 @@ public class DistributedCacheAdapterTests
         adapter.Set(key, "toolarge");
 
         Assert.Null(adapter.Get<string>(key));
+    }
+
+    [Fact]
+    public void Get_removes_corrupt_payload()
+    {
+        var distributed = new MemoryDistributedCache(MOptions.Create(new MemoryDistributedCacheOptions()));
+        var adapter = CreateAdapter(distributed: distributed);
+        var key = new CacheKey("ns", "Resource", "corrupt-sync");
+        distributed.Set(key.FullKey, "not-json"u8.ToArray(), new DistributedCacheEntryOptions());
+
+        var cached = adapter.Get<string>(key);
+
+        Assert.Null(cached);
+        Assert.Null(distributed.Get(key.FullKey));
+    }
+
+    [Fact]
+    public async Task GetAsync_removes_corrupt_payload()
+    {
+        var distributed = new MemoryDistributedCache(MOptions.Create(new MemoryDistributedCacheOptions()));
+        var adapter = CreateAdapter(distributed: distributed);
+        var key = new CacheKey("ns", "Resource", "corrupt-async");
+        await distributed.SetAsync(key.FullKey, "not-json"u8.ToArray(), new DistributedCacheEntryOptions());
+
+        var cached = await adapter.GetAsync<string>(key);
+
+        Assert.Null(cached);
+        Assert.Null(await distributed.GetAsync(key.FullKey));
     }
 
     [Fact]
