@@ -80,6 +80,7 @@ public sealed class DistributedCacheAdapter : ICache
         var stored = DeserializeStored<T>(bytes);
         if (stored is null)
         {
+            RemoveInvalidEntry(key);
             return null;
         }
 
@@ -104,6 +105,7 @@ public sealed class DistributedCacheAdapter : ICache
         var stored = DeserializeStored<T>(bytes);
         if (stored is null)
         {
+            await RemoveInvalidEntryAsync(key, cancellationToken).ConfigureAwait(false);
             return null;
         }
 
@@ -305,6 +307,30 @@ public sealed class DistributedCacheAdapter : ICache
         {
             _logger.LogWarning(ex, "Failed to deserialize distributed cache entry");
             return null;
+        }
+    }
+
+    private void RemoveInvalidEntry(CacheKey key)
+    {
+        try
+        {
+            _distributedCache.Remove(key.FullKey);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogWarning(ex, "Failed to remove invalid distributed cache entry for {Key}", key.FullKey);
+        }
+    }
+
+    private async Task RemoveInvalidEntryAsync(CacheKey key, CancellationToken cancellationToken)
+    {
+        try
+        {
+            await _distributedCache.RemoveAsync(key.FullKey, cancellationToken).ConfigureAwait(false);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogWarning(ex, "Failed to remove invalid distributed cache entry for {Key}", key.FullKey);
         }
     }
 
